@@ -81,7 +81,7 @@
         });
 
         function saveListing(title, price, desc, imgSrc) {
-            const newListing = { title, price, desc, imgSrc };
+            const newListing = { id: Date.now(), title, price, desc, imgSrc };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             localStorage.setItem('carListings', JSON.stringify(listings));
@@ -96,7 +96,6 @@
             container.innerHTML = '';
             
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
-            
             const filtered = listings.filter(item => item.title.toLowerCase().includes(filter.toLowerCase()));
 
             if (filtered.length === 0) {
@@ -106,15 +105,23 @@
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "bg-white p-4 rounded-lg shadow-md space-y-2";
+                card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
                 card.innerHTML = `
                     <img src="${item.imgSrc}" class="w-full h-48 object-cover rounded-md">
                     <h3 class="text-lg font-bold text-gray-800">${item.title}</h3>
                     <p class="text-blue-600 font-semibold">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
+                    <button onclick="deleteListing(${item.id})" class="w-full bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 mt-2">🗑️ Mark as Sold / Delete</button>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function deleteListing(id) {
+            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            listings = listings.filter(item => item.id !== id);
+            localStorage.setItem('carListings', JSON.stringify(listings));
+            loadListings(document.getElementById('search-input').value);
         }
 
         document.getElementById('search-input').addEventListener('input', function(e) {
