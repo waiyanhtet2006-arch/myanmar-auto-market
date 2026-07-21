@@ -30,40 +30,48 @@
                 <input type="hidden" id="edit-listing-id" value="">
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Car Name / Title</label>
-                    <input type="text" id="car-title" placeholder="e.g., Toyota Crown Super Saloon" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <label class="block text-sm font-medium text-gray-700">Brand (Type)</label>
+                    <input type="text" id="car-brand" placeholder="e.g., Toyota, Honda..." required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Car Name / Model (Type)</label>
+                    <input type="text" id="car-title" placeholder="e.g., Crown Athlete, Probox..." required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Brand</label>
-                        <input type="text" id="car-brand" placeholder="e.g., Toyota" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-sm font-medium text-gray-700">Model Year (Type)</label>
+                        <input type="text" id="car-year" placeholder="e.g., 2004" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Model Year</label>
-                        <input type="number" id="car-year" min="1900" max="2026" placeholder="2004" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Made In (Country)</label>
-                        <input type="text" id="car-country" placeholder="e.g., Japan" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Color</label>
+                        <label class="block text-sm font-medium text-gray-700">Color (Type)</label>
                         <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Mileage (Optional)</label>
-                    <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Made in (Select)</label>
+                        <select id="car-country" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
+                            <option value="Japan">Japan</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="China">China</option>
+                            <option value="USA">USA</option>
+                            <option value="Germany">Germany</option>
+                            <option value="South Korea">South Korea</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Mileage (Optional)</label>
+                        <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
-                    <input type="text" id="car-price" placeholder="e.g., $12,500" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
 
                 <!-- Contact Information Section -->
@@ -86,7 +94,7 @@
                 <div class="border-t pt-3">
                     <label class="block text-sm font-medium text-gray-700">Upload Photos (Up to 20)</label>
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Leave empty if editing and you don't want to change existing photos.</p>
+                    <p class="text-xs text-gray-500 mt-1">Leave empty if you don't want to change existing photos.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
@@ -96,9 +104,23 @@
             </form>
         </section>
 
-        <!-- Search & Advanced Filter Section -->
+        <!-- Search & Filter Section -->
         <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
             <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
+            
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="filter-brand" placeholder="Filter by Brand..." class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
+                <select id="filter-country" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
+                    <option value="">All Countries</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Thailand">Thailand</option>
+                    <option value="China">China</option>
+                    <option value="USA">USA</option>
+                    <option value="Germany">Germany</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
         </section>
 
         <!-- Marketplace Feed Section -->
@@ -131,11 +153,11 @@
             }
 
             const editId = document.getElementById('edit-listing-id').value;
-            const title = document.getElementById('car-title').value.trim();
             const brand = document.getElementById('car-brand').value.trim();
+            const title = document.getElementById('car-title').value.trim();
             const year = document.getElementById('car-year').value.trim();
-            const country = document.getElementById('car-country').value.trim();
             const color = document.getElementById('car-color').value.trim();
+            const country = document.getElementById('car-country').value;
             const mileage = document.getElementById('car-mileage').value.trim();
             const price = document.getElementById('car-price').value.trim();
             const desc = document.getElementById('car-desc').value.trim();
@@ -147,11 +169,11 @@
                 let existingItem = listings.find(l => l.id == editId);
                 if (!existingItem) return;
 
-                existingItem.title = title;
                 existingItem.brand = brand;
+                existingItem.title = title;
                 existingItem.year = year;
-                existingItem.country = country;
                 existingItem.color = color;
+                existingItem.country = country;
                 existingItem.mileage = mileage;
                 existingItem.price = price;
                 existingItem.contacts = { phone, viber, telegram };
@@ -191,19 +213,19 @@
                             tempImages[index] = e.target.result;
                             loadedCount++;
                             if (loadedCount === files.length) {
-                                saveNewListing(title, brand, year, country, color, mileage, price, { phone, viber, telegram }, desc, tempImages);
+                                saveNewListing({ brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, imgSrcs: tempImages });
                             }
                         }
                         reader.readAsDataURL(file);
                     });
                 } else {
-                    saveNewListing(title, brand, year, country, color, mileage, price, { phone, viber, telegram }, desc, imageSrcs);
+                    saveNewListing({ brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, imgSrcs: imageSrcs });
                 }
             }
         });
 
-        function saveNewListing(title, brand, year, country, color, mileage, price, contacts, desc, imgSrcs) {
-            const newListing = { id: Date.now(), title, brand, year, country, color, mileage, price, contacts, desc, imgSrcs };
+        function saveNewListing(carData) {
+            const newListing = { id: Date.now(), ...carData };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             finalizeSave(listings);
@@ -222,11 +244,11 @@
             if (!item) return;
 
             document.getElementById('edit-listing-id').value = item.id;
-            document.getElementById('car-title').value = item.title || '';
             document.getElementById('car-brand').value = item.brand || '';
+            document.getElementById('car-title').value = item.title || '';
             document.getElementById('car-year').value = item.year || '';
-            document.getElementById('car-country').value = item.country || '';
             document.getElementById('car-color').value = item.color || '';
+            document.getElementById('car-country').value = item.country || 'Japan';
             document.getElementById('car-mileage').value = item.mileage || '';
             document.getElementById('car-price').value = item.price || '';
             document.getElementById('car-phone').value = item.contacts ? (item.contacts.phone || '') : '';
@@ -261,10 +283,17 @@
             }
 
             const query = document.getElementById('search-input').value.toLowerCase();
+            const filterBrandInput = document.getElementById('filter-brand').value.toLowerCase();
+            const selectedCountry = document.getElementById('filter-country').value;
 
             const filtered = listings.filter(item => {
-                const searchString = `${item.title} ${item.brand} ${item.country} ${item.color}`.toLowerCase();
-                return searchString.includes(query);
+                const combinedText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''}`.toLowerCase();
+                const matchesQuery = combinedText.includes(query);
+                
+                const matchesBrand = !filterBrandInput || (item.brand && item.brand.toLowerCase().includes(filterBrandInput));
+                const matchesCountry = !selectedCountry || item.country === selectedCountry;
+
+                return matchesQuery && matchesBrand && matchesCountry;
             });
 
             if (filtered.length === 0) {
@@ -276,13 +305,6 @@
                 const isFav = favorites.includes(item.id);
                 const images = item.imgSrcs || [item.imgSrc || 'https://via.placeholder.com/400x200?text=No+Image'];
                 
-                // Build specs string safely handling older listings
-                const brandText = item.brand || 'Unknown';
-                const countryText = item.country || 'Unknown';
-                const yearText = item.year || '';
-                const colorText = item.color ? ` | 🎨 Color: ${item.color}` : '';
-                const mileageHtml = item.mileage ? `<p class="text-xs text-gray-500">🛣️ Mileage: <span class="font-semibold text-gray-700">${item.mileage}</span></p>` : '';
-
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
@@ -297,6 +319,9 @@
                     }
                 }
                 contactsHtml += '</div>';
+
+                // Optional mileage badge HTML check
+                let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
 
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
@@ -322,9 +347,8 @@
 
                 card.innerHTML = `
                     ${carouselHtml}
-                    <h3 class="text-lg font-bold text-gray-800">${item.title} (${yearText})</h3>
-                    <p class="text-xs text-gray-500">🏭 Brand: <span class="font-semibold text-gray-700">${brandText}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${countryText}</span>${colorText}</p>
-                    ${mileageHtml}
+                    <h3 class="text-lg font-bold text-gray-800">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
+                    <p class="text-xs text-gray-500">🎨 Color: <span class="font-semibold text-gray-700">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country || 'Japan'}</span></p>
                     <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     ${contactsHtml}
@@ -397,6 +421,8 @@
         }
 
         document.getElementById('search-input').addEventListener('input', loadListings);
+        document.getElementById('filter-brand').addEventListener('input', loadListings);
+        document.getElementById('filter-country').addEventListener('change', loadListings);
     </script>
 </body>
 </html>
