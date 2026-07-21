@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Myanmar Auto Market - ကားအရောင်းအဝယ်</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <header class="bg-blue-600 text-white p-4 shadow-md">
@@ -19,7 +20,6 @@
             <p class="text-sm text-gray-600">The most Burmese-friendly car marketplace platform.</p>
         </div>
 
-        <!-- Car Listing Form Section -->
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
@@ -74,7 +74,6 @@
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
 
-                <!-- Contact Information Section -->
                 <div class="border-t pt-3 space-y-3">
                     <label class="block text-sm font-bold text-gray-800">📱 Contact Info (Fill at least one)</label>
                     <div>
@@ -104,7 +103,6 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section -->
         <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
             <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
             
@@ -123,24 +121,28 @@
             </div>
         </section>
 
-        <!-- Marketplace Feed Section -->
         <section class="space-y-4">
             <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars</h2>
             <div id="listings-container" class="space-y-4">
-                <!-- Dynamic listings will appear here -->
-            </div>
+                </div>
         </section>
     </main>
 
     <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://ujdwilbpkzrinbammmfi.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_I34WJ4psecMdoTTyaDxHfw_WFsLvk9w';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let showFavoritesOnly = false;
+        let cachedListings = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             loadListings();
             updateWishlistCount();
         });
 
-        document.getElementById('car-form').addEventListener('submit', function(e) {
+        document.getElementById('car-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const phone = document.getElementById('car-phone').value.trim();
@@ -163,119 +165,82 @@
             const desc = document.getElementById('car-desc').value.trim();
             const imageInput = document.getElementById('car-images');
 
-            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            // Handle image processing
+            if (imageInput.files && imageInput.files.length > 0) {
+                const files = Array.from(imageInput.files).slice(0, 20);
+                let loadedCount = 0;
+                let tempImages = [];
 
-            if (editId) {
-                let existingItem = listings.find(l => l.id == editId);
-                if (!existingItem) return;
-
-                existingItem.brand = brand;
-                existingItem.title = title;
-                existingItem.year = year;
-                existingItem.color = color;
-                existingItem.country = country;
-                existingItem.mileage = mileage;
-                existingItem.price = price;
-                existingItem.contacts = { phone, viber, telegram };
-                existingItem.desc = desc;
-
-                if (imageInput.files && imageInput.files.length > 0) {
-                    const files = Array.from(imageInput.files).slice(0, 20);
-                    let loadedCount = 0;
-                    let tempImages = [];
-
-                    files.forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            tempImages[index] = e.target.result;
-                            loadedCount++;
-                            if (loadedCount === files.length) {
-                                existingItem.imgSrcs = tempImages;
-                                finalizeSave(listings);
-                            }
+                files.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        tempImages[index] = e.target.result;
+                        loadedCount++;
+                        if (loadedCount === files.length) {
+                            processSaveOperation(editId, { brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, img_srcs: tempImages });
                         }
-                        reader.readAsDataURL(file);
-                    });
-                } else {
-                    finalizeSave(listings);
-                }
+                    }
+                    reader.readAsDataURL(file);
+                });
             } else {
-                let imageSrcs = ['https://via.placeholder.com/400x200?text=No+Image'];
-
-                if (imageInput.files && imageInput.files.length > 0) {
-                    const files = Array.from(imageInput.files).slice(0, 20);
-                    let loadedCount = 0;
-                    let tempImages = [];
-
-                    files.forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            tempImages[index] = e.target.result;
-                            loadedCount++;
-                            if (loadedCount === files.length) {
-                                saveNewListing({ brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, imgSrcs: tempImages });
-                            }
-                        }
-                        reader.readAsDataURL(file);
-                    });
-                } else {
-                    saveNewListing({ brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, imgSrcs: imageSrcs });
+                let existingImages = ['https://via.placeholder.com/400x200?text=No+Image'];
+                if (editId) {
+                    let found = cachedListings.find(l => l.id == editId);
+                    if (found && found.img_srcs) existingImages = found.img_srcs;
                 }
+                processSaveOperation(editId, { brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, img_srcs: existingImages });
             }
         });
 
-        function saveNewListing(carData) {
-            const newListing = { id: Date.now(), ...carData };
-            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
-            listings.unshift(newListing);
-            finalizeSave(listings);
-        }
+        async function processSaveOperation(editId, carData) {
+            if (editId) {
+                // Update in Supabase
+                const { error } = await supabaseClient
+                    .from('cars')
+                    .update(carData)
+                    .eq('id', editId);
 
-        function finalizeSave(listings) {
-            localStorage.setItem('carListings', JSON.stringify(listings));
+                if (error) {
+                    console.error('Supabase update error:', error);
+                    alert('Error updating listing.');
+                    return;
+                }
+            } else {
+                // Insert into Supabase
+                const { error } = await supabaseClient
+                    .from('cars')
+                    .insert([carData]);
+
+                if (error) {
+                    console.error('Supabase insert error:', error);
+                    alert('Error saving listing to database.');
+                    return;
+                }
+            }
+
             cancelEdit();
             loadListings();
             alert('Listing saved successfully!');
         }
 
-        function editListing(id) {
-            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
-            let item = listings.find(l => l.id == id);
-            if (!item) return;
-
-            document.getElementById('edit-listing-id').value = item.id;
-            document.getElementById('car-brand').value = item.brand || '';
-            document.getElementById('car-title').value = item.title || '';
-            document.getElementById('car-year').value = item.year || '';
-            document.getElementById('car-color').value = item.color || '';
-            document.getElementById('car-country').value = item.country || 'Japan';
-            document.getElementById('car-mileage').value = item.mileage || '';
-            document.getElementById('car-price').value = item.price || '';
-            document.getElementById('car-phone').value = item.contacts ? (item.contacts.phone || '') : '';
-            document.getElementById('car-viber').value = item.contacts ? (item.contacts.viber || '') : '';
-            document.getElementById('car-telegram').value = item.contacts ? (item.contacts.telegram || '') : '';
-            document.getElementById('car-desc').value = item.desc || '';
-
-            document.getElementById('form-heading').innerText = '✏️ Edit Your Car Listing';
-            document.getElementById('form-submit-btn').innerText = 'Update Listing';
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function cancelEdit() {
-            document.getElementById('car-form').reset();
-            document.getElementById('edit-listing-id').value = '';
-            document.getElementById('form-heading').innerText = '🚗 Sell Your Car';
-            document.getElementById('form-submit-btn').innerText = 'Post Listing';
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-        }
-
-        function loadListings() {
+        async function loadListings() {
             const container = document.getElementById('listings-container');
-            container.innerHTML = '';
+            container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">Loading cars...</p>';
             
-            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            // Fetch live from Supabase
+            const { data, error } = await supabaseClient
+                .from('cars')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Error fetching listings:', error);
+                container.innerHTML = '<p class="text-sm text-red-500 text-center py-4">Failed to load listings from database.</p>';
+                return;
+            }
+
+            cachedListings = data || [];
+            let listings = [...cachedListings];
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
 
             if (showFavoritesOnly) {
@@ -296,6 +261,7 @@
                 return matchesQuery && matchesBrand && matchesCountry;
             });
 
+            container.innerHTML = '';
             if (filtered.length === 0) {
                 container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${showFavoritesOnly ? 'No saved cars yet.' : 'No cars found matching your criteria.'}</p>`;
                 return;
@@ -303,7 +269,7 @@
 
             filtered.forEach(item => {
                 const isFav = favorites.includes(item.id);
-                const images = item.imgSrcs || [item.imgSrc || 'https://via.placeholder.com/400x200?text=No+Image'];
+                const images = item.img_srcs || [item.imgSrc || 'https://via.placeholder.com/400x200?text=No+Image'];
                 
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
@@ -320,7 +286,6 @@
                 }
                 contactsHtml += '</div>';
 
-                // Optional mileage badge HTML check
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
 
                 const card = document.createElement('div');
@@ -362,14 +327,13 @@
         }
 
         window.changeSlide = function(id, direction) {
-            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
-            let item = listings.find(l => l.id === id);
-            if (!item || !item.imgSrcs || item.imgSrcs.length <= 1) return;
+            let item = cachedListings.find(l => l.id === id);
+            if (!item || !item.img_srcs || item.img_srcs.length <= 1) return;
 
             let imgElement = document.getElementById(`img-${id}`);
             let counterElement = document.getElementById(`counter-${id}`);
             
-            let currentImages = item.imgSrcs;
+            let currentImages = item.img_srcs;
             let currentSrc = imgElement.src;
             let currentIndex = currentImages.indexOf(currentSrc);
 
@@ -379,6 +343,38 @@
 
             imgElement.src = currentImages[newIndex];
             if (counterElement) counterElement.innerText = newIndex + 1;
+        }
+
+        function editListing(id) {
+            let item = cachedListings.find(l => l.id == id);
+            if (!item) return;
+
+            document.getElementById('edit-listing-id').value = item.id;
+            document.getElementById('car-brand').value = item.brand || '';
+            document.getElementById('car-title').value = item.title || '';
+            document.getElementById('car-year').value = item.year || '';
+            document.getElementById('car-color').value = item.color || '';
+            document.getElementById('car-country').value = item.country || 'Japan';
+            document.getElementById('car-mileage').value = item.mileage || '';
+            document.getElementById('car-price').value = item.price || '';
+            document.getElementById('car-phone').value = item.contacts ? (item.contacts.phone || '') : '';
+            document.getElementById('car-viber').value = item.contacts ? (item.contacts.viber || '') : '';
+            document.getElementById('car-telegram').value = item.contacts ? (item.contacts.telegram || '') : '';
+            document.getElementById('car-desc').value = item.desc || '';
+
+            document.getElementById('form-heading').innerText = '✏️ Edit Your Car Listing';
+            document.getElementById('form-submit-btn').innerText = 'Update Listing';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            document.getElementById('car-form').reset();
+            document.getElementById('edit-listing-id').value = '';
+            document.getElementById('form-heading').innerText = '🚗 Sell Your Car';
+            document.getElementById('form-submit-btn').innerText = 'Post Listing';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
         function toggleFavorite(id) {
@@ -407,10 +403,19 @@
             updateWishlistCount();
         }
 
-        function deleteListing(id) {
-            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
-            listings = listings.filter(item => item.id !== id);
-            localStorage.setItem('carListings', JSON.stringify(listings));
+        async function deleteListing(id) {
+            if (!confirm('Are you sure you want to delete this listing?')) return;
+
+            const { error } = await supabaseClient
+                .from('cars')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('Delete error:', error);
+                alert('Failed to delete listing.');
+                return;
+            }
             
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
             favorites = favorites.filter(favId => favId !== id);
@@ -426,3 +431,4 @@
     </script>
 </body>
 </html>
+p
