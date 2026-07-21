@@ -72,10 +72,24 @@
                     <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
                     <input type="text" id="car-price" placeholder="e.g., $15,000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Contact Information (Phone / Viber)</label>
-                    <input type="text" id="car-contact" placeholder="e.g., 09-912345678" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+
+                <!-- Contact Information Section (At least one required) -->
+                <div class="border-t pt-3 space-y-3">
+                    <label class="block text-sm font-bold text-gray-800">📱 Contact Info (Fill at least one)</label>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600">Phone Number</label>
+                        <input type="text" id="car-phone" placeholder="e.g., 09-912345678" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600">Viber Number</label>
+                        <input type="text" id="car-viber" placeholder="e.g., 09-912345678" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600">Telegram Username / Number</label>
+                        <input type="text" id="car-telegram" placeholder="e.g., @username or phone" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    </div>
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
                     <input type="file" id="car-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
@@ -154,12 +168,20 @@
         document.getElementById('car-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const phone = document.getElementById('car-phone').value.trim();
+            const viber = document.getElementById('car-viber').value.trim();
+            const telegram = document.getElementById('car-telegram').value.trim();
+
+            if (!phone && !viber && !telegram) {
+                alert('Please provide at least one contact method (Phone, Viber, or Telegram).');
+                return;
+            }
+
             const title = document.getElementById('car-title').value;
             const brand = document.getElementById('car-brand').value;
             const year = document.getElementById('car-year').value;
             const country = document.getElementById('car-country').value;
             const price = document.getElementById('car-price').value;
-            const contact = document.getElementById('car-contact').value;
             const desc = document.getElementById('car-desc').value;
             const imageInput = document.getElementById('car-image');
 
@@ -168,16 +190,16 @@
             if (imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    saveListing(title, brand, year, country, price, contact, desc, e.target.result);
+                    saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, e.target.result);
                 }
                 reader.readAsDataURL(imageInput.files[0]);
             } else {
-                saveListing(title, brand, year, country, price, contact, desc, imageSrc);
+                saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, imageSrc);
             }
         });
 
-        function saveListing(title, brand, year, country, price, contact, desc, imgSrc) {
-            const newListing = { id: Date.now(), title, brand, year, country, price, contact, desc, imgSrc };
+        function saveListing(title, brand, year, country, price, contacts, desc, imgSrc) {
+            const newListing = { id: Date.now(), title, brand, year, country, price, contacts, desc, imgSrc };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             localStorage.setItem('carListings', JSON.stringify(listings));
@@ -227,6 +249,23 @@
 
             filtered.forEach(item => {
                 const isFav = favorites.includes(item.id);
+                
+                // Build dynamic contact buttons HTML based on what seller filled out
+                let contactsHtml = '<div class="space-y-1.5 pt-1">';
+                if (item.contacts) {
+                    if (item.contacts.phone) {
+                        contactsHtml += `<a href="tel:${item.contacts.phone}" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200 hover:bg-blue-100">📞 Call: ${item.contacts.phone}</a>`;
+                    }
+                    if (item.contacts.viber) {
+                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200 hover:bg-purple-100">🟣 Viber: ${item.contacts.viber}</a>`;
+                    }
+                    if (item.contacts.telegram) {
+                        let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200 hover:bg-sky-100">✈️ Telegram: ${item.contacts.telegram}</a>`;
+                    }
+                }
+                contactsHtml += '</div>';
+
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
                 card.innerHTML = `
@@ -240,9 +279,7 @@
                     <p class="text-xs text-gray-500">🏭 Brand: <span class="font-semibold text-gray-700">${item.brand}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country}</span></p>
                     <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
-                    <div class="bg-green-50 border border-green-200 p-2 rounded-md text-sm text-green-800 font-medium">
-                        📞 Contact: <a href="tel:${item.contact}" class="underline text-blue-600">${item.contact}</a>
-                    </div>
+                    ${contactsHtml}
                     <button onclick="deleteListing(${item.id})" class="w-full bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 mt-2">🗑️ Mark as Sold / Delete</button>
                 `;
                 container.appendChild(card);
