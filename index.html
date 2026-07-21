@@ -41,6 +41,52 @@
                 <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
             </form>
         </section>
+
+        <!-- Marketplace Feed Section -->
+        <section class="space-y-4">
+            <h2 class="text-xl font-bold text-gray-800">📋 Available Cars</h2>
+            <div id="listings-container" class="space-y-4">
+                <!-- Dynamic listings will appear here -->
+            </div>
+        </section>
     </main>
+
+    <script>
+        document.getElementById('car-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('car-title').value;
+            const price = document.getElementById('car-price').value;
+            const desc = document.getElementById('car-desc').value;
+            const imageInput = document.getElementById('car-image');
+
+            let imageSrc = 'https://via.placeholder.com/400x200?text=No+Image';
+            
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveAndRender(title, price, desc, e.target.result);
+                }
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                saveAndRender(title, price, desc, imageSrc);
+            }
+        });
+
+        function saveAndRender(title, price, desc, imgSrc) {
+            const container = document.getElementById('listings-container');
+            const card = document.createElement('div');
+            card.className = "bg-white p-4 rounded-lg shadow-md space-y-2";
+            card.innerHTML = `
+                <img src="${imgSrc}" class="w-full h-48 object-cover rounded-md">
+                <h3 class="text-lg font-bold text-gray-800">${title}</h3>
+                <p class="text-blue-600 font-semibold">${price}</p>
+                <p class="text-sm text-gray-600">${desc}</p>
+            `;
+            container.prepend(card);
+            document.getElementById('car-form').reset();
+            alert('Listing posted successfully!');
+        }
+    </script>
 </body>
 </html>
