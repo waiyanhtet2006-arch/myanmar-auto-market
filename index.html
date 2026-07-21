@@ -36,12 +36,23 @@
                             <option value="Nissan">Nissan</option>
                             <option value="Mazda">Mazda</option>
                             <option value="Suzuki">Suzuki</option>
+                            <option value="Mitsubishi">Mitsubishi</option>
+                            <option value="Isuzu">Isuzu</option>
+                            <option value="Hyundai">Hyundai</option>
+                            <option value="Kia">Kia</option>
+                            <option value="Lexus">Lexus</option>
+                            <option value="Mercedes-Benz">Mercedes-Benz</option>
+                            <option value="BMW">BMW</option>
                             <option value="Ford">Ford</option>
+                            <option value="Chevrolet">Chevrolet</option>
+                            <option value="Daihatsu">Daihatsu</option>
+                            <option value="Subaru">Subaru</option>
+                            <option value="MG">MG</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Year</label>
+                        <label class="block text-sm font-medium text-gray-700">Year (1980-2026)</label>
                         <input type="number" id="car-year" min="1980" max="2026" placeholder="2018" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                     </div>
                 </div>
@@ -53,6 +64,7 @@
                         <option value="China">China</option>
                         <option value="USA">USA</option>
                         <option value="Germany">Germany</option>
+                        <option value="South Korea">South Korea</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -84,7 +96,18 @@
                     <option value="Nissan">Nissan</option>
                     <option value="Mazda">Mazda</option>
                     <option value="Suzuki">Suzuki</option>
+                    <option value="Mitsubishi">Mitsubishi</option>
+                    <option value="Isuzu">Isuzu</option>
+                    <option value="Hyundai">Hyundai</option>
+                    <option value="Kia">Kia</option>
+                    <option value="Lexus">Lexus</option>
+                    <option value="Mercedes-Benz">Mercedes-Benz</option>
+                    <option value="BMW">BMW</option>
                     <option value="Ford">Ford</option>
+                    <option value="Chevrolet">Chevrolet</option>
+                    <option value="Daihatsu">Daihatsu</option>
+                    <option value="Subaru">Subaru</option>
+                    <option value="MG">MG</option>
                     <option value="Other">Other</option>
                 </select>
                 <select id="filter-country" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
@@ -94,6 +117,7 @@
                     <option value="China">China</option>
                     <option value="USA">USA</option>
                     <option value="Germany">Germany</option>
+                    <option value="South Korea">South Korea</option>
                     <option value="Other">Other</option>
                 </select>
                 <select id="filter-year" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
@@ -169,19 +193,16 @@
                 listings = listings.filter(item => favorites.includes(item.id));
             }
 
-            // Get filter values
             const query = document.getElementById('search-input').value.toLowerCase();
             const selectedBrand = document.getElementById('filter-brand').value;
             const selectedCountry = document.getElementById('filter-country').value;
             const selectedYearRange = document.getElementById('filter-year').value;
 
             const filtered = listings.filter(item => {
-                // General text search (matches title, brand, or country)
                 const matchesQuery = item.title.toLowerCase().includes(query) || 
                                      item.brand.toLowerCase().includes(query) || 
                                      item.country.toLowerCase().includes(query);
                 
-                // Dropdown filters
                 const matchesBrand = !selectedBrand || item.brand === selectedBrand;
                 const matchesCountry = !selectedCountry || item.country === selectedCountry;
                 
@@ -259,7 +280,6 @@
             updateWishlistCount();
         }
 
-        // Event listeners for filters and search
         document.getElementById('search-input').addEventListener('input', loadListings);
         document.getElementById('filter-brand').addEventListener('change', loadListings);
         document.getElementById('filter-country').addEventListener('change', loadListings);
