@@ -19,10 +19,15 @@
             <p class="text-sm text-gray-600">The most Burmese-friendly car marketplace platform.</p>
         </div>
 
-        <!-- Car Listing Form Section -->
+        <!-- Car Listing Form Section (Used for both Create and Edit) -->
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">🚗 Sell Your Car</h2>
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
+                <button type="button" id="cancel-edit-btn" onclick="cancelEdit()" class="hidden text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 font-semibold">Cancel Edit</button>
+            </div>
+            
             <form id="car-form" class="space-y-4">
+                <input type="hidden" id="edit-listing-id" value="">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Car Make & Model</label>
                     <input type="text" id="car-title" placeholder="e.g., Toyota Crown" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
@@ -93,13 +98,13 @@
                 <div class="border-t pt-3">
                     <label class="block text-sm font-medium text-gray-700">Upload Photos (Up to 20)</label>
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Hold Ctrl / Shift to select multiple photos.</p>
+                    <p class="text-xs text-gray-500 mt-1">Leave empty if you don't want to change existing photos.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea id="car-desc" rows="3" placeholder="Condition, mileage..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
+                <button type="submit" id="form-submit-btn" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
             </form>
         </section>
 
@@ -178,6 +183,7 @@
                 return;
             }
 
+            const editId = document.getElementById('edit-listing-id').value;
             const title = document.getElementById('car-title').value;
             const brand = document.getElementById('car-brand').value;
             const year = document.getElementById('car-year').value;
@@ -186,38 +192,110 @@
             const desc = document.getElementById('car-desc').value;
             const imageInput = document.getElementById('car-images');
 
-            let imageSrcs = ['https://via.placeholder.com/400x200?text=No+Image'];
+            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
 
-            if (imageInput.files && imageInput.files.length > 0) {
-                const files = Array.from(imageInput.files).slice(0, 20); // Limit to 20 files max
-                let loadedCount = 0;
-                let tempImages = [];
+            if (editId) {
+                // Editing existing listing
+                let existingItem = listings.find(l => l.id == editId);
+                if (!existingItem) return;
 
-                files.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        tempImages[index] = e.target.result;
-                        loadedCount++;
-                        if (loadedCount === files.length) {
-                            saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, tempImages);
+                existingItem.title = title;
+                existingItem.brand = brand;
+                existingItem.year = year;
+                existingItem.country = country;
+                existingItem.price = price;
+                existingItem.contacts = { phone, viber, telegram };
+                existingItem.desc = desc;
+
+                if (imageInput.files && imageInput.files.length > 0) {
+                    const files = Array.from(imageInput.files).slice(0, 20);
+                    let loadedCount = 0;
+                    let tempImages = [];
+
+                    files.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            tempImages[index] = e.target.result;
+                            loadedCount++;
+                            if (loadedCount === files.length) {
+                                existingItem.imgSrcs = tempImages;
+                                finalizeSave(listings);
+                            }
                         }
-                    }
-                    reader.readAsDataURL(file);
-                });
+                        reader.readAsDataURL(file);
+                    });
+                } else {
+                    finalizeSave(listings);
+                }
             } else {
-                saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, imageSrcs);
+                // Creating new listing
+                let imageSrcs = ['https://via.placeholder.com/400x200?text=No+Image'];
+
+                if (imageInput.files && imageInput.files.length > 0) {
+                    const files = Array.from(imageInput.files).slice(0, 20);
+                    let loadedCount = 0;
+                    let tempImages = [];
+
+                    files.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            tempImages[index] = e.target.result;
+                            loadedCount++;
+                            if (loadedCount === files.length) {
+                                saveNewListing(title, brand, year, country, price, { phone, viber, telegram }, desc, tempImages);
+                            }
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                } else {
+                    saveNewListing(title, brand, year, country, price, { phone, viber, telegram }, desc, imageSrcs);
+                }
             }
         });
 
-        function saveListing(title, brand, year, country, price, contacts, desc, imgSrcs) {
+        function saveNewListing(title, brand, year, country, price, contacts, desc, imgSrcs) {
             const newListing = { id: Date.now(), title, brand, year, country, price, contacts, desc, imgSrcs };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
-            localStorage.setItem('carListings', JSON.stringify(listings));
+            finalizeSave(listings);
+        }
 
-            document.getElementById('car-form').reset();
+        function finalizeSave(listings) {
+            localStorage.setItem('carListings', JSON.stringify(listings));
+            cancelEdit();
             loadListings();
-            alert('Listing posted successfully!');
+            alert('Listing saved successfully!');
+        }
+
+        function editListing(id) {
+            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            let item = listings.find(l => l.id == id);
+            if (!item) return;
+
+            document.getElementById('edit-listing-id').value = item.id;
+            document.getElementById('car-title').value = item.title;
+            document.getElementById('car-brand').value = item.brand;
+            document.getElementById('car-year').value = item.year;
+            document.getElementById('car-country').value = item.country;
+            document.getElementById('car-price').value = item.price;
+            document.getElementById('car-phone').value = item.contacts ? (item.contacts.phone || '') : '';
+            document.getElementById('car-viber').value = item.contacts ? (item.contacts.viber || '') : '';
+            document.getElementById('car-telegram').value = item.contacts ? (item.contacts.telegram || '') : '';
+            document.getElementById('car-desc').value = item.desc || '';
+
+            document.getElementById('form-heading').innerText = '✏️ Edit Your Car Listing';
+            document.getElementById('form-submit-btn').innerText = 'Update Listing';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            document.getElementById('car-form').reset();
+            document.getElementById('edit-listing-id').value = '';
+            document.getElementById('form-heading').innerText = '🚗 Sell Your Car';
+            document.getElementById('form-submit-btn').innerText = 'Post Listing';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
         function loadListings() {
@@ -260,7 +338,6 @@
 
             filtered.forEach(item => {
                 const isFav = favorites.includes(item.id);
-                // Handle backward compatibility if listing has older single 'imgSrc' format
                 const images = item.imgSrcs || [item.imgSrc || 'https://via.placeholder.com/400x200?text=No+Image'];
                 
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
@@ -281,7 +358,6 @@
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
                 
-                // Construct carousel markup
                 let carouselHtml = `
                     <div class="relative overflow-hidden rounded-md bg-black">
                         <img id="img-${item.id}" src="${images[0]}" class="w-full h-48 object-cover">
@@ -308,23 +384,20 @@
                     <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     ${contactsHtml}
-                    <button onclick="deleteListing(${item.id})" class="w-full bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 mt-2">🗑️ Mark as Sold / Delete</button>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <button onclick="editListing(${item.id})" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200">✏️ Edit</button>
+                        <button onclick="deleteListing(${item.id})" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200">🗑️ Delete</button>
+                    </div>
                 `;
-                
-                // Store image collection on element data or manage globally
-                card.dataset.images = JSON.stringify(images);
-                card.dataset.currentIndex = 0;
                 container.appendChild(card);
             });
         }
 
-        // Image Carousel Slider Function
         window.changeSlide = function(id, direction) {
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             let item = listings.find(l => l.id === id);
             if (!item || !item.imgSrcs || item.imgSrcs.length <= 1) return;
 
-            // Find current index attribute or manage via DOM state
             let imgElement = document.getElementById(`img-${id}`);
             let counterElement = document.getElementById(`counter-${id}`);
             
