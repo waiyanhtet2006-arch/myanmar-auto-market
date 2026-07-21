@@ -10,6 +10,7 @@
     <header class="bg-blue-600 text-white p-4 shadow-md">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">🚗 Myanmar Auto Market</h1>
+            <button onclick="toggleView()" id="view-toggle-btn" class="text-sm bg-blue-700 px-3 py-1.5 rounded-md font-semibold hover:bg-blue-800">❤️ Saved (0)</button>
         </div>
     </header>
     <main class="max-w-md mx-auto p-4 space-y-4">
@@ -19,7 +20,7 @@
         </div>
 
         <!-- Car Listing Form Section -->
-        <section class="bg-white p-6 rounded-lg shadow-md">
+        <section id="form-section" class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold mb-4 text-gray-800">🚗 Sell Your Car</h2>
             <form id="car-form" class="space-y-4">
                 <div>
@@ -43,13 +44,13 @@
         </section>
 
         <!-- Search Bar Section -->
-        <section class="bg-white p-4 rounded-lg shadow-md">
+        <section id="search-section" class="bg-white p-4 rounded-lg shadow-md">
             <input type="text" id="search-input" placeholder="🔍 Search car make or model..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
         </section>
 
         <!-- Marketplace Feed Section -->
         <section class="space-y-4">
-            <h2 class="text-xl font-bold text-gray-800">📋 Available Cars</h2>
+            <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars</h2>
             <div id="listings-container" class="space-y-4">
                 <!-- Dynamic listings will appear here -->
             </div>
@@ -57,7 +58,12 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', loadListings);
+        let showFavoritesOnly = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadListings();
+            updateWishlistCount();
+        });
 
         document.getElementById('car-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -96,18 +102,30 @@
             container.innerHTML = '';
             
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
+
+            if (showFavoritesOnly) {
+                listings = listings.filter(item => favorites.includes(item.id));
+            }
+
             const filtered = listings.filter(item => item.title.toLowerCase().includes(filter.toLowerCase()));
 
             if (filtered.length === 0) {
-                container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">No cars found.</p>';
+                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${showFavoritesOnly ? 'No saved cars yet.' : 'No cars found.'}</p>`;
                 return;
             }
 
             filtered.forEach(item => {
+                const isFav = favorites.includes(item.id);
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
                 card.innerHTML = `
-                    <img src="${item.imgSrc}" class="w-full h-48 object-cover rounded-md">
+                    <div class="relative">
+                        <img src="${item.imgSrc}" class="w-full h-48 object-cover rounded-md">
+                        <button onclick="toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition">
+                            ${isFav ? '❤️' : '🤍'}
+                        </button>
+                    </div>
                     <h3 class="text-lg font-bold text-gray-800">${item.title}</h3>
                     <p class="text-blue-600 font-semibold">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
@@ -117,11 +135,44 @@
             });
         }
 
+        function toggleFavorite(id) {
+            let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+            } else {
+                favorites.push(id);
+            }
+            localStorage.setItem('carFavorites', JSON.stringify(favorites));
+            loadListings(document.getElementById('search-input').value);
+            updateWishlistCount();
+        }
+
+        function updateWishlistCount() {
+            let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
+            document.getElementById('view-toggle-btn').innerText = showFavoritesOnly ? '📋 All Cars' : `❤️ Saved (${favorites.length})`;
+        }
+
+        function toggleView() {
+            showFavoritesOnly = !showFavoritesOnly;
+            document.getElementById('form-section').style.display = showFavoritesOnly ? 'none' : 'block';
+            document.getElementById('search-section').style.display = showFavoritesOnly ? 'none' : 'block';
+            document.getElementById('feed-title').innerText = showFavoritesOnly ? '❤️ Your Saved Cars' : '📋 Available Cars';
+            loadListings();
+            updateWishlistCount();
+        }
+
         function deleteListing(id) {
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings = listings.filter(item => item.id !== id);
             localStorage.setItem('carListings', JSON.stringify(listings));
+            
+            // Also remove from favorites if present
+            let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
+            favorites = favorites.filter(favId => favId !== id);
+            localStorage.setItem('carFavorites', JSON.stringify(favorites));
+
             loadListings(document.getElementById('search-input').value);
+            updateWishlistCount();
         }
 
         document.getElementById('search-input').addEventListener('input', function(e) {
