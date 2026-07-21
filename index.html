@@ -73,12 +73,16 @@
                     <input type="text" id="car-price" placeholder="e.g., $15,000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700">Contact Information (Phone / Viber)</label>
+                    <input type="text" id="car-contact" placeholder="e.g., 09-912345678" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
                     <input type="file" id="car-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="car-desc" rows="3" placeholder="Condition, mileage, contact info..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                    <textarea id="car-desc" rows="3" placeholder="Condition, mileage..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
             </form>
@@ -155,6 +159,7 @@
             const year = document.getElementById('car-year').value;
             const country = document.getElementById('car-country').value;
             const price = document.getElementById('car-price').value;
+            const contact = document.getElementById('car-contact').value;
             const desc = document.getElementById('car-desc').value;
             const imageInput = document.getElementById('car-image');
 
@@ -163,16 +168,16 @@
             if (imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    saveListing(title, brand, year, country, price, desc, e.target.result);
+                    saveListing(title, brand, year, country, price, contact, desc, e.target.result);
                 }
                 reader.readAsDataURL(imageInput.files[0]);
             } else {
-                saveListing(title, brand, year, country, price, desc, imageSrc);
+                saveListing(title, brand, year, country, price, contact, desc, imageSrc);
             }
         });
 
-        function saveListing(title, brand, year, country, price, desc, imgSrc) {
-            const newListing = { id: Date.now(), title, brand, year, country, price, desc, imgSrc };
+        function saveListing(title, brand, year, country, price, contact, desc, imgSrc) {
+            const newListing = { id: Date.now(), title, brand, year, country, price, contact, desc, imgSrc };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             localStorage.setItem('carListings', JSON.stringify(listings));
@@ -233,8 +238,11 @@
                     </div>
                     <h3 class="text-lg font-bold text-gray-800">${item.title} (${item.year})</h3>
                     <p class="text-xs text-gray-500">🏭 Brand: <span class="font-semibold text-gray-700">${item.brand}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country}</span></p>
-                    <p class="text-blue-600 font-semibold">${item.price}</p>
+                    <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
+                    <div class="bg-green-50 border border-green-200 p-2 rounded-md text-sm text-green-800 font-medium">
+                        📞 Contact: <a href="tel:${item.contact}" class="underline text-blue-600">${item.contact}</a>
+                    </div>
                     <button onclick="deleteListing(${item.id})" class="w-full bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 mt-2">🗑️ Mark as Sold / Delete</button>
                 `;
                 container.appendChild(card);
