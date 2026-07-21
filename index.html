@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Myanmar Auto Market - ကားအရောင်းအဝယ်</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Include Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -20,6 +21,7 @@
             <p class="text-sm text-gray-600">The most Burmese-friendly car marketplace platform.</p>
         </div>
 
+        <!-- Car Listing Form Section -->
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
@@ -74,6 +76,7 @@
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
 
+                <!-- Contact Information Section -->
                 <div class="border-t pt-3 space-y-3">
                     <label class="block text-sm font-bold text-gray-800">📱 Contact Info (Fill at least one)</label>
                     <div>
@@ -103,6 +106,7 @@
             </form>
         </section>
 
+        <!-- Search & Filter Section -->
         <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
             <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
             
@@ -121,10 +125,12 @@
             </div>
         </section>
 
+        <!-- Marketplace Feed Section -->
         <section class="space-y-4">
             <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars</h2>
             <div id="listings-container" class="space-y-4">
-                </div>
+                <!-- Dynamic listings will appear here -->
+            </div>
         </section>
     </main>
 
@@ -194,15 +200,16 @@
 
         async function processSaveOperation(editId, carData) {
             if (editId) {
-                // Update in Supabase
+                // Ensure ID is passed as a number/integer for Supabase bigint/integer matching
+                const numericId = Number(editId);
                 const { error } = await supabaseClient
                     .from('cars')
                     .update(carData)
-                    .eq('id', editId);
+                    .eq('id', numericId);
 
                 if (error) {
                     console.error('Supabase update error:', error);
-                    alert('Error updating listing.');
+                    alert('Error updating listing: ' + error.message);
                     return;
                 }
             } else {
@@ -213,7 +220,7 @@
 
                 if (error) {
                     console.error('Supabase insert error:', error);
-                    alert('Error saving listing to database.');
+                    alert('Error saving listing to database: ' + error.message);
                     return;
                 }
             }
@@ -409,7 +416,7 @@
             const { error } = await supabaseClient
                 .from('cars')
                 .delete()
-                .eq('id', id);
+                .eq('id', Number(id));
 
             if (error) {
                 console.error('Delete error:', error);
@@ -431,4 +438,3 @@
     </script>
 </body>
 </html>
-p
