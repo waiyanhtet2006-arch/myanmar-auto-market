@@ -19,7 +19,7 @@
             <p class="text-sm text-gray-600">The most Burmese-friendly car marketplace platform.</p>
         </div>
 
-        <!-- Car Listing Form Section (Used for both Create and Edit) -->
+        <!-- Car Listing Form Section -->
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
@@ -28,54 +28,42 @@
             
             <form id="car-form" class="space-y-4">
                 <input type="hidden" id="edit-listing-id" value="">
+                
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Car Make & Model</label>
-                    <input type="text" id="car-title" placeholder="e.g., Toyota Crown" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <label class="block text-sm font-medium text-gray-700">Car Name / Title</label>
+                    <input type="text" id="car-title" placeholder="e.g., Toyota Crown Super Saloon" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
+
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Brand</label>
-                        <select id="car-brand" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
-                            <option value="Toyota">Toyota</option>
-                            <option value="Honda">Honda</option>
-                            <option value="Nissan">Nissan</option>
-                            <option value="Mazda">Mazda</option>
-                            <option value="Suzuki">Suzuki</option>
-                            <option value="Mitsubishi">Mitsubishi</option>
-                            <option value="Isuzu">Isuzu</option>
-                            <option value="Hyundai">Hyundai</option>
-                            <option value="Kia">Kia</option>
-                            <option value="Lexus">Lexus</option>
-                            <option value="Mercedes-Benz">Mercedes-Benz</option>
-                            <option value="BMW">BMW</option>
-                            <option value="Ford">Ford</option>
-                            <option value="Chevrolet">Chevrolet</option>
-                            <option value="Daihatsu">Daihatsu</option>
-                            <option value="Subaru">Subaru</option>
-                            <option value="MG">MG</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        <input type="text" id="car-brand" placeholder="e.g., Toyota" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Year (1980-2026)</label>
-                        <input type="number" id="car-year" min="1980" max="2026" placeholder="2018" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                        <label class="block text-sm font-medium text-gray-700">Model Year</label>
+                        <input type="number" id="car-year" min="1900" max="2026" placeholder="2004" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Country Made</label>
-                    <select id="car-country" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
-                        <option value="Japan">Japan</option>
-                        <option value="Thailand">Thailand</option>
-                        <option value="China">China</option>
-                        <option value="USA">USA</option>
-                        <option value="Germany">Germany</option>
-                        <option value="South Korea">South Korea</option>
-                        <option value="Other">Other</option>
-                    </select>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Made In (Country)</label>
+                        <input type="text" id="car-country" placeholder="e.g., Japan" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Color</label>
+                        <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    </div>
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Mileage (Optional)</label>
+                    <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
-                    <input type="text" id="car-price" placeholder="e.g., $15,000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <input type="text" id="car-price" placeholder="e.g., $12,500" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
 
                 <!-- Contact Information Section -->
@@ -98,11 +86,11 @@
                 <div class="border-t pt-3">
                     <label class="block text-sm font-medium text-gray-700">Upload Photos (Up to 20)</label>
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Leave empty if you don't want to change existing photos.</p>
+                    <p class="text-xs text-gray-500 mt-1">Leave empty if editing and you don't want to change existing photos.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="car-desc" rows="3" placeholder="Condition, mileage..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                    <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
                 </div>
                 <button type="submit" id="form-submit-btn" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
             </form>
@@ -110,48 +98,7 @@
 
         <!-- Search & Advanced Filter Section -->
         <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
-            <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Probox)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
-            
-            <div class="grid grid-cols-3 gap-2">
-                <select id="filter-brand" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
-                    <option value="">All Brands</option>
-                    <option value="Toyota">Toyota</option>
-                    <option value="Honda">Honda</option>
-                    <option value="Nissan">Nissan</option>
-                    <option value="Mazda">Mazda</option>
-                    <option value="Suzuki">Suzuki</option>
-                    <option value="Mitsubishi">Mitsubishi</option>
-                    <option value="Isuzu">Isuzu</option>
-                    <option value="Hyundai">Hyundai</option>
-                    <option value="Kia">Kia</option>
-                    <option value="Lexus">Lexus</option>
-                    <option value="Mercedes-Benz">Mercedes-Benz</option>
-                    <option value="BMW">BMW</option>
-                    <option value="Ford">Ford</option>
-                    <option value="Chevrolet">Chevrolet</option>
-                    <option value="Daihatsu">Daihatsu</option>
-                    <option value="Subaru">Subaru</option>
-                    <option value="MG">MG</option>
-                    <option value="Other">Other</option>
-                </select>
-                <select id="filter-country" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
-                    <option value="">All Countries</option>
-                    <option value="Japan">Japan</option>
-                    <option value="Thailand">Thailand</option>
-                    <option value="China">China</option>
-                    <option value="USA">USA</option>
-                    <option value="Germany">Germany</option>
-                    <option value="South Korea">South Korea</option>
-                    <option value="Other">Other</option>
-                </select>
-                <select id="filter-year" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
-                    <option value="">All Years</option>
-                    <option value="2020-2026">2020 - 2026</option>
-                    <option value="2010-2019">2010 - 2019</option>
-                    <option value="2000-2009">2000 - 2009</option>
-                    <option value="1980-1999">1980 - 1999</option>
-                </select>
-            </div>
+            <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
         </section>
 
         <!-- Marketplace Feed Section -->
@@ -184,18 +131,19 @@
             }
 
             const editId = document.getElementById('edit-listing-id').value;
-            const title = document.getElementById('car-title').value;
-            const brand = document.getElementById('car-brand').value;
-            const year = document.getElementById('car-year').value;
-            const country = document.getElementById('car-country').value;
-            const price = document.getElementById('car-price').value;
-            const desc = document.getElementById('car-desc').value;
+            const title = document.getElementById('car-title').value.trim();
+            const brand = document.getElementById('car-brand').value.trim();
+            const year = document.getElementById('car-year').value.trim();
+            const country = document.getElementById('car-country').value.trim();
+            const color = document.getElementById('car-color').value.trim();
+            const mileage = document.getElementById('car-mileage').value.trim();
+            const price = document.getElementById('car-price').value.trim();
+            const desc = document.getElementById('car-desc').value.trim();
             const imageInput = document.getElementById('car-images');
 
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
 
             if (editId) {
-                // Editing existing listing
                 let existingItem = listings.find(l => l.id == editId);
                 if (!existingItem) return;
 
@@ -203,6 +151,8 @@
                 existingItem.brand = brand;
                 existingItem.year = year;
                 existingItem.country = country;
+                existingItem.color = color;
+                existingItem.mileage = mileage;
                 existingItem.price = price;
                 existingItem.contacts = { phone, viber, telegram };
                 existingItem.desc = desc;
@@ -228,7 +178,6 @@
                     finalizeSave(listings);
                 }
             } else {
-                // Creating new listing
                 let imageSrcs = ['https://via.placeholder.com/400x200?text=No+Image'];
 
                 if (imageInput.files && imageInput.files.length > 0) {
@@ -242,19 +191,19 @@
                             tempImages[index] = e.target.result;
                             loadedCount++;
                             if (loadedCount === files.length) {
-                                saveNewListing(title, brand, year, country, price, { phone, viber, telegram }, desc, tempImages);
+                                saveNewListing(title, brand, year, country, color, mileage, price, { phone, viber, telegram }, desc, tempImages);
                             }
                         }
                         reader.readAsDataURL(file);
                     });
                 } else {
-                    saveNewListing(title, brand, year, country, price, { phone, viber, telegram }, desc, imageSrcs);
+                    saveNewListing(title, brand, year, country, color, mileage, price, { phone, viber, telegram }, desc, imageSrcs);
                 }
             }
         });
 
-        function saveNewListing(title, brand, year, country, price, contacts, desc, imgSrcs) {
-            const newListing = { id: Date.now(), title, brand, year, country, price, contacts, desc, imgSrcs };
+        function saveNewListing(title, brand, year, country, color, mileage, price, contacts, desc, imgSrcs) {
+            const newListing = { id: Date.now(), title, brand, year, country, color, mileage, price, contacts, desc, imgSrcs };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             finalizeSave(listings);
@@ -273,11 +222,13 @@
             if (!item) return;
 
             document.getElementById('edit-listing-id').value = item.id;
-            document.getElementById('car-title').value = item.title;
-            document.getElementById('car-brand').value = item.brand;
-            document.getElementById('car-year').value = item.year;
-            document.getElementById('car-country').value = item.country;
-            document.getElementById('car-price').value = item.price;
+            document.getElementById('car-title').value = item.title || '';
+            document.getElementById('car-brand').value = item.brand || '';
+            document.getElementById('car-year').value = item.year || '';
+            document.getElementById('car-country').value = item.country || '';
+            document.getElementById('car-color').value = item.color || '';
+            document.getElementById('car-mileage').value = item.mileage || '';
+            document.getElementById('car-price').value = item.price || '';
             document.getElementById('car-phone').value = item.contacts ? (item.contacts.phone || '') : '';
             document.getElementById('car-viber').value = item.contacts ? (item.contacts.viber || '') : '';
             document.getElementById('car-telegram').value = item.contacts ? (item.contacts.telegram || '') : '';
@@ -310,25 +261,10 @@
             }
 
             const query = document.getElementById('search-input').value.toLowerCase();
-            const selectedBrand = document.getElementById('filter-brand').value;
-            const selectedCountry = document.getElementById('filter-country').value;
-            const selectedYearRange = document.getElementById('filter-year').value;
 
             const filtered = listings.filter(item => {
-                const matchesQuery = item.title.toLowerCase().includes(query) || 
-                                     item.brand.toLowerCase().includes(query) || 
-                                     item.country.toLowerCase().includes(query);
-                
-                const matchesBrand = !selectedBrand || item.brand === selectedBrand;
-                const matchesCountry = !selectedCountry || item.country === selectedCountry;
-                
-                let matchesYear = true;
-                if (selectedYearRange) {
-                    const [minY, maxY] = selectedYearRange.split('-').map(Number);
-                    matchesYear = Number(item.year) >= minY && Number(item.year) <= maxY;
-                }
-
-                return matchesQuery && matchesBrand && matchesCountry && matchesYear;
+                const searchString = `${item.title} ${item.brand} ${item.country} ${item.color}`.toLowerCase();
+                return searchString.includes(query);
             });
 
             if (filtered.length === 0) {
@@ -340,6 +276,13 @@
                 const isFav = favorites.includes(item.id);
                 const images = item.imgSrcs || [item.imgSrc || 'https://via.placeholder.com/400x200?text=No+Image'];
                 
+                // Build specs string safely handling older listings
+                const brandText = item.brand || 'Unknown';
+                const countryText = item.country || 'Unknown';
+                const yearText = item.year || '';
+                const colorText = item.color ? ` | 🎨 Color: ${item.color}` : '';
+                const mileageHtml = item.mileage ? `<p class="text-xs text-gray-500">🛣️ Mileage: <span class="font-semibold text-gray-700">${item.mileage}</span></p>` : '';
+
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
@@ -379,8 +322,9 @@
 
                 card.innerHTML = `
                     ${carouselHtml}
-                    <h3 class="text-lg font-bold text-gray-800">${item.title} (${item.year})</h3>
-                    <p class="text-xs text-gray-500">🏭 Brand: <span class="font-semibold text-gray-700">${item.brand}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country}</span></p>
+                    <h3 class="text-lg font-bold text-gray-800">${item.title} (${yearText})</h3>
+                    <p class="text-xs text-gray-500">🏭 Brand: <span class="font-semibold text-gray-700">${brandText}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${countryText}</span>${colorText}</p>
+                    ${mileageHtml}
                     <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     ${contactsHtml}
@@ -453,9 +397,6 @@
         }
 
         document.getElementById('search-input').addEventListener('input', loadListings);
-        document.getElementById('filter-brand').addEventListener('change', loadListings);
-        document.getElementById('filter-country').addEventListener('change', loadListings);
-        document.getElementById('filter-year').addEventListener('change', loadListings);
     </script>
 </body>
 </html>
