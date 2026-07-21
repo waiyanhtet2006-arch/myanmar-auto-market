@@ -12,12 +12,35 @@
             <h1 class="text-xl font-bold">🚗 Myanmar Auto Market</h1>
         </div>
     </header>
-    <main class="max-w-md mx-auto p-4">
-        <div class="bg-white p-4 rounded-lg shadow mb-4">
-            <h2 class="text-lg font-semibold mb-2">Welcome! ကြိုဆိုပါတယ်</h2>
+    <main class="max-w-md mx-auto p-4 space-y-4">
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-lg font-semibold text-gray-800">Welcome! ကြိုဆိုပါတယ်</h2>
             <p class="text-sm text-gray-600">The most Burmese-friendly car marketplace platform.</p>
         </div>
+
+        <!-- Car Listing Form Section -->
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">🚗 Sell Your Car</h2>
+            <form id="car-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Car Make & Model</label>
+                    <input type="text" id="car-title" placeholder="e.g., Toyota Corolla 2018" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
+                    <input type="text" id="car-price" placeholder="e.g., $15,000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
+                    <input type="file" id="car-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="car-desc" rows="3" placeholder="Condition, mileage, contact info..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
+            </form>
+        </section>
     </main>
 </body>
 </html>
-
