@@ -25,7 +25,11 @@
             <form id="car-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Car Make & Model</label>
-                    <input type="text" id="car-title" placeholder="e.g., Toyota Corolla 2018" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <input type="text" id="car-title" placeholder="e.g., Toyota Crown 2012" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Year</label>
+                    <input type="number" id="car-year" placeholder="e.g., 2012" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
@@ -43,9 +47,25 @@
             </form>
         </section>
 
-        <!-- Search Bar Section -->
-        <section id="search-section" class="bg-white p-4 rounded-lg shadow-md">
-            <input type="text" id="search-input" placeholder="🔍 Search car make or model..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
+        <!-- Search & Filter Section -->
+        <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
+            <input type="text" id="search-input" placeholder="🔍 Search brand or model (e.g. crown, probox)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
+            <div class="grid grid-cols-2 gap-2">
+                <select id="filter-year" class="p-2 border border-gray-300 rounded-md text-sm bg-white">
+                    <option value="">All Years</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2015">2015</option>
+                    <option value="2012">2012</option>
+                    <option value="2010">2010</option>
+                </select>
+                <button onclick="resetFilters()" class="bg-gray-200 text-gray-700 text-sm font-semibold p-2 rounded-md hover:bg-gray-300">Reset Filters</button>
+            </div>
         </section>
 
         <!-- Marketplace Feed Section -->
@@ -69,6 +89,7 @@
             e.preventDefault();
             
             const title = document.getElementById('car-title').value;
+            const year = document.getElementById('car-year').value;
             const price = document.getElementById('car-price').value;
             const desc = document.getElementById('car-desc').value;
             const imageInput = document.getElementById('car-image');
@@ -78,16 +99,16 @@
             if (imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    saveListing(title, price, desc, e.target.result);
+                    saveListing(title, year, price, desc, e.target.result);
                 }
                 reader.readAsDataURL(imageInput.files[0]);
             } else {
-                saveListing(title, price, desc, imageSrc);
+                saveListing(title, year, price, desc, imageSrc);
             }
         });
 
-        function saveListing(title, price, desc, imgSrc) {
-            const newListing = { id: Date.now(), title, price, desc, imgSrc };
+        function saveListing(title, year, price, desc, imgSrc) {
+            const newListing = { id: Date.now(), title, year, price, desc, imgSrc };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             localStorage.setItem('carListings', JSON.stringify(listings));
@@ -97,18 +118,25 @@
             alert('Listing posted successfully!');
         }
 
-        function loadListings(filter = '') {
+        function loadListings() {
             const container = document.getElementById('listings-container');
             container.innerHTML = '';
             
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
 
+            const textQuery = document.getElementById('search-input').value.toLowerCase();
+            const yearQuery = document.getElementById('filter-year').value;
+
             if (showFavoritesOnly) {
                 listings = listings.filter(item => favorites.includes(item.id));
             }
 
-            const filtered = listings.filter(item => item.title.toLowerCase().includes(filter.toLowerCase()));
+            const filtered = listings.filter(item => {
+                const matchesText = item.title.toLowerCase().includes(textQuery) || item.desc.toLowerCase().includes(textQuery);
+                const matchesYear = yearQuery === '' || String(item.year) === yearQuery;
+                return matchesText && matchesYear;
+            });
 
             if (filtered.length === 0) {
                 container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${showFavoritesOnly ? 'No saved cars yet.' : 'No cars found.'}</p>`;
@@ -126,7 +154,10 @@
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">${item.title}</h3>
+                    <div class="flex justify-between items-center mt-2">
+                        <h3 class="text-lg font-bold text-gray-800">${item.title}</h3>
+                        <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded font-medium">${item.year}</span>
+                    </div>
                     <p class="text-blue-600 font-semibold">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     <button onclick="deleteListing(${item.id})" class="w-full bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 mt-2">🗑️ Mark as Sold / Delete</button>
@@ -143,7 +174,7 @@
                 favorites.push(id);
             }
             localStorage.setItem('carFavorites', JSON.stringify(favorites));
-            loadListings(document.getElementById('search-input').value);
+            loadListings();
             updateWishlistCount();
         }
 
@@ -161,23 +192,27 @@
             updateWishlistCount();
         }
 
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-year').value = '';
+            loadListings();
+        }
+
         function deleteListing(id) {
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings = listings.filter(item => item.id !== id);
             localStorage.setItem('carListings', JSON.stringify(listings));
             
-            // Also remove from favorites if present
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
             favorites = favorites.filter(favId => favId !== id);
             localStorage.setItem('carFavorites', JSON.stringify(favorites));
 
-            loadListings(document.getElementById('search-input').value);
+            loadListings();
             updateWishlistCount();
         }
 
-        document.getElementById('search-input').addEventListener('input', function(e) {
-            loadListings(e.target.value);
-        });
+        document.getElementById('search-input').addEventListener('input', loadListings);
+        document.getElementById('filter-year').addEventListener('change', loadListings);
     </script>
 </body>
 </html>
