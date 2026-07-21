@@ -73,7 +73,7 @@
                     <input type="text" id="car-price" placeholder="e.g., $15,000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
 
-                <!-- Contact Information Section (At least one required) -->
+                <!-- Contact Information Section -->
                 <div class="border-t pt-3 space-y-3">
                     <label class="block text-sm font-bold text-gray-800">📱 Contact Info (Fill at least one)</label>
                     <div>
@@ -90,9 +90,10 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
-                    <input type="file" id="car-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <div class="border-t pt-3">
+                    <label class="block text-sm font-medium text-gray-700">Upload Photos (Up to 20)</label>
+                    <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="text-xs text-gray-500 mt-1">Hold Ctrl / Shift to select multiple photos.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
@@ -183,23 +184,33 @@
             const country = document.getElementById('car-country').value;
             const price = document.getElementById('car-price').value;
             const desc = document.getElementById('car-desc').value;
-            const imageInput = document.getElementById('car-image');
+            const imageInput = document.getElementById('car-images');
 
-            let imageSrc = 'https://via.placeholder.com/400x200?text=No+Image';
-            
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, e.target.result);
-                }
-                reader.readAsDataURL(imageInput.files[0]);
+            let imageSrcs = ['https://via.placeholder.com/400x200?text=No+Image'];
+
+            if (imageInput.files && imageInput.files.length > 0) {
+                const files = Array.from(imageInput.files).slice(0, 20); // Limit to 20 files max
+                let loadedCount = 0;
+                let tempImages = [];
+
+                files.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        tempImages[index] = e.target.result;
+                        loadedCount++;
+                        if (loadedCount === files.length) {
+                            saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, tempImages);
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                });
             } else {
-                saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, imageSrc);
+                saveListing(title, brand, year, country, price, { phone, viber, telegram }, desc, imageSrcs);
             }
         });
 
-        function saveListing(title, brand, year, country, price, contacts, desc, imgSrc) {
-            const newListing = { id: Date.now(), title, brand, year, country, price, contacts, desc, imgSrc };
+        function saveListing(title, brand, year, country, price, contacts, desc, imgSrcs) {
+            const newListing = { id: Date.now(), title, brand, year, country, price, contacts, desc, imgSrcs };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             localStorage.setItem('carListings', JSON.stringify(listings));
@@ -249,8 +260,9 @@
 
             filtered.forEach(item => {
                 const isFav = favorites.includes(item.id);
+                // Handle backward compatibility if listing has older single 'imgSrc' format
+                const images = item.imgSrcs || [item.imgSrc || 'https://via.placeholder.com/400x200?text=No+Image'];
                 
-                // Build dynamic contact buttons HTML based on what seller filled out
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
@@ -268,13 +280,29 @@
 
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
-                card.innerHTML = `
-                    <div class="relative">
-                        <img src="${item.imgSrc}" class="w-full h-48 object-cover rounded-md">
-                        <button onclick="toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition">
+                
+                // Construct carousel markup
+                let carouselHtml = `
+                    <div class="relative overflow-hidden rounded-md bg-black">
+                        <img id="img-${item.id}" src="${images[0]}" class="w-full h-48 object-cover">
+                        <button onclick="toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition z-10">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
-                    </div>
+                `;
+
+                if (images.length > 1) {
+                    carouselHtml += `
+                        <div class="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-md">
+                            <span id="counter-${item.id}">1</span> / ${images.length}
+                        </div>
+                        <button onclick="changeSlide(${item.id}, -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">‹</button>
+                        <button onclick="changeSlide(${item.id}, 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">›</button>
+                    `;
+                }
+                carouselHtml += `</div>`;
+
+                card.innerHTML = `
+                    ${carouselHtml}
                     <h3 class="text-lg font-bold text-gray-800">${item.title} (${item.year})</h3>
                     <p class="text-xs text-gray-500">🏭 Brand: <span class="font-semibold text-gray-700">${item.brand}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country}</span></p>
                     <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
@@ -282,8 +310,34 @@
                     ${contactsHtml}
                     <button onclick="deleteListing(${item.id})" class="w-full bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 mt-2">🗑️ Mark as Sold / Delete</button>
                 `;
+                
+                // Store image collection on element data or manage globally
+                card.dataset.images = JSON.stringify(images);
+                card.dataset.currentIndex = 0;
                 container.appendChild(card);
             });
+        }
+
+        // Image Carousel Slider Function
+        window.changeSlide = function(id, direction) {
+            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            let item = listings.find(l => l.id === id);
+            if (!item || !item.imgSrcs || item.imgSrcs.length <= 1) return;
+
+            // Find current index attribute or manage via DOM state
+            let imgElement = document.getElementById(`img-${id}`);
+            let counterElement = document.getElementById(`counter-${id}`);
+            
+            let currentImages = item.imgSrcs;
+            let currentSrc = imgElement.src;
+            let currentIndex = currentImages.indexOf(currentSrc);
+
+            let newIndex = currentIndex + direction;
+            if (newIndex >= currentImages.length) newIndex = 0;
+            if (newIndex < 0) newIndex = currentImages.length - 1;
+
+            imgElement.src = currentImages[newIndex];
+            if (counterElement) counterElement.innerText = newIndex + 1;
         }
 
         function toggleFavorite(id) {
