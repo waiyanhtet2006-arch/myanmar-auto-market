@@ -42,6 +42,11 @@
             </form>
         </section>
 
+        <!-- Search Bar Section -->
+        <section class="bg-white p-4 rounded-lg shadow-md">
+            <input type="text" id="search-input" placeholder="🔍 Search car make or model..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
+        </section>
+
         <!-- Marketplace Feed Section -->
         <section class="space-y-4">
             <h2 class="text-xl font-bold text-gray-800">📋 Available Cars</h2>
@@ -52,6 +57,8 @@
     </main>
 
     <script>
+        document.addEventListener('DOMContentLoaded', loadListings);
+
         document.getElementById('car-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -65,28 +72,54 @@
             if (imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    saveAndRender(title, price, desc, e.target.result);
+                    saveListing(title, price, desc, e.target.result);
                 }
                 reader.readAsDataURL(imageInput.files[0]);
             } else {
-                saveAndRender(title, price, desc, imageSrc);
+                saveListing(title, price, desc, imageSrc);
             }
         });
 
-        function saveAndRender(title, price, desc, imgSrc) {
-            const container = document.getElementById('listings-container');
-            const card = document.createElement('div');
-            card.className = "bg-white p-4 rounded-lg shadow-md space-y-2";
-            card.innerHTML = `
-                <img src="${imgSrc}" class="w-full h-48 object-cover rounded-md">
-                <h3 class="text-lg font-bold text-gray-800">${title}</h3>
-                <p class="text-blue-600 font-semibold">${price}</p>
-                <p class="text-sm text-gray-600">${desc}</p>
-            `;
-            container.prepend(card);
+        function saveListing(title, price, desc, imgSrc) {
+            const newListing = { title, price, desc, imgSrc };
+            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            listings.unshift(newListing);
+            localStorage.setItem('carListings', JSON.stringify(listings));
+
             document.getElementById('car-form').reset();
+            loadListings();
             alert('Listing posted successfully!');
         }
+
+        function loadListings(filter = '') {
+            const container = document.getElementById('listings-container');
+            container.innerHTML = '';
+            
+            let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            
+            const filtered = listings.filter(item => item.title.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">No cars found.</p>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-lg shadow-md space-y-2";
+                card.innerHTML = `
+                    <img src="${item.imgSrc}" class="w-full h-48 object-cover rounded-md">
+                    <h3 class="text-lg font-bold text-gray-800">${item.title}</h3>
+                    <p class="text-blue-600 font-semibold">${item.price}</p>
+                    <p class="text-sm text-gray-600">${item.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            loadListings(e.target.value);
+        });
     </script>
 </body>
 </html>
