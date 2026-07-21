@@ -25,11 +25,36 @@
             <form id="car-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Car Make & Model</label>
-                    <input type="text" id="car-title" placeholder="e.g., Toyota Crown 2012" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <input type="text" id="car-title" placeholder="e.g., Toyota Crown" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Brand</label>
+                        <select id="car-brand" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
+                            <option value="Toyota">Toyota</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Nissan">Nissan</option>
+                            <option value="Mazda">Mazda</option>
+                            <option value="Suzuki">Suzuki</option>
+                            <option value="Ford">Ford</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Year</label>
+                        <input type="number" id="car-year" min="1980" max="2026" placeholder="2018" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Year</label>
-                    <input type="number" id="car-year" placeholder="e.g., 2012" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <label class="block text-sm font-medium text-gray-700">Country Made</label>
+                    <select id="car-country" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
+                        <option value="Japan">Japan</option>
+                        <option value="Thailand">Thailand</option>
+                        <option value="China">China</option>
+                        <option value="USA">USA</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
@@ -47,24 +72,37 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section -->
+        <!-- Search & Advanced Filter Section -->
         <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
-            <input type="text" id="search-input" placeholder="🔍 Search brand or model (e.g. crown, probox)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
-            <div class="grid grid-cols-2 gap-2">
-                <select id="filter-year" class="p-2 border border-gray-300 rounded-md text-sm bg-white">
-                    <option value="">All Years</option>
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                    <option value="2021">2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
-                    <option value="2018">2018</option>
-                    <option value="2015">2015</option>
-                    <option value="2012">2012</option>
-                    <option value="2010">2010</option>
+            <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Probox)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
+            
+            <div class="grid grid-cols-3 gap-2">
+                <select id="filter-brand" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
+                    <option value="">All Brands</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Nissan">Nissan</option>
+                    <option value="Mazda">Mazda</option>
+                    <option value="Suzuki">Suzuki</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Other">Other</option>
                 </select>
-                <button onclick="resetFilters()" class="bg-gray-200 text-gray-700 text-sm font-semibold p-2 rounded-md hover:bg-gray-300">Reset Filters</button>
+                <select id="filter-country" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
+                    <option value="">All Countries</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Thailand">Thailand</option>
+                    <option value="China">China</option>
+                    <option value="USA">USA</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Other">Other</option>
+                </select>
+                <select id="filter-year" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
+                    <option value="">All Years</option>
+                    <option value="2020-2026">2020 - 2026</option>
+                    <option value="2010-2019">2010 - 2019</option>
+                    <option value="2000-2009">2000 - 2009</option>
+                    <option value="1980-1999">1980 - 1999</option>
+                </select>
             </div>
         </section>
 
@@ -89,7 +127,9 @@
             e.preventDefault();
             
             const title = document.getElementById('car-title').value;
+            const brand = document.getElementById('car-brand').value;
             const year = document.getElementById('car-year').value;
+            const country = document.getElementById('car-country').value;
             const price = document.getElementById('car-price').value;
             const desc = document.getElementById('car-desc').value;
             const imageInput = document.getElementById('car-image');
@@ -99,16 +139,16 @@
             if (imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    saveListing(title, year, price, desc, e.target.result);
+                    saveListing(title, brand, year, country, price, desc, e.target.result);
                 }
                 reader.readAsDataURL(imageInput.files[0]);
             } else {
-                saveListing(title, year, price, desc, imageSrc);
+                saveListing(title, brand, year, country, price, desc, imageSrc);
             }
         });
 
-        function saveListing(title, year, price, desc, imgSrc) {
-            const newListing = { id: Date.now(), title, year, price, desc, imgSrc };
+        function saveListing(title, brand, year, country, price, desc, imgSrc) {
+            const newListing = { id: Date.now(), title, brand, year, country, price, desc, imgSrc };
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings.unshift(newListing);
             localStorage.setItem('carListings', JSON.stringify(listings));
@@ -125,21 +165,37 @@
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
 
-            const textQuery = document.getElementById('search-input').value.toLowerCase();
-            const yearQuery = document.getElementById('filter-year').value;
-
             if (showFavoritesOnly) {
                 listings = listings.filter(item => favorites.includes(item.id));
             }
 
+            // Get filter values
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const selectedBrand = document.getElementById('filter-brand').value;
+            const selectedCountry = document.getElementById('filter-country').value;
+            const selectedYearRange = document.getElementById('filter-year').value;
+
             const filtered = listings.filter(item => {
-                const matchesText = item.title.toLowerCase().includes(textQuery) || item.desc.toLowerCase().includes(textQuery);
-                const matchesYear = yearQuery === '' || String(item.year) === yearQuery;
-                return matchesText && matchesYear;
+                // General text search (matches title, brand, or country)
+                const matchesQuery = item.title.toLowerCase().includes(query) || 
+                                     item.brand.toLowerCase().includes(query) || 
+                                     item.country.toLowerCase().includes(query);
+                
+                // Dropdown filters
+                const matchesBrand = !selectedBrand || item.brand === selectedBrand;
+                const matchesCountry = !selectedCountry || item.country === selectedCountry;
+                
+                let matchesYear = true;
+                if (selectedYearRange) {
+                    const [minY, maxY] = selectedYearRange.split('-').map(Number);
+                    matchesYear = Number(item.year) >= minY && Number(item.year) <= maxY;
+                }
+
+                return matchesQuery && matchesBrand && matchesCountry && matchesYear;
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${showFavoritesOnly ? 'No saved cars yet.' : 'No cars found.'}</p>`;
+                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${showFavoritesOnly ? 'No saved cars yet.' : 'No cars found matching your criteria.'}</p>`;
                 return;
             }
 
@@ -154,10 +210,8 @@
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                     </div>
-                    <div class="flex justify-between items-center mt-2">
-                        <h3 class="text-lg font-bold text-gray-800">${item.title}</h3>
-                        <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded font-medium">${item.year}</span>
-                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">${item.title} (${item.year})</h3>
+                    <p class="text-xs text-gray-500">🏭 Brand: <span class="font-semibold text-gray-700">${item.brand}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country}</span></p>
                     <p class="text-blue-600 font-semibold">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     <button onclick="deleteListing(${item.id})" class="w-full bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 mt-2">🗑️ Mark as Sold / Delete</button>
@@ -192,12 +246,6 @@
             updateWishlistCount();
         }
 
-        function resetFilters() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('filter-year').value = '';
-            loadListings();
-        }
-
         function deleteListing(id) {
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings = listings.filter(item => item.id !== id);
@@ -211,7 +259,10 @@
             updateWishlistCount();
         }
 
+        // Event listeners for filters and search
         document.getElementById('search-input').addEventListener('input', loadListings);
+        document.getElementById('filter-brand').addEventListener('change', loadListings);
+        document.getElementById('filter-country').addEventListener('change', loadListings);
         document.getElementById('filter-year').addEventListener('change', loadListings);
     </script>
 </body>
