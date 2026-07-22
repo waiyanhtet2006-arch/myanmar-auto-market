@@ -238,11 +238,11 @@
             updateWishlistCount();
         }
 
-        // Fetch Listings from Supabase Table 'listings'
+        // Fetch Listings from Supabase Table 'cars'
         async function fetchCloudListings() {
             try {
                 const { data, error } = await supabaseClient
-                    .from('listings')
+                    .from('cars')
                     .select('*')
                     .order('id', { ascending: false });
 
@@ -361,14 +361,14 @@
             try {
                 if (editId) {
                     const { error } = await supabaseClient
-                        .from('listings')
+                        .from('cars')
                         .update(listingData)
                         .eq('id', editId);
 
                     if (error) throw error;
                 } else {
                     const { error } = await supabaseClient
-                        .from('listings')
+                        .from('cars')
                         .insert([listingData]);
 
                     if (error) throw error;
@@ -586,7 +586,7 @@
 
             try {
                 const { error } = await supabaseClient
-                    .from('listings')
+                    .from('cars')
                     .delete()
                     .eq('id', id);
 
