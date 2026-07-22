@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Myanmar Auto Market - ကားအရောင်းအဝယ်</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Include Supabase JS Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-100 font-sans pb-20">
-    <!-- Header -->
     <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-30">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">🚗 Myanmar Auto Market</h1>
@@ -18,13 +16,11 @@
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
-        <!-- Welcome Banner (Feed only) -->
         <div id="welcome-banner" class="bg-white p-4 rounded-lg shadow">
             <h2 class="text-lg font-semibold text-gray-800">Welcome! ကြိုဆိုပါတယ်</h2>
             <p class="text-sm text-gray-600">The live cloud-synced Burmese car marketplace.</p>
         </div>
 
-        <!-- Car Listing Form Section -->
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
@@ -35,29 +31,29 @@
                 <input type="hidden" id="edit-listing-id" value="">
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Brand (Type)</label>
+                    <label class="block text-sm font-medium text-gray-700">Brand</label>
                     <input type="text" id="car-brand" placeholder="e.g., Toyota, Honda..." required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Car Name / Model (Type)</label>
+                    <label class="block text-sm font-medium text-gray-700">Car Name / Model</label>
                     <input type="text" id="car-title" placeholder="e.g., Crown Athlete, Probox..." required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Model Year (Type)</label>
+                        <label class="block text-sm font-medium text-gray-700">Model Year</label>
                         <input type="text" id="car-year" placeholder="e.g., 2004" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Color (Type)</label>
+                        <label class="block text-sm font-medium text-gray-700">Color</label>
                         <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Made in (Select)</label>
+                        <label class="block text-sm font-medium text-gray-700">Made in</label>
                         <select id="car-country" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
                             <option value="Japan">Japan</option>
                             <option value="Thailand">Thailand</option>
@@ -69,19 +65,18 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Mileage (Optional)</label>
+                        <label class="block text-sm font-medium text-gray-700">Mileage</label>
                         <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
-                    <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <label class="block text-sm font-medium text-gray-700">Price</label>
+                    <input type="text" id="car-price" placeholder="e.g., $15,000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                 </div>
 
-                <!-- Contact Information Section -->
                 <div class="border-t pt-3 space-y-3">
-                    <label class="block text-sm font-bold text-gray-800">📱 Instant Chat & Contact Info (Fill at least one)</label>
+                    <label class="block text-sm font-bold text-gray-800">📱 Contact Info</label>
                     <div>
                         <label class="block text-xs font-medium text-gray-600">Phone Number</label>
                         <input type="text" id="car-phone" placeholder="e.g., 09-912345678" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
@@ -91,35 +86,30 @@
                         <input type="text" id="car-viber" placeholder="e.g., 09-912345678" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-600">Telegram Username / Number</label>
-                        <input type="text" id="car-telegram" placeholder="e.g., @username or phone" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-xs font-medium text-gray-600">Telegram</label>
+                        <input type="text" id="car-telegram" placeholder="e.g., @username" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
                     </div>
                 </div>
 
                 <div class="border-t pt-3">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="block text-sm font-medium text-gray-700">Manage Photos (Up to 10)</label>
+                        <label class="block text-sm font-medium text-gray-700">Photos (Up to 10)</label>
                         <span id="photo-count-indicator" class="text-xs text-gray-500 font-semibold">0 / 10</span>
                     </div>
-                    
                     <div id="current-images-preview" class="grid grid-cols-4 gap-2 mb-3"></div>
-
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Select up to 10 photos. Auto-compressed for cloud sync.</p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                    <textarea id="car-desc" rows="3" placeholder="Condition..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
                 </div>
                 <button type="submit" id="form-submit-btn" onclick="triggerHaptic()" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Live Listing</button>
             </form>
         </section>
 
-        <!-- Search & Filter Section -->
         <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
-            <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
-            
+            <input type="text" id="search-input" placeholder="🔍 General Search..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
             <div class="grid grid-cols-2 gap-2">
                 <input type="text" id="filter-brand" placeholder="Filter by Brand..." class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
                 <select id="filter-country" onchange="triggerHaptic()" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
@@ -135,19 +125,15 @@
             </div>
         </section>
 
-        <!-- Marketplace Feed Section -->
         <section class="space-y-4">
             <div class="flex justify-between items-center">
                 <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars (FYP)</h2>
                 <button onclick="triggerHaptic(); fetchCloudListings()" class="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-md font-semibold hover:bg-blue-200">🔄 Refresh Cloud</button>
             </div>
-            <div id="listings-container" class="space-y-4">
-                <!-- Dynamic cloud listings will appear here -->
-            </div>
+            <div id="listings-container" class="space-y-4"></div>
         </section>
     </main>
 
-    <!-- Professional App Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
         <div class="max-w-md mx-auto grid grid-cols-3 h-16">
             <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-600 font-bold transition">
@@ -166,7 +152,6 @@
     </nav>
 
     <script>
-        // Supabase Initialization
         const SUPABASE_URL = 'https://ujdwilbpkzrinbammmfi.supabase.co';
         const SUPABASE_KEY = 'sb_secret_wWzVr5alDLSRH2x-Ipt1QA_JbkKesQg';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -176,18 +161,7 @@
         let cloudListings = [];
 
         function triggerHaptic() {
-            if (navigator.vibrate) {
-                navigator.vibrate(15);
-            } else {
-                try {
-                    let switchInput = document.createElement('input');
-                    switchInput.type = 'checkbox';
-                    switchInput.style.display = 'none';
-                    document.body.appendChild(switchInput);
-                    switchInput.click();
-                    switchInput.remove();
-                } catch(e) {}
-            }
+            if (navigator.vibrate) navigator.vibrate(15);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -199,7 +173,6 @@
 
         function switchTab(tab) {
             currentTab = tab;
-            
             const formSection = document.getElementById('form-section');
             const searchSection = document.getElementById('search-section');
             const welcomeBanner = document.getElementById('welcome-banner');
@@ -238,19 +211,21 @@
             updateWishlistCount();
         }
 
-        // Fetch Listings from Supabase Table 'cars'
         async function fetchCloudListings() {
             try {
                 const { data, error } = await supabaseClient
                     .from('cars')
                     .select('*')
-                    .order('created_at', { ascending: false });
+                    .order('id', { ascending: false });
 
                 if (error) {
                     console.error('Supabase fetch error:', error);
                     cloudListings = JSON.parse(localStorage.getItem('carListings')) || [];
                 } else {
-                    cloudListings = data || [];
+                    cloudListings = (data || []).map(item => ({
+                        ...item,
+                        imgSrcs: item.img_srcs || item.imgSrcs || []
+                    }));
                 }
                 renderFilteredListings();
             } catch (err) {
@@ -268,20 +243,12 @@
                     const canvas = document.createElement('canvas');
                     let width = img.width;
                     let height = img.height;
-                    
                     const MAX_DIMENSION = 800;
                     if (width > height) {
-                        if (width > MAX_DIMENSION) {
-                            height *= MAX_DIMENSION / width;
-                            width = MAX_DIMENSION;
-                        }
+                        if (width > MAX_DIMENSION) { height *= MAX_DIMENSION / width; width = MAX_DIMENSION; }
                     } else {
-                        if (height > MAX_DIMENSION) {
-                            width *= MAX_DIMENSION / height;
-                            height = MAX_DIMENSION;
-                        }
+                        if (height > MAX_DIMENSION) { width *= MAX_DIMENSION / height; height = MAX_DIMENSION; }
                     }
-                    
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
@@ -296,13 +263,11 @@
         document.getElementById('car-images').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
-
             if (activeEditImages.length + files.length > 10) {
                 alert('Maximum limit is 10 photos total.');
                 e.target.value = '';
                 return;
             }
-
             let loadedCount = 0;
             files.forEach((file) => {
                 compressImage(file, (compressedDataUrl) => {
@@ -325,7 +290,7 @@
             const telegram = document.getElementById('car-telegram').value.trim();
 
             if (!phone && !viber && !telegram) {
-                alert('Please provide at least one contact method (Phone, Viber, or Telegram).');
+                alert('Please provide at least one contact method.');
                 return;
             }
 
@@ -338,9 +303,9 @@
             const mileage = document.getElementById('car-mileage').value.trim();
             const price = document.getElementById('car-price').value.trim();
             const desc = document.getElementById('car-desc').value.trim();
-
             const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
 
+            // Match exact Supabase column names: img_srcs
             const listingData = {
                 brand,
                 title,
@@ -351,7 +316,7 @@
                 price,
                 contacts: { phone, viber, telegram },
                 desc,
-                imgSrcs: finalImages
+                img_srcs: finalImages
             };
 
             const submitBtn = document.getElementById('form-submit-btn');
@@ -360,17 +325,10 @@
 
             try {
                 if (editId) {
-                    const { error } = await supabaseClient
-                        .from('cars')
-                        .update(listingData)
-                        .eq('id', editId);
-
+                    const { error } = await supabaseClient.from('cars').update(listingData).eq('id', editId);
                     if (error) throw error;
                 } else {
-                    const { error } = await supabaseClient
-                        .from('cars')
-                        .insert([listingData]);
-
+                    const { error } = await supabaseClient.from('cars').insert([listingData]);
                     if (error) throw error;
                 }
 
@@ -380,18 +338,7 @@
                 await fetchCloudListings();
             } catch (err) {
                 console.error('Supabase write error:', err);
-                let localFallback = JSON.parse(localStorage.getItem('carListings')) || [];
-                if (editId) {
-                    let idx = localFallback.findIndex(l => l.id == editId);
-                    if (idx !== -1) localFallback[idx] = { id: editId, ...listingData };
-                } else {
-                    localFallback.unshift({ id: Date.now(), ...listingData });
-                }
-                localStorage.setItem('carListings', JSON.stringify(localFallback));
-                alert('Saved locally due to network or table error.');
-                cancelEdit();
-                switchTab('feed');
-                fetchCloudListings();
+                alert('Error syncing to cloud: ' + err.message);
             } finally {
                 submitBtn.innerText = 'Post Live Listing';
                 submitBtn.disabled = false;
@@ -401,14 +348,9 @@
         async function editListing(id) {
             triggerHaptic();
             let item = cloudListings.find(l => l.id == id);
-            if (!item) {
-                let localFallback = JSON.parse(localStorage.getItem('carListings')) || [];
-                item = localFallback.find(l => l.id == id);
-            }
             if (!item) return;
 
             switchTab('sell');
-
             document.getElementById('edit-listing-id').value = item.id;
             document.getElementById('car-brand').value = item.brand || '';
             document.getElementById('car-title').value = item.title || '';
@@ -434,7 +376,6 @@
             const container = document.getElementById('current-images-preview');
             const countIndicator = document.getElementById('photo-count-indicator');
             container.innerHTML = '';
-            
             countIndicator.innerText = `${activeEditImages.length} / 10`;
 
             if (activeEditImages.length === 0) {
@@ -447,7 +388,7 @@
                 wrapper.className = "relative bg-gray-50 border border-gray-200 rounded-lg p-1 flex items-center justify-center";
                 wrapper.innerHTML = `
                     <img src="${src}" class="w-full h-16 object-cover rounded" loading="lazy">
-                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-700 cursor-pointer">✕</button>
+                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md">✕</button>
                 `;
                 container.appendChild(wrapper);
             });
@@ -492,7 +433,7 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${currentTab === 'saved' ? 'No saved cars in your wishlist.' : 'No cars found matching your search.'}</p>`;
+                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">No cars found matching your search.</p>`;
                 return;
             }
 
@@ -504,20 +445,14 @@
                 
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
-                    if (item.contacts.phone) {
-                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200 hover:bg-blue-100 transition">📞 Call: ${item.contacts.phone}</a>`;
-                    }
-                    if (item.contacts.viber) {
-                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200 hover:bg-purple-100 transition">🟣 Viber: ${item.contacts.viber}</a>`;
-                    }
+                    if (item.contacts.phone) contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200">📞 Call: ${item.contacts.phone}</a>`;
+                    if (item.contacts.viber) contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200">🟣 Viber: ${item.contacts.viber}</a>`;
                     if (item.contacts.telegram) {
                         let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
-                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200 hover:bg-sky-100 transition">✈️ Telegram: ${item.contacts.telegram}</a>`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200">✈️ Telegram: ${item.contacts.telegram}</a>`;
                     }
                 }
                 contactsHtml += '</div>';
-
-                let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
 
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
@@ -525,18 +460,14 @@
                 let carouselHtml = `
                     <div class="relative overflow-hidden rounded-md bg-black">
                         <img id="img-${item.id}" src="${images[0]}" class="w-full h-48 object-cover" loading="lazy">
-                        <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition z-10">
-                            ${isFav ? '❤️' : '🤍'}
-                        </button>
+                        <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg z-10">${isFav ? '❤️' : '🤍'}</button>
                 `;
 
                 if (images.length > 1) {
                     carouselHtml += `
-                        <div class="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-md">
-                            <span id="counter-${item.id}">1</span> / ${images.length}
-                        </div>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">‹</button>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">›</button>
+                        <div class="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-md"><span id="counter-${item.id}">1</span> / ${images.length}</div>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm">‹</button>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm">›</button>
                     `;
                 }
                 carouselHtml += `</div>`;
@@ -544,13 +475,13 @@
                 card.innerHTML = `
                     ${carouselHtml}
                     <h3 class="text-lg font-bold text-gray-800">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
-                    <p class="text-xs text-gray-500">🎨 Color: <span class="font-semibold text-gray-700">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country || 'Japan'}</span></p>
+                    <p class="text-xs text-gray-500">🎨 Color: <span class="font-semibold text-gray-700">${item.color || 'N/A'}</span> | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country || 'Japan'}</span></p>
                     <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     ${contactsHtml}
                     <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button onclick="editListing('${item.id}')" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200 transition">✏️ Edit</button>
-                        <button onclick="deleteListing('${item.id}')" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 transition">🗑️ Delete</button>
+                        <button onclick="editListing('${item.id}')" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md">✏️ Edit</button>
+                        <button onclick="deleteListing('${item.id}')" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md">🗑️ Delete</button>
                     </div>
                 `;
                 fragment.appendChild(card);
@@ -561,29 +492,20 @@
         window.changeSlide = function(id, direction) {
             let item = cloudListings.find(l => l.id == id);
             if (!item || !item.imgSrcs || item.imgSrcs.length <= 1) return;
-
             let imgElement = document.getElementById(`img-${id}`);
             let counterElement = document.getElementById(`counter-${id}`);
-            
             let currentImages = item.imgSrcs;
-            let currentSrc = imgElement.src;
-            let currentIndex = currentImages.indexOf(currentSrc);
-
+            let currentIndex = currentImages.indexOf(imgElement.src);
             let newIndex = currentIndex + direction;
             if (newIndex >= currentImages.length) newIndex = 0;
             if (newIndex < 0) newIndex = currentImages.length - 1;
-
             imgElement.src = currentImages[newIndex];
             if (counterElement) counterElement.innerText = newIndex + 1;
         }
 
         function toggleFavorite(id) {
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-            if (favorites.includes(id)) {
-                favorites = favorites.filter(favId => favId != id);
-            } else {
-                favorites.push(id);
-            }
+            favorites = favorites.includes(id) ? favorites.filter(favId => favId != id) : [...favorites, id];
             localStorage.setItem('carFavorites', JSON.stringify(favorites));
             renderFilteredListings();
             updateWishlistCount();
@@ -591,33 +513,20 @@
 
         function updateWishlistCount() {
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-            const badge = document.getElementById('nav-badge');
-            badge.innerText = favorites.length > 0 ? `(${favorites.length})` : '';
+            document.getElementById('nav-badge').innerText = favorites.length > 0 ? `(${favorites.length})` : '';
         }
 
         async function deleteListing(id) {
             triggerHaptic();
-            if (!confirm('Are you sure you want to delete this cloud listing?')) return;
-
+            if (!confirm('Are you sure you want to delete this listing?')) return;
             try {
-                const { error } = await supabaseClient
-                    .from('cars')
-                    .delete()
-                    .eq('id', id);
-
+                const { error } = await supabaseClient.from('cars').delete().eq('id', id);
                 if (error) throw error;
-                
-                cloudListings = cloudListings.filter(item => item.id != id);
-                let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-                favorites = favorites.filter(favId => favId != id);
-                localStorage.setItem('carFavorites', JSON.stringify(favorites));
-
-                renderFilteredListings();
-                updateWishlistCount();
-                alert('Listing deleted from cloud successfully.');
+                await fetchCloudListings();
+                alert('Deleted successfully.');
             } catch (err) {
                 console.error('Delete error:', err);
-                alert('Failed to delete listing from cloud.');
+                alert('Failed to delete listing.');
             }
         }
 
