@@ -95,13 +95,16 @@
                 </div>
 
                 <div class="border-t pt-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Manage Photos (Up to 20)</label>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-medium text-gray-700">Manage Photos (Up to 10)</label>
+                        <span id="photo-count-indicator" class="text-xs text-gray-500 font-semibold">0 / 10</span>
+                    </div>
                     
-                    <!-- Fixed Interactive Image Previews Grid Container -->
+                    <!-- Interactive Image Previews Grid Container -->
                     <div id="current-images-preview" class="grid grid-cols-4 gap-2 mb-3"></div>
 
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Tap the ✕ badge on any photo above to delete it, or upload new files to append.</p>
+                    <p class="text-xs text-gray-500 mt-1">Select up to 10 photos. Tap ✕ on any thumbnail to remove it.</p>
                 </div>
 
                 <div>
@@ -224,23 +227,61 @@
             updateWishlistCount();
         }
 
-        // Listen to newly chosen files and instantly append them to activeEditImages
+        // Compress and resize image files so 10 photos comfortably fit inside browser storage limit
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    const MAX_DIMENSION = 900;
+                    if (width > height) {
+                        if (width > MAX_DIMENSION) {
+                            height *= MAX_DIMENSION / width;
+                            width = MAX_DIMENSION;
+                        }
+                    } else {
+                        if (height > MAX_DIMENSION) {
+                            width *= MAX_DIMENSION / height;
+                            height = MAX_DIMENSION;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    callback(canvas.toDataURL('image/jpeg', 0.75));
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
         document.getElementById('car-images').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
 
+            if (activeEditImages.length + files.length > 10) {
+                alert('You can only have a maximum of 10 photos total.');
+                e.target.value = '';
+                return;
+            }
+
             let loadedCount = 0;
             files.forEach((file) => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    activeEditImages.push(event.target.result);
+                compressImage(file, (compressedDataUrl) => {
+                    activeEditImages.push(compressedDataUrl);
                     loadedCount++;
                     if (loadedCount === files.length) {
                         renderImagePreviews();
-                        e.target.value = ''; // Reset file input so user can pick same file again if needed
+                        e.target.value = '';
                     }
-                }
-                reader.readAsDataURL(file);
+                });
             });
         });
 
@@ -270,35 +311,39 @@
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
 
-            if (editId) {
-                let existingItem = listings.find(l => l.id == editId);
-                if (existingItem) {
-                    existingItem.brand = brand;
-                    existingItem.title = title;
-                    existingItem.year = year;
-                    existingItem.color = color;
-                    existingItem.country = country;
-                    existingItem.mileage = mileage;
-                    existingItem.price = price;
-                    existingItem.contacts = { phone, viber, telegram };
-                    existingItem.desc = desc;
-                    existingItem.imgSrcs = finalImages;
+            try {
+                if (editId) {
+                    let existingItem = listings.find(l => l.id == editId);
+                    if (existingItem) {
+                        existingItem.brand = brand;
+                        existingItem.title = title;
+                        existingItem.year = year;
+                        existingItem.color = color;
+                        existingItem.country = country;
+                        existingItem.mileage = mileage;
+                        existingItem.price = price;
+                        existingItem.contacts = { phone, viber, telegram };
+                        existingItem.desc = desc;
+                        existingItem.imgSrcs = finalImages;
+                    }
+                } else {
+                    const newListing = {
+                        id: Date.now(),
+                        brand, title, year, color, country, mileage, price,
+                        contacts: { phone, viber, telegram },
+                        desc,
+                        imgSrcs: finalImages
+                    };
+                    listings.unshift(newListing);
                 }
-            } else {
-                const newListing = {
-                    id: Date.now(),
-                    brand, title, year, color, country, mileage, price,
-                    contacts: { phone, viber, telegram },
-                    desc,
-                    imgSrcs: finalImages
-                };
-                listings.unshift(newListing);
-            }
 
-            localStorage.setItem('carListings', JSON.stringify(listings));
-            cancelEdit();
-            switchTab('feed');
-            alert('Listing saved successfully!');
+                localStorage.setItem('carListings', JSON.stringify(listings));
+                cancelEdit();
+                switchTab('feed');
+                alert('Listing saved successfully!');
+            } catch (err) {
+                alert('Storage limit reached! Try reducing the number or size of photos.');
+            }
         });
 
         function editListing(id) {
@@ -332,8 +377,11 @@
 
         function renderImagePreviews() {
             const container = document.getElementById('current-images-preview');
+            const countIndicator = document.getElementById('photo-count-indicator');
             container.innerHTML = '';
             
+            countIndicator.innerText = `${activeEditImages.length} / 10`;
+
             if (activeEditImages.length === 0) {
                 container.innerHTML = '<div class="col-span-4 text-xs text-gray-400 py-1">No images loaded. Upload or add some photos below.</div>';
                 return;
