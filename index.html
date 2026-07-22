@@ -171,9 +171,19 @@
         const SUPABASE_KEY = 'sb_publishable_I34WJ4psecMdoTTyaDxHfw_WFsLvk9w';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Anonymous Authentication for post ownership control
+        async function initAnonymousAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                await supabaseClient.auth.signInAnonymously();
+            }
+        }
+        initAnonymousAuth();
+
         let currentTab = 'feed';
         let activeEditImages = [];
         let cloudListings = [];
+        let currentUserId = null;
 
         function triggerHaptic() {
             if (navigator.vibrate) {
@@ -190,7 +200,11 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                currentUserId = session.user.id;
+            }
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
@@ -241,6 +255,9 @@
         // Fetch Listings from Supabase Table 'cars'
         async function fetchCloudListings() {
             try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) currentUserId = session.user.id;
+
                 const { data, error } = await supabaseClient
                     .from('cars')
                     .select('*')
@@ -504,6 +521,19 @@
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
 
+                // Check if the current user owns this post (if user_id is null/undefined or matches)
+                const isOwner = !item.user_id || item.user_id === currentUserId;
+
+                let ownerActionsHtml = '';
+                if (isOwner) {
+                    ownerActionsHtml = `
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <button onclick="editListing('${item.id}')" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200 transition">✏️ Edit</button>
+                            <button onclick="deleteListing('${item.id}')" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 transition">🗑️ Delete</button>
+                        </div>
+                    `;
+                }
+
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
                 
@@ -533,10 +563,7 @@
                     <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     ${contactsHtml}
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button onclick="editListing('${item.id}')" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200 transition">✏️ Edit</button>
-                        <button onclick="deleteListing('${item.id}')" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 transition">🗑️ Delete</button>
-                    </div>
+                    ${ownerActionsHtml}
                 `;
                 fragment.appendChild(card);
             });
