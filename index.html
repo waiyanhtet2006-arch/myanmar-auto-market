@@ -24,6 +24,25 @@
             <p class="text-sm text-gray-600">The live cloud-synced Burmese car marketplace.</p>
         </div>
 
+        <!-- Google Auth Section for Posting -->
+        <div id="auth-banner" class="bg-white p-4 rounded-lg shadow-md text-center hidden">
+            <div id="logged-out-view" class="space-y-3">
+                <h3 class="text-base font-bold text-gray-800">🔐 Google Sign-In Required</h3>
+                <p class="text-xs text-gray-600">You need to sign in with your Google account to post, edit, or delete listings.</p>
+                <button onclick="triggerHaptic(); loginWithGoogle()" class="w-full bg-white border border-gray-300 text-gray-700 p-2.5 rounded-md font-semibold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 shadow-sm">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.34 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.19C.43 8.13 0 9.87 0 12s.43 3.87 1.19 5.4l4.08-3.16z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.18 2.66 1.19 6.6l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                    Sign in with Google to Post
+                </button>
+            </div>
+            <div id="logged-in-view" class="flex justify-between items-center hidden">
+                <div class="text-left">
+                    <p class="text-xs text-gray-500">Signed in as:</p>
+                    <p id="user-email-display" class="text-xs font-bold text-gray-800 truncate max-w-[200px]"></p>
+                </div>
+                <button onclick="triggerHaptic(); logoutUser()" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-md font-semibold hover:bg-red-100">Sign Out</button>
+            </div>
+        </div>
+
         <!-- Car Listing Form Section -->
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md hidden">
             <div class="flex justify-between items-center mb-4">
@@ -171,19 +190,10 @@
         const SUPABASE_KEY = 'sb_publishable_I34WJ4psecMdoTTyaDxHfw_WFsLvk9w';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Anonymous Authentication for post ownership control
-        async function initAnonymousAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                await supabaseClient.auth.signInAnonymously();
-            }
-        }
-        initAnonymousAuth();
-
         let currentTab = 'feed';
         let activeEditImages = [];
         let cloudListings = [];
-        let currentUserId = null;
+        let currentUser = null;
 
         function triggerHaptic() {
             if (navigator.vibrate) {
@@ -200,11 +210,62 @@
             }
         }
 
+        async function loginWithGoogle() {
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + window.location.pathname
+                }
+            });
+            if (error) {
+                alert('Google sign-in error: ' + error.message);
+            }
+        }
+
+        async function logoutUser() {
+            triggerHaptic();
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            updateAuthUI();
+            switchTab('feed');
+        }
+
+        function updateAuthUI() {
+            const authBanner = document.getElementById('auth-banner');
+            const loggedOutView = document.getElementById('logged-out-view');
+            const loggedInView = document.getElementById('logged-in-view');
+            const emailDisplay = document.getElementById('user-email-display');
+            const formSection = document.getElementById('form-section');
+
+            if (currentTab === 'sell') {
+                authBanner.classList.remove('hidden');
+                if (currentUser) {
+                    loggedOutView.classList.add('hidden');
+                    loggedInView.classList.remove('hidden');
+                    emailDisplay.innerText = currentUser.email || currentUser.id;
+                    formSection.classList.remove('hidden');
+                } else {
+                    loggedOutView.classList.remove('hidden');
+                    loggedInView.classList.add('hidden');
+                    formSection.classList.add('hidden');
+                }
+            } else {
+                authBanner.classList.add('hidden');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
-                currentUserId = session.user.id;
+                currentUser = session.user;
             }
+            
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                currentUser = session ? session.user : null;
+                updateAuthUI();
+                renderFilteredListings();
+            });
+
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
@@ -219,6 +280,7 @@
             const welcomeBanner = document.getElementById('welcome-banner');
             const feedTitle = document.getElementById('feed-title');
             const headerSubtitle = document.getElementById('header-subtitle');
+            const authBanner = document.getElementById('auth-banner');
 
             document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
             document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
@@ -229,22 +291,24 @@
                 formSection.classList.add('hidden');
                 searchSection.classList.remove('hidden');
                 welcomeBanner.classList.remove('hidden');
+                authBanner.classList.add('hidden');
                 feedTitle.innerText = "📋 Available Cars (FYP)";
                 headerSubtitle.innerText = "Live Cloud FYP";
                 renderFilteredListings();
             } else if (tab === 'sell') {
                 document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
-                formSection.classList.remove('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
                 feedTitle.innerText = "🚗 Manage Your Listing";
                 headerSubtitle.innerText = "Cloud Post / Edit Mode";
+                updateAuthUI();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (tab === 'saved') {
                 document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
                 formSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
+                authBanner.classList.add('hidden');
                 feedTitle.innerText = "❤️ Your Saved Cars";
                 headerSubtitle.innerText = "Wishlist Garage";
                 renderFilteredListings();
@@ -255,9 +319,6 @@
         // Fetch Listings from Supabase Table 'cars'
         async function fetchCloudListings() {
             try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session) currentUserId = session.user.id;
-
                 const { data, error } = await supabaseClient
                     .from('cars')
                     .select('*')
@@ -337,6 +398,11 @@
             e.preventDefault();
             triggerHaptic();
             
+            if (!currentUser) {
+                alert('You must be signed in with Google to post or update listings.');
+                return;
+            }
+
             const phone = document.getElementById('car-phone').value.trim();
             const viber = document.getElementById('car-viber').value.trim();
             const telegram = document.getElementById('car-telegram').value.trim();
@@ -368,7 +434,8 @@
                 price,
                 contacts: { phone, viber, telegram },
                 desc,
-                img_srcs: finalImages
+                img_srcs: finalImages,
+                user_id: currentUser.id
             };
 
             const submitBtn = document.getElementById('form-submit-btn');
@@ -380,7 +447,8 @@
                     const { error } = await supabaseClient
                         .from('cars')
                         .update(listingData)
-                        .eq('id', editId);
+                        .eq('id', editId)
+                        .eq('user_id', currentUser.id);
 
                     if (error) throw error;
                 } else {
@@ -406,8 +474,19 @@
 
         async function editListing(id) {
             triggerHaptic();
+            if (!currentUser) {
+                alert('Please sign in with Google to edit your listing.');
+                switchTab('sell');
+                return;
+            }
+
             let item = cloudListings.find(l => l.id == id);
             if (!item) return;
+
+            if (item.user_id && item.user_id !== currentUser.id) {
+                alert('You can only edit your own listings.');
+                return;
+            }
 
             switchTab('sell');
 
@@ -521,11 +600,9 @@
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
 
-                // Check if the current user owns this post (if user_id is null/undefined or matches)
-                const isOwner = !item.user_id || item.user_id === currentUserId;
-
+                // Only show Edit/Delete buttons if the logged-in user is the creator of this listing
                 let ownerActionsHtml = '';
-                if (isOwner) {
+                if (currentUser && item.user_id && item.user_id === currentUser.id) {
                     ownerActionsHtml = `
                         <div class="grid grid-cols-2 gap-2 mt-2">
                             <button onclick="editListing('${item.id}')" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200 transition">✏️ Edit</button>
@@ -609,13 +686,18 @@
 
         async function deleteListing(id) {
             triggerHaptic();
+            if (!currentUser) {
+                alert('Please sign in with Google.');
+                return;
+            }
             if (!confirm('Are you sure you want to delete this cloud listing?')) return;
 
             try {
                 const { error } = await supabaseClient
                     .from('cars')
                     .delete()
-                    .eq('id', id);
+                    .eq('id', id)
+                    .eq('user_id', currentUser.id);
 
                 if (error) throw error;
                 
