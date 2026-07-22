@@ -6,24 +6,27 @@
     <title>Myanmar Auto Market - ကားအရောင်းအဝယ်</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-gray-100 font-sans">
-    <header class="bg-blue-600 text-white p-4 shadow-md">
+<body class="bg-gray-100 font-sans pb-20">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-30">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">🚗 Myanmar Auto Market</h1>
-            <button onclick="triggerHaptic(); toggleView()" id="view-toggle-btn" class="text-sm bg-blue-700 px-3 py-1.5 rounded-md font-semibold hover:bg-blue-800">❤️ Saved (0)</button>
+            <span id="header-subtitle" class="text-xs bg-blue-700 px-2.5 py-1 rounded-full font-medium">Explore FYP</span>
         </div>
     </header>
+
     <main class="max-w-md mx-auto p-4 space-y-4">
-        <div class="bg-white p-4 rounded-lg shadow">
+        <!-- Welcome Banner (Feed only) -->
+        <div id="welcome-banner" class="bg-white p-4 rounded-lg shadow">
             <h2 class="text-lg font-semibold text-gray-800">Welcome! ကြိုဆိုပါတယ်</h2>
             <p class="text-sm text-gray-600">The most Burmese-friendly car marketplace platform.</p>
         </div>
 
-        <!-- Car Listing Form Section -->
-        <section id="form-section" class="bg-white p-6 rounded-lg shadow-md">
+        <!-- Car Listing Form Section (Dashboard Modal/Tab Style) -->
+        <section id="form-section" class="bg-white p-6 rounded-lg shadow-md hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
-                <button type="button" id="cancel-edit-btn" onclick="triggerHaptic(); cancelEdit()" class="hidden text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 font-semibold">Cancel Edit</button>
+                <button type="button" id="cancel-edit-btn" onclick="triggerHaptic(); switchTab('feed')" class="hidden text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 font-semibold">Cancel</button>
             </div>
             
             <form id="car-form" class="space-y-4">
@@ -127,23 +130,39 @@
 
         <!-- Marketplace Feed Section -->
         <section class="space-y-4">
-            <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars</h2>
+            <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars (FYP)</h2>
             <div id="listings-container" class="space-y-4">
                 <!-- Dynamic listings will appear here -->
             </div>
         </section>
     </main>
 
+    <!-- Professional App Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+        <div class="max-w-md mx-auto grid grid-cols-3 h-16">
+            <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-600 font-bold transition">
+                <span class="text-xl">🏠</span>
+                <span class="text-xs mt-0.5">Feed</span>
+            </button>
+            <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-gray-400 font-medium hover:text-gray-600 transition">
+                <span class="text-xl">➕</span>
+                <span class="text-xs mt-0.5">Sell Car</span>
+            </button>
+            <button onclick="triggerHaptic(); switchTab('saved')" id="nav-btn-saved" class="flex flex-col items-center justify-center text-gray-400 font-medium hover:text-gray-600 transition relative">
+                <span class="text-xl">❤️</span>
+                <span class="text-xs mt-0.5">Saved <span id="nav-badge" class="text-[10px]"></span></span>
+            </button>
+        </div>
+    </nav>
+
     <script>
-        let showFavoritesOnly = false;
+        let currentTab = 'feed'; // 'feed', 'sell', 'saved'
         let activeEditImages = [];
 
-        // Haptic feedback function for tactile button presses
         function triggerHaptic() {
             if (navigator.vibrate) {
-                navigator.vibrate(15); // Short sharp tick for Android
+                navigator.vibrate(15);
             } else {
-                // iOS fallback vibration tick utilizing hidden elements if applicable
                 try {
                     let switchInput = document.createElement('input');
                     switchInput.type = 'checkbox';
@@ -156,10 +175,52 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadListings();
+            switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
         });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            const formSection = document.getElementById('form-section');
+            const searchSection = document.getElementById('search-section');
+            const welcomeBanner = document.getElementById('welcome-banner');
+            const feedTitle = document.getElementById('feed-title');
+            const headerSubtitle = document.getElementById('header-subtitle');
+
+            // Reset navigation tab visual highlights
+            document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
+            document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
+            document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
+
+            if (tab === 'feed') {
+                document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
+                formSection.classList.add('hidden');
+                searchSection.classList.remove('hidden');
+                welcomeBanner.classList.remove('hidden');
+                feedTitle.innerText = "📋 Available Cars (FYP)";
+                headerSubtitle.innerText = "Explore FYP";
+                loadListings(false);
+            } else if (tab === 'sell') {
+                document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
+                formSection.classList.remove('hidden');
+                searchSection.classList.add('hidden');
+                welcomeBanner.classList.add('hidden');
+                feedTitle.innerText = "🚗 Manage Your Listing";
+                headerSubtitle.innerText = "Post / Edit Mode";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (tab === 'saved') {
+                document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
+                formSection.classList.add('hidden');
+                searchSection.classList.add('hidden');
+                welcomeBanner.classList.add('hidden');
+                feedTitle.innerText = "❤️ Your Saved Cars";
+                headerSubtitle.innerText = "Wishlist";
+                loadListings(true);
+            }
+            updateWishlistCount();
+        }
 
         document.getElementById('car-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -235,7 +296,7 @@
         function finalizeSave(listings) {
             localStorage.setItem('carListings', JSON.stringify(listings));
             cancelEdit();
-            loadListings();
+            switchTab('feed');
             alert('Listing saved successfully!');
         }
 
@@ -244,6 +305,8 @@
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             let item = listings.find(l => l.id == id);
             if (!item) return;
+
+            switchTab('sell');
 
             document.getElementById('edit-listing-id').value = item.id;
             document.getElementById('car-brand').value = item.brand || '';
@@ -264,8 +327,6 @@
             document.getElementById('form-heading').innerText = '✏️ Edit Your Car Listing';
             document.getElementById('form-submit-btn').innerText = 'Update Listing';
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderImagePreviews() {
@@ -301,14 +362,14 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        function loadListings() {
+        function loadListings(favoritesOnly = false) {
             const container = document.getElementById('listings-container');
             container.innerHTML = '';
             
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
 
-            if (showFavoritesOnly) {
+            if (favoritesOnly) {
                 listings = listings.filter(item => favorites.includes(item.id));
             }
 
@@ -327,7 +388,7 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${showFavoritesOnly ? 'No saved cars yet.' : 'No cars found matching your criteria.'}</p>`;
+                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${favoritesOnly ? 'No saved cars yet.' : 'No cars found matching your criteria.'}</p>`;
                 return;
             }
 
@@ -418,22 +479,18 @@
                 favorites.push(id);
             }
             localStorage.setItem('carFavorites', JSON.stringify(favorites));
-            loadListings();
+            loadListings(currentTab === 'saved');
             updateWishlistCount();
         }
 
         function updateWishlistCount() {
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-            document.getElementById('view-toggle-btn').innerText = showFavoritesOnly ? '📋 All Cars' : `❤️ Saved (${favorites.length})`;
-        }
-
-        function toggleView() {
-            showFavoritesOnly = !showFavoritesOnly;
-            document.getElementById('form-section').style.display = showFavoritesOnly ? 'none' : 'block';
-            document.getElementById('search-section').style.display = showFavoritesOnly ? 'none' : 'block';
-            document.getElementById('feed-title').innerText = showFavoritesOnly ? '❤️ Your Saved Cars' : '📋 Available Cars';
-            loadListings();
-            updateWishlistCount();
+            const badge = document.getElementById('nav-badge');
+            if (favorites.length > 0) {
+                badge.innerText = `(${favorites.length})`;
+            } else {
+                badge.innerText = '';
+            }
         }
 
         function deleteListing(id) {
@@ -446,13 +503,13 @@
             favorites = favorites.filter(favId => favId !== id);
             localStorage.setItem('carFavorites', JSON.stringify(favorites));
 
-            loadListings();
+            loadListings(currentTab === 'saved');
             updateWishlistCount();
         }
 
-        document.getElementById('search-input').addEventListener('input', loadListings);
-        document.getElementById('filter-brand').addEventListener('input', loadListings);
-        document.getElementById('filter-country').addEventListener('change', loadListings);
+        document.getElementById('search-input').addEventListener('input', () => loadListings(false));
+        document.getElementById('filter-brand').addEventListener('input', () => loadListings(false));
+        document.getElementById('filter-country').addEventListener('change', () => loadListings(false));
     </script>
 </body>
 </html>
