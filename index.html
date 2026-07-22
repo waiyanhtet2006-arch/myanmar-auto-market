@@ -22,7 +22,7 @@
             <p class="text-sm text-gray-600">The most Burmese-friendly car marketplace platform.</p>
         </div>
 
-        <!-- Car Listing Form Section (Dashboard Modal/Tab Style) -->
+        <!-- Car Listing Form Section -->
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
@@ -79,7 +79,7 @@
 
                 <!-- Contact Information Section -->
                 <div class="border-t pt-3 space-y-3">
-                    <label class="block text-sm font-bold text-gray-800">📱 Contact Info (Fill at least one)</label>
+                    <label class="block text-sm font-bold text-gray-800">📱 Instant Chat & Contact Info (Fill at least one)</label>
                     <div>
                         <label class="block text-xs font-medium text-gray-600">Phone Number</label>
                         <input type="text" id="car-phone" placeholder="e.g., 09-912345678" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
@@ -100,11 +100,10 @@
                         <span id="photo-count-indicator" class="text-xs text-gray-500 font-semibold">0 / 10</span>
                     </div>
                     
-                    <!-- Interactive Image Previews Grid Container -->
                     <div id="current-images-preview" class="grid grid-cols-4 gap-2 mb-3"></div>
 
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Select up to 10 photos. Tap ✕ on any thumbnail to remove it.</p>
+                    <p class="text-xs text-gray-500 mt-1">Select up to 10 photos. Auto-compressed for instant loading.</p>
                 </div>
 
                 <div>
@@ -162,7 +161,7 @@
     </nav>
 
     <script>
-        let currentTab = 'feed'; // 'feed', 'sell', 'saved'
+        let currentTab = 'feed';
         let activeEditImages = [];
 
         function triggerHaptic() {
@@ -221,13 +220,12 @@
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
                 feedTitle.innerText = "❤️ Your Saved Cars";
-                headerSubtitle.innerText = "Wishlist";
+                headerSubtitle.innerText = "Wishlist Garage";
                 loadListings(true);
             }
             updateWishlistCount();
         }
 
-        // Compress and resize image files so 10 photos comfortably fit inside browser storage limit
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -237,7 +235,7 @@
                     let width = img.width;
                     let height = img.height;
                     
-                    const MAX_DIMENSION = 900;
+                    const MAX_DIMENSION = 800;
                     if (width > height) {
                         if (width > MAX_DIMENSION) {
                             height *= MAX_DIMENSION / width;
@@ -254,8 +252,7 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    
-                    callback(canvas.toDataURL('image/jpeg', 0.75));
+                    callback(canvas.toDataURL('image/jpeg', 0.7));
                 }
                 img.src = e.target.result;
             }
@@ -267,7 +264,7 @@
             if (files.length === 0) return;
 
             if (activeEditImages.length + files.length > 10) {
-                alert('You can only have a maximum of 10 photos total.');
+                alert('Maximum limit is 10 photos total.');
                 e.target.value = '';
                 return;
             }
@@ -342,7 +339,7 @@
                 switchTab('feed');
                 alert('Listing saved successfully!');
             } catch (err) {
-                alert('Storage limit reached! Try reducing the number or size of photos.');
+                alert('Storage limit reached! Try reducing image sizes.');
             }
         });
 
@@ -383,7 +380,7 @@
             countIndicator.innerText = `${activeEditImages.length} / 10`;
 
             if (activeEditImages.length === 0) {
-                container.innerHTML = '<div class="col-span-4 text-xs text-gray-400 py-1">No images loaded. Upload or add some photos below.</div>';
+                container.innerHTML = '<div class="col-span-4 text-xs text-gray-400 py-1">No images added yet.</div>';
                 return;
             }
 
@@ -391,7 +388,7 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = "relative bg-gray-50 border border-gray-200 rounded-lg p-1 flex items-center justify-center";
                 wrapper.innerHTML = `
-                    <img src="${src}" class="w-full h-16 object-cover rounded">
+                    <img src="${src}" class="w-full h-16 object-cover rounded" loading="lazy">
                     <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-700 cursor-pointer">✕</button>
                 `;
                 container.appendChild(wrapper);
@@ -431,17 +428,18 @@
             const filtered = listings.filter(item => {
                 const combinedText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''}`.toLowerCase();
                 const matchesQuery = combinedText.includes(query);
-                
                 const matchesBrand = !filterBrandInput || (item.brand && item.brand.toLowerCase().includes(filterBrandInput));
                 const matchesCountry = !selectedCountry || item.country === selectedCountry;
-
                 return matchesQuery && matchesBrand && matchesCountry;
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${favoritesOnly ? 'No saved cars yet.' : 'No cars found matching your criteria.'}</p>`;
+                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${favoritesOnly ? 'No saved cars in your wishlist.' : 'No cars found matching your search.'}</p>`;
                 return;
             }
+
+            // High Performance Batch Fragment Rendering
+            const fragment = document.createDocumentFragment();
 
             filtered.forEach(item => {
                 const isFav = favorites.includes(item.id);
@@ -450,14 +448,14 @@
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
-                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200 hover:bg-blue-100">📞 Call: ${item.contacts.phone}</a>`;
+                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200 hover:bg-blue-100 transition">📞 Call: ${item.contacts.phone}</a>`;
                     }
                     if (item.contacts.viber) {
-                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200 hover:bg-purple-100">🟣 Viber: ${item.contacts.viber}</a>`;
+                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200 hover:bg-purple-100 transition">🟣 Viber: ${item.contacts.viber}</a>`;
                     }
                     if (item.contacts.telegram) {
                         let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
-                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200 hover:bg-sky-100">✈️ Telegram: ${item.contacts.telegram}</a>`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200 hover:bg-sky-100 transition">✈️ Telegram: ${item.contacts.telegram}</a>`;
                     }
                 }
                 contactsHtml += '</div>';
@@ -469,7 +467,7 @@
                 
                 let carouselHtml = `
                     <div class="relative overflow-hidden rounded-md bg-black">
-                        <img id="img-${item.id}" src="${images[0]}" class="w-full h-48 object-cover">
+                        <img id="img-${item.id}" src="${images[0]}" class="w-full h-48 object-cover" loading="lazy">
                         <button onclick="triggerHaptic(); toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition z-10">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
@@ -494,12 +492,13 @@
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     ${contactsHtml}
                     <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button onclick="editListing(${item.id})" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200">✏️ Edit</button>
-                        <button onclick="deleteListing(${item.id})" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200">🗑️ Delete</button>
+                        <button onclick="editListing(${item.id})" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200 transition">✏️ Edit</button>
+                        <button onclick="deleteListing(${item.id})" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 transition">🗑️ Delete</button>
                     </div>
                 `;
-                container.appendChild(card);
+                fragment.appendChild(card);
             });
+            container.appendChild(fragment);
         }
 
         window.changeSlide = function(id, direction) {
@@ -537,11 +536,7 @@
         function updateWishlistCount() {
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
             const badge = document.getElementById('nav-badge');
-            if (favorites.length > 0) {
-                badge.innerText = `(${favorites.length})`;
-            } else {
-                badge.innerText = '';
-            }
+            badge.innerText = favorites.length > 0 ? `(${favorites.length})` : '';
         }
 
         function deleteListing(id) {
