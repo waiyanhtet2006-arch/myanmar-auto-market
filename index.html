@@ -95,12 +95,15 @@
                 </div>
 
                 <div class="border-t pt-3">
-                    <label class="block text-sm font-medium text-gray-700">Manage Photos (Up to 20)</label>
-                    <div id="current-images-preview" class="flex flex-wrap gap-2 my-2"></div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Manage Photos (Up to 20)</label>
+                    
+                    <!-- Fixed Interactive Image Previews Grid Container -->
+                    <div id="current-images-preview" class="grid grid-cols-4 gap-2 mb-3"></div>
 
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Remove unwanted pictures above, or select new files to add more.</p>
+                    <p class="text-xs text-gray-500 mt-1">Tap the ✕ badge on any photo above to delete it, or upload new files to append.</p>
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
@@ -189,7 +192,6 @@
             const feedTitle = document.getElementById('feed-title');
             const headerSubtitle = document.getElementById('header-subtitle');
 
-            // Reset navigation tab visual highlights
             document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
             document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
             document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
@@ -222,6 +224,26 @@
             updateWishlistCount();
         }
 
+        // Listen to newly chosen files and instantly append them to activeEditImages
+        document.getElementById('car-images').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            let loadedCount = 0;
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    activeEditImages.push(event.target.result);
+                    loadedCount++;
+                    if (loadedCount === files.length) {
+                        renderImagePreviews();
+                        e.target.value = ''; // Reset file input so user can pick same file again if needed
+                    }
+                }
+                reader.readAsDataURL(file);
+            });
+        });
+
         document.getElementById('car-form').addEventListener('submit', function(e) {
             e.preventDefault();
             triggerHaptic();
@@ -244,61 +266,40 @@
             const mileage = document.getElementById('car-mileage').value.trim();
             const price = document.getElementById('car-price').value.trim();
             const desc = document.getElementById('car-desc').value.trim();
-            const imageInput = document.getElementById('car-images');
 
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
+            const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
 
-            if (imageInput.files && imageInput.files.length > 0) {
-                const files = Array.from(imageInput.files).slice(0, 20);
-                let loadedCount = 0;
-                let newTempImages = [];
-
-                files.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        newTempImages[index] = e.target.result;
-                        loadedCount++;
-                        if (loadedCount === files.length) {
-                            const combinedImages = [...activeEditImages, ...newTempImages];
-                            saveListingData(editId, listings, { brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, imgSrcs: combinedImages });
-                        }
-                    }
-                    reader.readAsDataURL(file);
-                });
-            } else {
-                const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
-                saveListingData(editId, listings, { brand, title, year, color, country, mileage, price, contacts: { phone, viber, telegram }, desc, imgSrcs: finalImages });
-            }
-        });
-
-        function saveListingData(editId, listings, carData) {
             if (editId) {
                 let existingItem = listings.find(l => l.id == editId);
-                if (!existingItem) return;
-
-                existingItem.brand = carData.brand;
-                existingItem.title = carData.title;
-                existingItem.year = carData.year;
-                existingItem.color = carData.color;
-                existingItem.country = carData.country;
-                existingItem.mileage = carData.mileage;
-                existingItem.price = carData.price;
-                existingItem.contacts = carData.contacts;
-                existingItem.desc = carData.desc;
-                existingItem.imgSrcs = carData.imgSrcs;
+                if (existingItem) {
+                    existingItem.brand = brand;
+                    existingItem.title = title;
+                    existingItem.year = year;
+                    existingItem.color = color;
+                    existingItem.country = country;
+                    existingItem.mileage = mileage;
+                    existingItem.price = price;
+                    existingItem.contacts = { phone, viber, telegram };
+                    existingItem.desc = desc;
+                    existingItem.imgSrcs = finalImages;
+                }
             } else {
-                const newListing = { id: Date.now(), ...carData };
+                const newListing = {
+                    id: Date.now(),
+                    brand, title, year, color, country, mileage, price,
+                    contacts: { phone, viber, telegram },
+                    desc,
+                    imgSrcs: finalImages
+                };
                 listings.unshift(newListing);
             }
-            finalizeSave(listings);
-        }
 
-        function finalizeSave(listings) {
             localStorage.setItem('carListings', JSON.stringify(listings));
             cancelEdit();
             switchTab('feed');
             alert('Listing saved successfully!');
-        }
+        });
 
         function editListing(id) {
             triggerHaptic();
@@ -332,16 +333,18 @@
         function renderImagePreviews() {
             const container = document.getElementById('current-images-preview');
             container.innerHTML = '';
+            
             if (activeEditImages.length === 0) {
-                container.innerHTML = '<span class="text-xs text-gray-400">No images loaded. Upload or add some photos below.</span>';
+                container.innerHTML = '<div class="col-span-4 text-xs text-gray-400 py-1">No images loaded. Upload or add some photos below.</div>';
                 return;
             }
+
             activeEditImages.forEach((src, idx) => {
                 const wrapper = document.createElement('div');
-                wrapper.className = "relative inline-block";
+                wrapper.className = "relative bg-gray-50 border border-gray-200 rounded-lg p-1 flex items-center justify-center";
                 wrapper.innerHTML = `
-                    <img src="${src}" class="w-16 h-16 object-cover rounded-md border border-gray-300">
-                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow cursor-pointer">✕</button>
+                    <img src="${src}" class="w-full h-16 object-cover rounded">
+                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-700 cursor-pointer">✕</button>
                 `;
                 container.appendChild(wrapper);
             });
@@ -394,7 +397,7 @@
 
             filtered.forEach(item => {
                 const isFav = favorites.includes(item.id);
-                const images = item.imgSrcs || [item.imgSrc || 'https://via.placeholder.com/400x200?text=No+Image'];
+                const images = item.imgSrcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                 
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
