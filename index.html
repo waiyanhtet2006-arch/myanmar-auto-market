@@ -10,7 +10,7 @@
     <header class="bg-blue-600 text-white p-4 shadow-md">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">🚗 Myanmar Auto Market</h1>
-            <button onclick="toggleView()" id="view-toggle-btn" class="text-sm bg-blue-700 px-3 py-1.5 rounded-md font-semibold hover:bg-blue-800">❤️ Saved (0)</button>
+            <button onclick="triggerHaptic(); toggleView()" id="view-toggle-btn" class="text-sm bg-blue-700 px-3 py-1.5 rounded-md font-semibold hover:bg-blue-800">❤️ Saved (0)</button>
         </div>
     </header>
     <main class="max-w-md mx-auto p-4 space-y-4">
@@ -23,7 +23,7 @@
         <section id="form-section" class="bg-white p-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
-                <button type="button" id="cancel-edit-btn" onclick="cancelEdit()" class="hidden text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 font-semibold">Cancel Edit</button>
+                <button type="button" id="cancel-edit-btn" onclick="triggerHaptic(); cancelEdit()" class="hidden text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 font-semibold">Cancel Edit</button>
             </div>
             
             <form id="car-form" class="space-y-4">
@@ -93,7 +93,6 @@
 
                 <div class="border-t pt-3">
                     <label class="block text-sm font-medium text-gray-700">Manage Photos (Up to 20)</label>
-                    <!-- Container for active/existing image preview and deletion -->
                     <div id="current-images-preview" class="flex flex-wrap gap-2 my-2"></div>
 
                     <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
@@ -103,7 +102,7 @@
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
                 </div>
-                <button type="submit" id="form-submit-btn" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
+                <button type="submit" id="form-submit-btn" onclick="triggerHaptic()" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Listing</button>
             </form>
         </section>
 
@@ -113,7 +112,7 @@
             
             <div class="grid grid-cols-2 gap-2">
                 <input type="text" id="filter-brand" placeholder="Filter by Brand..." class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
-                <select id="filter-country" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
+                <select id="filter-country" onchange="triggerHaptic()" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
                     <option value="">All Countries</option>
                     <option value="Japan">Japan</option>
                     <option value="Thailand">Thailand</option>
@@ -137,7 +136,24 @@
 
     <script>
         let showFavoritesOnly = false;
-        let activeEditImages = []; // Array holding active image previews during edit/creation
+        let activeEditImages = [];
+
+        // Haptic feedback function for tactile button presses
+        function triggerHaptic() {
+            if (navigator.vibrate) {
+                navigator.vibrate(15); // Short sharp tick for Android
+            } else {
+                // iOS fallback vibration tick utilizing hidden elements if applicable
+                try {
+                    let switchInput = document.createElement('input');
+                    switchInput.type = 'checkbox';
+                    switchInput.style.display = 'none';
+                    document.body.appendChild(switchInput);
+                    switchInput.click();
+                    switchInput.remove();
+                } catch(e) {}
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             loadListings();
@@ -147,6 +163,7 @@
 
         document.getElementById('car-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            triggerHaptic();
             
             const phone = document.getElementById('car-phone').value.trim();
             const viber = document.getElementById('car-viber').value.trim();
@@ -170,7 +187,6 @@
 
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
 
-            // Process new file uploads alongside existing activeEditImages
             if (imageInput.files && imageInput.files.length > 0) {
                 const files = Array.from(imageInput.files).slice(0, 20);
                 let loadedCount = 0;
@@ -224,6 +240,7 @@
         }
 
         function editListing(id) {
+            triggerHaptic();
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             let item = listings.find(l => l.id == id);
             if (!item) return;
@@ -263,7 +280,7 @@
                 wrapper.className = "relative inline-block";
                 wrapper.innerHTML = `
                     <img src="${src}" class="w-16 h-16 object-cover rounded-md border border-gray-300">
-                    <button type="button" onclick="removeActiveImage(${idx})" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow cursor-pointer">✕</button>
+                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow cursor-pointer">✕</button>
                 `;
                 container.appendChild(wrapper);
             });
@@ -321,14 +338,14 @@
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
-                        contactsHtml += `<a href="tel:${item.contacts.phone}" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200 hover:bg-blue-100">📞 Call: ${item.contacts.phone}</a>`;
+                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200 hover:bg-blue-100">📞 Call: ${item.contacts.phone}</a>`;
                     }
                     if (item.contacts.viber) {
-                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200 hover:bg-purple-100">🟣 Viber: ${item.contacts.viber}</a>`;
+                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200 hover:bg-purple-100">🟣 Viber: ${item.contacts.viber}</a>`;
                     }
                     if (item.contacts.telegram) {
                         let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
-                        contactsHtml += `<a href="${tgLink}" target="_blank" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200 hover:bg-sky-100">✈️ Telegram: ${item.contacts.telegram}</a>`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200 hover:bg-sky-100">✈️ Telegram: ${item.contacts.telegram}</a>`;
                     }
                 }
                 contactsHtml += '</div>';
@@ -341,7 +358,7 @@
                 let carouselHtml = `
                     <div class="relative overflow-hidden rounded-md bg-black">
                         <img id="img-${item.id}" src="${images[0]}" class="w-full h-48 object-cover">
-                        <button onclick="toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition z-10">
+                        <button onclick="triggerHaptic(); toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition z-10">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                 `;
@@ -351,8 +368,8 @@
                         <div class="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-md">
                             <span id="counter-${item.id}">1</span> / ${images.length}
                         </div>
-                        <button onclick="changeSlide(${item.id}, -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">‹</button>
-                        <button onclick="changeSlide(${item.id}, 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">›</button>
+                        <button onclick="triggerHaptic(); changeSlide(${item.id}, -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">‹</button>
+                        <button onclick="triggerHaptic(); changeSlide(${item.id}, 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">›</button>
                     `;
                 }
                 carouselHtml += `</div>`;
@@ -420,6 +437,7 @@
         }
 
         function deleteListing(id) {
+            triggerHaptic();
             let listings = JSON.parse(localStorage.getItem('carListings')) || [];
             listings = listings.filter(item => item.id !== id);
             localStorage.setItem('carListings', JSON.stringify(listings));
