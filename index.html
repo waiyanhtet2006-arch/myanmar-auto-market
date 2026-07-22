@@ -238,17 +238,16 @@
             updateWishlistCount();
         }
 
-        // Fetch Listings from Supabase Table 'listings'
+        // Fetch Listings from Supabase Table 'cars'
         async function fetchCloudListings() {
             try {
                 const { data, error } = await supabaseClient
-                    .from('listings')
+                    .from('cars')
                     .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) {
                     console.error('Supabase fetch error:', error);
-                    // Fallback to local storage if table hasn't been created yet
                     cloudListings = JSON.parse(localStorage.getItem('carListings')) || [];
                 } else {
                     cloudListings = data || [];
@@ -352,7 +351,7 @@
                 price,
                 contacts: { phone, viber, telegram },
                 desc,
-                imgSrcs: finalImages
+                img_srcs: finalImages
             };
 
             const submitBtn = document.getElementById('form-submit-btn');
@@ -361,17 +360,15 @@
 
             try {
                 if (editId) {
-                    // Update record in Supabase
                     const { error } = await supabaseClient
-                        .from('listings')
+                        .from('cars')
                         .update(listingData)
                         .eq('id', editId);
 
                     if (error) throw error;
                 } else {
-                    // Insert new record in Supabase
                     const { error } = await supabaseClient
-                        .from('listings')
+                        .from('cars')
                         .insert([listingData]);
 
                     if (error) throw error;
@@ -383,7 +380,6 @@
                 await fetchCloudListings();
             } catch (err) {
                 console.error('Supabase write error:', err);
-                // Fallback local storage saving if network/table schema mismatch occurs
                 let localFallback = JSON.parse(localStorage.getItem('carListings')) || [];
                 if (editId) {
                     let idx = localFallback.findIndex(l => l.id == editId);
@@ -392,7 +388,7 @@
                     localFallback.unshift({ id: Date.now(), ...listingData });
                 }
                 localStorage.setItem('carListings', JSON.stringify(localFallback));
-                alert('Saved locally (Cloud table configuration check recommended)!');
+                alert('Saved locally!');
                 cancelEdit();
                 switchTab('feed');
                 fetchCloudListings();
@@ -426,7 +422,7 @@
             document.getElementById('car-telegram').value = item.contacts ? (item.contacts.telegram || '') : '';
             document.getElementById('car-desc').value = item.desc || '';
 
-            activeEditImages = item.imgSrcs ? [...item.imgSrcs] : [];
+            activeEditImages = item.img_srcs ? [...item.img_srcs] : (item.imgSrcs ? [...item.imgSrcs] : []);
             renderImagePreviews();
 
             document.getElementById('form-heading').innerText = '✏️ Edit Cloud Listing';
@@ -504,7 +500,7 @@
 
             filtered.forEach(item => {
                 const isFav = favorites.includes(item.id);
-                const images = item.imgSrcs || ['https://via.placeholder.com/400x200?text=No+Image'];
+                const images = item.img_srcs || item.imgSrcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                 
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
                 if (item.contacts) {
@@ -564,20 +560,20 @@
 
         window.changeSlide = function(id, direction) {
             let item = cloudListings.find(l => l.id == id);
-            if (!item || !item.imgSrcs || item.imgSrcs.length <= 1) return;
+            let activeImages = item ? (item.img_srcs || item.imgSrcs) : [];
+            if (!item || !activeImages || activeImages.length <= 1) return;
 
             let imgElement = document.getElementById(`img-${id}`);
             let counterElement = document.getElementById(`counter-${id}`);
             
-            let currentImages = item.imgSrcs;
             let currentSrc = imgElement.src;
-            let currentIndex = currentImages.indexOf(currentSrc);
+            let currentIndex = activeImages.indexOf(currentSrc);
 
             let newIndex = currentIndex + direction;
-            if (newIndex >= currentImages.length) newIndex = 0;
-            if (newIndex < 0) newIndex = currentImages.length - 1;
+            if (newIndex >= activeImages.length) newIndex = 0;
+            if (newIndex < 0) newIndex = activeImages.length - 1;
 
-            imgElement.src = currentImages[newIndex];
+            imgElement.src = activeImages[newIndex];
             if (counterElement) counterElement.innerText = newIndex + 1;
         }
 
@@ -605,7 +601,7 @@
 
             try {
                 const { error } = await supabaseClient
-                    .from('listings')
+                    .from('cars')
                     .delete()
                     .eq('id', id);
 
