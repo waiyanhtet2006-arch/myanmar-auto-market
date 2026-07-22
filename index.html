@@ -238,17 +238,16 @@
             updateWishlistCount();
         }
 
-        // Fetch Listings from Supabase Table 'listings'
+        // Fetch Listings from Supabase Table 'cars'
         async function fetchCloudListings() {
             try {
                 const { data, error } = await supabaseClient
-                    .from('listings')
+                    .from('cars')
                     .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) {
                     console.error('Supabase fetch error:', error);
-                    // Fallback to local storage if table hasn't been created yet
                     cloudListings = JSON.parse(localStorage.getItem('carListings')) || [];
                 } else {
                     cloudListings = data || [];
@@ -361,17 +360,15 @@
 
             try {
                 if (editId) {
-                    // Update record in Supabase
                     const { error } = await supabaseClient
-                        .from('listings')
+                        .from('cars')
                         .update(listingData)
                         .eq('id', editId);
 
                     if (error) throw error;
                 } else {
-                    // Insert new record in Supabase
                     const { error } = await supabaseClient
-                        .from('listings')
+                        .from('cars')
                         .insert([listingData]);
 
                     if (error) throw error;
@@ -383,7 +380,6 @@
                 await fetchCloudListings();
             } catch (err) {
                 console.error('Supabase write error:', err);
-                // Fallback local storage saving if network/table schema mismatch occurs
                 let localFallback = JSON.parse(localStorage.getItem('carListings')) || [];
                 if (editId) {
                     let idx = localFallback.findIndex(l => l.id == editId);
@@ -392,7 +388,7 @@
                     localFallback.unshift({ id: Date.now(), ...listingData });
                 }
                 localStorage.setItem('carListings', JSON.stringify(localFallback));
-                alert('Saved locally (Cloud table configuration check recommended)!');
+                alert('Saved locally due to network or table error.');
                 cancelEdit();
                 switchTab('feed');
                 fetchCloudListings();
@@ -605,7 +601,7 @@
 
             try {
                 const { error } = await supabaseClient
-                    .from('listings')
+                    .from('cars')
                     .delete()
                     .eq('id', id);
 
