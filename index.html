@@ -140,13 +140,11 @@
 
     <!-- Facebook Style Fullscreen Photo Viewer Modal -->
     <div id="fb-photo-modal" class="fixed inset-0 bg-black z-50 hidden flex flex-col justify-between select-none">
-        <!-- Top bar with counter and close button -->
         <div class="flex justify-between items-center p-4 bg-gradient-to-b from-black/80 to-transparent text-white z-10">
             <span id="fb-modal-counter" class="text-sm font-medium">1 / 1</span>
             <button onclick="triggerHaptic(); closeFbPhotoModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-xl font-bold backdrop-blur-md">✕</button>
         </div>
 
-        <!-- Center Image Stage with swipe/arrow capability -->
         <div class="relative flex-1 flex items-center justify-center overflow-hidden px-2">
             <button id="fb-prev-btn" onclick="triggerHaptic(); changeFbModalSlide(-1)" class="absolute left-3 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center text-xl z-10 transition">‹</button>
             
@@ -155,7 +153,6 @@
             <button id="fb-next-btn" onclick="triggerHaptic(); changeFbModalSlide(1)" class="absolute right-3 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center text-xl z-10 transition">›</button>
         </div>
 
-        <!-- Bottom Thumbnails bar (like Facebook gallery preview) -->
         <div id="fb-modal-thumbs" class="p-3 bg-black/80 flex items-center justify-center space-x-2 overflow-x-auto min-h-[70px]"></div>
     </div>
 
@@ -538,6 +535,23 @@
                     `;
                 }
 
+                // Render saved comments from local storage per listing
+                let commentsKey = `carComments_${stringId}`;
+                let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
+                let commentsHtml = '';
+                comments.forEach((c, cIdx) => {
+                    commentsHtml += `
+                        <div class="bg-gray-50 p-2 rounded text-xs space-y-0.5 relative group">
+                            <div class="flex justify-between items-center font-semibold text-gray-700">
+                                <span>${escapeHtml(c.name)}</span>
+                                <span class="text-[10px] text-gray-400">${c.time}</span>
+                            </div>
+                            <p class="text-gray-600">${escapeHtml(c.text)}</p>
+                            <button onclick="triggerHaptic(); deleteComment('${stringId}', ${cIdx})" class="absolute top-1 right-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition text-[10px]">✕</button>
+                        </div>
+                    `;
+                });
+
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
                 
@@ -568,10 +582,62 @@
                     <p class="text-sm text-gray-600">${item.desc}</p>
                     ${contactsHtml}
                     ${ownerActionsHtml}
+
+                    <!-- Comment Section -->
+                    <div class="border-t pt-3 mt-3 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold text-gray-700">
+                            <span>💬 Comments (${comments.length})</span>
+                        </div>
+                        <div id="comments-list-${stringId}" class="space-y-1.5 max-h-36 overflow-y-auto">
+                            ${commentsHtml || '<p class="text-xs text-gray-400 italic">No comments yet. Be the first to comment!</p>'}
+                        </div>
+                        <form onsubmit="postComment(event, '${stringId}')" class="flex gap-1 pt-1">
+                            <input type="text" id="comment-name-${stringId}" placeholder="Your name" required class="w-1/3 p-1.5 border border-gray-300 rounded text-xs">
+                            <input type="text" id="comment-text-${stringId}" placeholder="Write a comment..." required class="flex-1 p-1.5 border border-gray-300 rounded text-xs">
+                            <button type="submit" onclick="triggerHaptic()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-700">Post</button>
+                        </form>
+                    </div>
                 `;
                 fragment.appendChild(card);
             });
             container.appendChild(fragment);
+        }
+
+        window.postComment = function(event, listingId) {
+            event.preventDefault();
+            triggerHaptic();
+
+            const nameInput = document.getElementById(`comment-name-${listingId}`);
+            const textInput = document.getElementById(`comment-text-${listingId}`);
+
+            const name = nameInput.value.trim();
+            const text = textInput.value.trim();
+            if (!name || !text) return;
+
+            let commentsKey = `carComments_${listingId}`;
+            let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            comments.push({ name, text, time: timeStr });
+            localStorage.setItem(commentsKey, JSON.stringify(comments));
+
+            nameInput.value = '';
+            textInput.value = '';
+            renderFilteredListings();
+        }
+
+        window.deleteComment = function(listingId, commentIndex) {
+            let commentsKey = `carComments_${listingId}`;
+            let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
+            comments.splice(commentIndex, 1);
+            localStorage.setItem(commentsKey, JSON.stringify(comments));
+            renderFilteredListings();
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
         window.changeSlide = function(id, direction) {
@@ -598,7 +664,6 @@
             let item = cloudListings.find(l => String(l.id) === String(id));
             if (!item || !item.img_srcs || item.img_srcs.length === 0) return;
 
-            // If user clicked via counter badge or current visible photo index
             let imgElement = document.getElementById(`img-${id}`);
             if (imgElement) {
                 let currentSrc = imgElement.src;
@@ -648,7 +713,6 @@
                 nextBtn.classList.remove('hidden');
                 thumbsContainer.classList.remove('hidden');
 
-                // Render Facebook style bottom thumbnail strip
                 thumbsContainer.innerHTML = '';
                 currentModalImages.forEach((src, idx) => {
                     const thumb = document.createElement('img');
