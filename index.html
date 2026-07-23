@@ -134,8 +134,7 @@
                 <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars (FYP)</h2>
                 <button onclick="triggerHaptic(); fetchCloudListings()" class="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-md font-semibold hover:bg-blue-200">🔄 Refresh Cloud</button>
             </div>
-            <div id="listings-container" class="space-y-4">
-                </div>
+            <div id="listings-container" class="space-y-4"></div>
         </section>
     </main>
 
@@ -157,7 +156,6 @@
     </nav>
 
     <script>
-        // Supabase Initialization
         const SUPABASE_URL = 'https://ujdwilbpkzrinbammmfi.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_I34WJ4psecMdoTTyaDxHfw_WFsLvk9w';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -167,17 +165,20 @@
         let cloudListings = [];
         let currentUserId = null;
 
-        // Anonymous Authentication for post ownership control
         async function initAnonymousAuth() {
-            let { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                const { data, error } = await supabaseClient.auth.signInAnonymously();
-                if (data && data.session) {
-                    session = data.session;
+            try {
+                let { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) {
+                    const { data, error } = await supabaseClient.auth.signInAnonymously();
+                    if (data && data.session) {
+                        session = data.session;
+                    }
                 }
-            }
-            if (session && session.user) {
-                currentUserId = session.user.id;
+                if (session && session.user) {
+                    currentUserId = session.user.id;
+                }
+            } catch (err) {
+                console.error('Auth initialization error:', err);
             }
         }
 
@@ -245,11 +246,9 @@
             updateWishlistCount();
         }
 
-        // Fetch Listings from Supabase Table 'cars'
         async function fetchCloudListings() {
             try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session && session.user) currentUserId = session.user.id;
+                await initAnonymousAuth();
 
                 const { data, error } = await supabaseClient
                     .from('cars')
@@ -330,6 +329,8 @@
             e.preventDefault();
             triggerHaptic();
             
+            await initAnonymousAuth();
+
             const phone = document.getElementById('car-phone').value.trim();
             const viber = document.getElementById('car-viber').value.trim();
             const telegram = document.getElementById('car-telegram').value.trim();
@@ -400,7 +401,7 @@
 
         async function editListing(id) {
             triggerHaptic();
-            let item = cloudListings.find(l => l.id == id);
+            let item = cloudListings.find(l => String(l.id) === String(id));
             if (!item) return;
 
             switchTab('sell');
@@ -515,13 +516,13 @@
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
 
-                // Strictly check if current user owns this post (must match currentUserId)
-                const isOwner = Boolean(item.user_id && currentUserId && item.user_id === currentUserId);
+                // Strict check: Only show edit/delete if current session user ID matches the post's user_id
+                const isOwner = Boolean(item.user_id && currentUserId && String(item.user_id) === String(currentUserId));
 
                 let ownerActionsHtml = '';
                 if (isOwner) {
                     ownerActionsHtml = `
-                        <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-100">
                             <button onclick="editListing('${item.id}')" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200 transition">✏️ Edit</button>
                             <button onclick="deleteListing('${item.id}')" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 transition">🗑️ Delete</button>
                         </div>
@@ -565,7 +566,7 @@
         }
 
         window.changeSlide = function(id, direction) {
-            let item = cloudListings.find(l => l.id == id);
+            let item = cloudListings.find(l => String(l.id) === String(id));
             if (!item || !item.img_srcs || item.img_srcs.length <= 1) return;
 
             let imgElement = document.getElementById(`img-${id}`);
@@ -586,7 +587,7 @@
         function toggleFavorite(id) {
             let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
             if (favorites.includes(id)) {
-                favorites = favorites.filter(favId => favId != id);
+                favorites = favorites.filter(favId => String(favId) !== String(id));
             } else {
                 favorites.push(id);
             }
@@ -613,9 +614,9 @@
 
                 if (error) throw error;
                 
-                cloudListings = cloudListings.filter(item => item.id != id);
+                cloudListings = cloudListings.filter(item => String(item.id) !== String(id));
                 let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-                favorites = favorites.filter(favId => favId != id);
+                favorites = favorites.filter(favId => String(favId) !== String(id));
                 localStorage.setItem('carFavorites', JSON.stringify(favorites));
 
                 renderFilteredListings();
