@@ -98,15 +98,21 @@
                             <input type="text" id="dealer-name" placeholder="e.g., Apex Auto Showroom" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Showroom Logo URL (Optional)</label>
-                            <input type="text" id="dealer-logo" placeholder="https://.../logo.png" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Showroom Logo (Select from Gallery)</label>
+                            <div class="flex items-center space-x-3">
+                                <div id="dealer-logo-preview-wrapper" class="relative w-12 h-12 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center shrink-0">
+                                    <img id="dealer-logo-preview" src="https://via.placeholder.com/100?text=Logo" class="w-full h-full object-cover">
+                                </div>
+                                <input type="file" id="dealer-logo-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/10 file:text-blue-400 hover:file:bg-blue-600/20 transition cursor-pointer">
+                            </div>
+                            <input type="hidden" id="dealer-logo" value="">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Facebook Page Link</label>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Facebook Page Link (Optional)</label>
                             <input type="text" id="dealer-fb" placeholder="https://facebook.com/showroom" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Website URL</label>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Website URL (Optional)</label>
                             <input type="text" id="dealer-website" placeholder="https://myshowroom.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                         </div>
                     </div>
@@ -401,6 +407,18 @@
             reader.readAsDataURL(file);
         }
 
+        // Dealership Logo Gallery Selection
+        document.getElementById('dealer-logo-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            compressImage(file, (compressedDataUrl) => {
+                document.getElementById('dealer-logo').value = compressedDataUrl;
+                document.getElementById('dealer-logo-preview').src = compressedDataUrl;
+                e.target.value = '';
+            });
+        });
+
         document.getElementById('car-images').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
@@ -551,10 +569,13 @@
                 setSellerType('dealer');
                 document.getElementById('dealer-name').value = item.dealer_info.name || '';
                 document.getElementById('dealer-logo').value = item.dealer_info.logo || '';
+                document.getElementById('dealer-logo-preview').src = item.dealer_info.logo || 'https://via.placeholder.com/100?text=Logo';
                 document.getElementById('dealer-fb').value = item.dealer_info.facebook || '';
                 document.getElementById('dealer-website').value = item.dealer_info.website || '';
             } else {
                 setSellerType('individual');
+                document.getElementById('dealer-logo').value = '';
+                document.getElementById('dealer-logo-preview').src = 'https://via.placeholder.com/100?text=Logo';
             }
 
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
@@ -597,6 +618,8 @@
             document.getElementById('car-form').reset();
             document.getElementById('edit-listing-id').value = '';
             setSellerType('individual');
+            document.getElementById('dealer-logo').value = '';
+            document.getElementById('dealer-logo-preview').src = 'https://via.placeholder.com/100?text=Logo';
             activeEditImages = [];
             renderImagePreviews();
             document.getElementById('form-heading').innerText = '🚗 Sell Your Car';
