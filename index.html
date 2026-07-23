@@ -13,26 +13,18 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans pb-24">
     <!-- Premium Header -->
-    <header class="bg-slate-900/85 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Myanmar Auto Market</h1>
-            <div class="flex items-center space-x-2">
-                <span id="header-subtitle" class="text-[11px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-1 rounded-full font-semibold tracking-wide">LIVE CLOUD</span>
-            </div>
+            <span id="header-subtitle" class="text-[11px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-1 rounded-full font-semibold tracking-wide">LIVE CLOUD</span>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
-        <!-- Welcome Banner / Auth Bar -->
-        <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg space-y-3">
-            <div>
-                <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
-                <p class="text-xs text-slate-400 mt-1 leading-relaxed">Browse cars freely. Sign in with Google anytime to post or manage your car listings.</p>
-            </div>
-            <div id="auth-status-container" class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
-                <span id="user-session-text" class="text-xs text-slate-400 font-medium">Not signed in</span>
-                <button id="auth-action-btn" onclick="triggerHaptic(); toggleAuthSession()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-md">Sign in with Google</button>
-            </div>
+        <!-- Welcome Banner -->
+        <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg">
+            <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar.</p>
         </div>
 
         <!-- Sell / Edit Form Section -->
@@ -126,7 +118,7 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section -->
+        <!-- Search & Filter Section with Saved Search Button -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
             <div class="relative flex gap-2">
                 <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
@@ -147,7 +139,7 @@
                 </select>
             </div>
             
-            <!-- Quick Notification Badge Bar for Saved Searches -->
+            <!-- Quick Notification Badge Bar for Saved Searches / Price Drops -->
             <div id="saved-searches-bar" class="flex flex-wrap gap-1.5 pt-1"></div>
         </section>
 
@@ -184,7 +176,7 @@
                 <span class="text-xl">🏠</span>
                 <span class="text-[10px] mt-1 font-semibold tracking-wider">Feed</span>
             </button>
-            <button onclick="triggerHaptic(); checkSellTabAccess()" id="nav-btn-sell" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition">
+            <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition">
                 <span class="text-xl">➕</span>
                 <span class="text-[10px] mt-1 font-semibold tracking-wider">Sell Car</span>
             </button>
@@ -203,7 +195,6 @@
         let currentTab = 'feed';
         let activeEditImages = [];
         let cloudListings = [];
-        let currentUser = null;
 
         let currentModalImages = [];
         let currentModalIndex = 0;
@@ -224,68 +215,15 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            currentUser = session ? session.user : null;
-            updateAuthUI();
-
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
             renderSavedSearchesBar();
             await fetchCloudListings();
-
-            supabaseClient.auth.onAuthStateChange((event, session) => {
-                currentUser = session ? session.user : null;
-                updateAuthUI();
-                renderFilteredListings();
-            });
+            checkForNewMatchesOrPriceDrops();
         });
 
-        function updateAuthUI() {
-            const sessionText = document.getElementById('user-session-text');
-            const authBtn = document.getElementById('auth-action-btn');
-
-            if (currentUser) {
-                let displayName = currentUser.user_metadata?.full_name || currentUser.email || 'Google User';
-                sessionText.innerHTML = `Signed in as <span class="text-white font-bold">${displayName}</span>`;
-                authBtn.innerText = "Sign Out";
-                authBtn.className = "bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm";
-            } else {
-                sessionText.innerText = "Not signed in";
-                authBtn.innerText = "Sign in with Google";
-                authBtn.className = "bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-md";
-            }
-        }
-
-        async function toggleAuthSession() {
-            if (currentUser) {
-                await supabaseClient.auth.signOut();
-                alert('You have been signed out.');
-                switchTab('feed');
-            } else {
-                const { error } = await supabaseClient.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: { redirectTo: window.location.origin }
-                });
-                if (error) alert('Google Sign-In Error: ' + error.message);
-            }
-        }
-
-        function checkSellTabAccess() {
-            if (!currentUser) {
-                alert('Please sign in with your Google account first to post a car.');
-                toggleAuthSession();
-                return;
-            }
-            switchTab('sell');
-        }
-
         function switchTab(tab) {
-            if (tab === 'sell' && !currentUser) {
-                checkSellTabAccess();
-                return;
-            }
-
             currentTab = tab;
             
             const formSection = document.getElementById('form-section');
@@ -407,12 +345,6 @@
             e.preventDefault();
             triggerHaptic();
             
-            if (!currentUser) {
-                alert('You must be signed in with Google to post a car.');
-                toggleAuthSession();
-                return;
-            }
-
             const phone = document.getElementById('car-phone').value.trim();
             const viber = document.getElementById('car-viber').value.trim();
             const telegram = document.getElementById('car-telegram').value.trim();
@@ -444,8 +376,7 @@
                 price,
                 contacts: { phone, viber, telegram },
                 desc,
-                img_srcs: finalImages,
-                user_id: currentUser.id
+                img_srcs: finalImages
             };
 
             const submitBtn = document.getElementById('form-submit-btn');
@@ -454,6 +385,7 @@
 
             try {
                 if (editId) {
+                    // Check if price changed to flag Price Drop alert
                     let oldItem = cloudListings.find(l => String(l.id) === String(editId));
                     if (oldItem && oldItem.price !== price) {
                         listingData.price_dropped_from = oldItem.price;
@@ -462,16 +394,23 @@
                     const { error } = await supabaseClient
                         .from('cars')
                         .update(listingData)
-                        .eq('id', editId)
-                        .eq('user_id', currentUser.id);
+                        .eq('id', editId);
 
                     if (error) throw error;
                 } else {
-                    const { error } = await supabaseClient
+                    const { data, error } = await supabaseClient
                         .from('cars')
-                        .insert([listingData]);
+                        .insert([listingData])
+                        .select();
 
                     if (error) throw error;
+
+                    if (data && data.length > 0) {
+                        let newId = data[0].id;
+                        let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
+                        myLocalPosts.push(String(newId));
+                        localStorage.setItem('myLocalPostIds', JSON.stringify(myLocalPosts));
+                    }
                 }
 
                 alert('Successfully posted to marketplace!');
@@ -489,18 +428,8 @@
 
         async function editListing(id) {
             triggerHaptic();
-            if (!currentUser) {
-                alert('Please sign in to edit listings.');
-                return;
-            }
-
             let item = cloudListings.find(l => String(l.id) === String(id));
             if (!item) return;
-
-            if (item.user_id && item.user_id !== currentUser.id) {
-                alert('You can only edit your own listings.');
-                return;
-            }
 
             switchTab('sell');
 
@@ -563,6 +492,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
+        // Saved Search & Alert Functions
         function saveCurrentSearch() {
             const query = document.getElementById('search-input').value.trim();
             const brand = document.getElementById('filter-brand').value.trim();
@@ -577,6 +507,8 @@
             if (country && (query || brand)) searchName += ` (${country})`;
 
             let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
+            
+            // Avoid exact duplicate
             let exists = savedSearches.some(s => s.query === query && s.brand === brand && s.country === country);
             if (exists) {
                 alert('This search alert is already saved!');
@@ -626,12 +558,25 @@
             renderSavedSearchesBar();
         }
 
+        function checkForNewMatchesOrPriceDrops() {
+            // Evaluates recent listings or price drops against stored user preferences
+            let cloudListingsCount = cloudListings.length;
+            let lastCheckedCount = parseInt(localStorage.getItem('lastCheckedListingCount') || '0');
+
+            if (cloudListingsCount > lastCheckedCount && lastCheckedCount > 0) {
+                let newCarsCount = cloudListingsCount - lastCheckedCount;
+                console.log(`🔔 New Alert: ${newCarsCount} new car(s) added to the cloud feed!`);
+            }
+            localStorage.setItem('lastCheckedListingCount', cloudListingsCount);
+        }
+
         function renderFilteredListings() {
             const container = document.getElementById('listings-container');
             container.innerHTML = '';
             
             let listings = cloudListings;
             let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
+            let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
 
             if (currentTab === 'saved') {
                 listings = listings.filter(item => favorites.includes(String(item.id)));
@@ -663,7 +608,7 @@
                 
                 let priceBadgeHtml = '';
                 if (item.price_dropped_from) {
-                    priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop</span>`;
+                    priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop (was ${item.price_dropped_from})</span>`;
                 }
 
                 let contactsHtml = '<div class="space-y-2 pt-2">';
@@ -682,8 +627,7 @@
                 contactsHtml += '</div>';
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
-                
-                const isOwner = currentUser && item.user_id && item.user_id === currentUser.id;
+                const isOwner = myLocalPosts.includes(stringId);
 
                 let ownerActionsHtml = '';
                 if (isOwner) {
@@ -719,7 +663,7 @@
 
                 card.innerHTML = `
                     ${carouselHtml}
-                    <h3 class="text-base font-bold text-white tracking-tight pt-1">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
+                    <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
                     <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
                         <p class="text-blue-400 font-bold text-lg">${item.price}</p>
@@ -844,29 +788,21 @@
 
         async function deleteListing(id) {
             triggerHaptic();
-            if (!currentUser) {
-                alert('Please sign in to delete listings.');
-                return;
-            }
-
             if (!confirm('Are you sure you want to delete this listing?')) return;
 
             try {
-                let item = cloudListings.find(l => String(l.id) === String(id));
-                if (item && item.user_id && item.user_id !== currentUser.id) {
-                    alert('You can only delete your own listings.');
-                    return;
-                }
-
                 const { error } = await supabaseClient
                     .from('cars')
                     .delete()
-                    .eq('id', id)
-                    .eq('user_id', currentUser.id);
+                    .eq('id', id);
 
                 if (error) throw error;
                 
                 cloudListings = cloudListings.filter(item => String(item.id) !== String(id));
+                
+                let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
+                myLocalPosts = myLocalPosts.filter(postId => postId !== String(id));
+                localStorage.setItem('myLocalPostIds', JSON.stringify(myLocalPosts));
 
                 let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
                 favorites = favorites.filter(favId => favId !== String(id));
