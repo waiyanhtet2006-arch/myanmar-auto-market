@@ -13,10 +13,16 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans pb-24">
     <!-- Premium Header -->
-    <header class="bg-slate-900/85 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Myanmar Auto Market</h1>
-            <span id="header-subtitle" class="text-[11px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-1 rounded-full font-semibold tracking-wide">LIVE CLOUD</span>
+            <div class="flex flex-col">
+                <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Auto Market</h1>
+                <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE CLOUD</span>
+            </div>
+            <!-- Auth Container -->
+            <div id="auth-container">
+                <!-- Buttons injected via JS -->
+            </div>
         </div>
     </header>
 
@@ -24,7 +30,7 @@
         <!-- Welcome Banner -->
         <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg">
             <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
-            <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar with Verified Dealer Showrooms.</p>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar.</p>
         </div>
 
         <!-- Sell / Edit Form Section -->
@@ -80,42 +86,6 @@
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Price</label>
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
-                </div>
-
-                <!-- Seller Type Toggle -->
-                <div class="border-t border-slate-800 pt-4 space-y-3">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏷️ Seller Account Type</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="type-individual-btn" onclick="triggerHaptic(); setSellerType('individual')" class="bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md">👤 Individual Seller</button>
-                        <button type="button" id="type-dealer-btn" onclick="triggerHaptic(); setSellerType('dealer')" class="bg-slate-950 border border-slate-800 text-slate-400 py-2.5 rounded-xl text-xs font-bold transition">🛡️ Verified Showroom</button>
-                    </div>
-                    <input type="hidden" id="seller-type" value="individual">
-
-                    <!-- Dealership Extra Fields (Shown only if dealer selected) -->
-                    <div id="dealer-extra-fields" class="hidden space-y-3 pt-2 border-t border-slate-800/80">
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Showroom / Dealership Name</label>
-                            <input type="text" id="dealer-name" placeholder="e.g., Apex Auto Showroom" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Showroom Logo (Select from Gallery)</label>
-                            <div class="flex items-center space-x-3">
-                                <div id="dealer-logo-preview-wrapper" class="relative w-12 h-12 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center shrink-0">
-                                    <img id="dealer-logo-preview" src="https://via.placeholder.com/100?text=Logo" class="w-full h-full object-cover">
-                                </div>
-                                <input type="file" id="dealer-logo-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/10 file:text-blue-400 hover:file:bg-blue-600/20 transition cursor-pointer">
-                            </div>
-                            <input type="hidden" id="dealer-logo" value="">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Facebook Page Link (Optional)</label>
-                            <input type="text" id="dealer-fb" placeholder="https://facebook.com/showroom" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Website URL (Optional)</label>
-                            <input type="text" id="dealer-website" placeholder="https://myshowroom.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
-                        </div>
-                    </div>
                 </div>
 
                 <div class="border-t border-slate-800 pt-4 space-y-3">
@@ -175,7 +145,6 @@
                 </select>
             </div>
             
-            <!-- Quick Notification Badge Bar for Saved Searches -->
             <div id="saved-searches-bar" class="flex flex-wrap gap-1.5 pt-1"></div>
         </section>
 
@@ -188,43 +157,6 @@
             <div id="listings-container" class="space-y-4"></div>
         </section>
     </main>
-
-    <!-- Dealership Profile / Showroom Modal -->
-    <div id="dealer-profile-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex flex-col justify-end sm:justify-center p-0 sm:p-4 select-none">
-        <div class="bg-slate-900 border border-slate-800 w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl h-[90vh] sm:h-auto sm:max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center p-4 bg-slate-900/95 border-b border-slate-800 text-white shrink-0">
-                <span class="text-xs font-bold uppercase tracking-wider text-blue-400">🛡️ Verified Showroom Profile</span>
-                <button onclick="triggerHaptic(); closeDealerProfileModal()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-sm font-bold text-slate-200 transition">✕</button>
-            </div>
-
-            <!-- Modal Scrollable Content -->
-            <div class="p-5 overflow-y-auto space-y-4 flex-1">
-                <div class="flex items-center space-x-4 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <img id="modal-dealer-logo" src="https://via.placeholder.com/100?text=Logo" class="w-16 h-16 rounded-xl object-cover border border-slate-800 bg-slate-900">
-                    <div>
-                        <div class="flex items-center space-x-1.5">
-                            <h3 id="modal-dealer-name" class="text-base font-bold text-white">Showroom Name</h3>
-                            <span class="bg-blue-500/20 text-blue-400 text-[10px] px-1.5 py-0.5 rounded-full font-bold">✓ Verified</span>
-                        </div>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Professional Certified Dealership</p>
-                    </div>
-                </div>
-
-                <!-- Showroom Links & Info -->
-                <div class="space-y-2">
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Showroom Links</label>
-                    <div id="modal-dealer-links" class="space-y-2"></div>
-                </div>
-
-                <!-- All Cars By This Dealer -->
-                <div class="space-y-3 pt-2">
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Cars In This Showroom (<span id="modal-dealer-car-count">0</span>)</label>
-                    <div id="modal-dealer-cars-list" class="space-y-3"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Fullscreen Facebook-Style Photo Lightbox -->
     <div id="fb-photo-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
@@ -268,9 +200,11 @@
         let currentTab = 'feed';
         let activeEditImages = [];
         let cloudListings = [];
-
         let currentModalImages = [];
         let currentModalIndex = 0;
+        
+        // Auth State
+        let currentUser = null;
 
         function triggerHaptic() {
             if (navigator.vibrate) {
@@ -288,14 +222,76 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Check existing session
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            currentUser = session?.user || null;
+            updateAuthUI();
+
+            // Listen for auth changes (login/logout)
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
+                currentUser = session?.user || null;
+                updateAuthUI();
+                renderFilteredListings(); // Re-render to show/hide edit buttons
+            });
+
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
             renderSavedSearchesBar();
             await fetchCloudListings();
+            checkForNewMatchesOrPriceDrops();
         });
 
+        // -------------------------
+        // AUTHENTICATION FUNCTIONS
+        // -------------------------
+        function updateAuthUI() {
+            const authContainer = document.getElementById('auth-container');
+            if (currentUser) {
+                authContainer.innerHTML = `
+                    <button onclick="logout()" class="text-[11px] bg-slate-800 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-full font-semibold hover:bg-slate-700 transition shadow-sm">
+                        Log out
+                    </button>
+                `;
+            } else {
+                authContainer.innerHTML = `
+                    <button onclick="loginWithGoogle()" class="text-[11px] bg-white text-slate-900 border border-slate-200 px-3 py-1.5 rounded-full font-bold shadow-sm hover:bg-slate-200 flex items-center gap-1.5 transition">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
+                        Sign in
+                    </button>
+                `;
+            }
+        }
+
+        async function loginWithGoogle() {
+            triggerHaptic();
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+            });
+            if (error) {
+                console.error("Login Error:", error);
+                alert("Failed to log in with Google.");
+            }
+        }
+
+        async function logout() {
+            triggerHaptic();
+            await supabaseClient.auth.signOut();
+            switchTab('feed'); // Kick them back to feed if they were on a protected tab
+        }
+
+        // -------------------------
+        // APP LOGIC
+        // -------------------------
         function switchTab(tab) {
+            // Protect Sell Tab
+            if (tab === 'sell' && !currentUser) {
+                triggerHaptic();
+                alert('Please sign in with Google to post a car listing.');
+                loginWithGoogle();
+                return;
+            }
+
             currentTab = tab;
             
             const formSection = document.getElementById('form-section');
@@ -334,23 +330,6 @@
                 renderFilteredListings();
             }
             updateWishlistCount();
-        }
-
-        function setSellerType(type) {
-            document.getElementById('seller-type').value = type;
-            const indBtn = document.getElementById('type-individual-btn');
-            const dealerBtn = document.getElementById('type-dealer-btn');
-            const extraFields = document.getElementById('dealer-extra-fields');
-
-            if (type === 'individual') {
-                indBtn.className = "bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md";
-                dealerBtn.className = "bg-slate-950 border border-slate-800 text-slate-400 py-2.5 rounded-xl text-xs font-bold transition";
-                extraFields.classList.add('hidden');
-            } else {
-                dealerBtn.className = "bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md";
-                indBtn.className = "bg-slate-950 border border-slate-800 text-slate-400 py-2.5 rounded-xl text-xs font-bold transition";
-                extraFields.classList.remove('hidden');
-            }
         }
 
         async function fetchCloudListings() {
@@ -407,17 +386,6 @@
             reader.readAsDataURL(file);
         }
 
-        document.getElementById('dealer-logo-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            compressImage(file, (compressedDataUrl) => {
-                document.getElementById('dealer-logo').value = compressedDataUrl;
-                document.getElementById('dealer-logo-preview').src = compressedDataUrl;
-                e.target.value = '';
-            });
-        });
-
         document.getElementById('car-images').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
@@ -445,6 +413,11 @@
             e.preventDefault();
             triggerHaptic();
             
+            if (!currentUser) {
+                alert('You must be logged in to post.');
+                return;
+            }
+            
             const phone = document.getElementById('car-phone').value.trim();
             const viber = document.getElementById('car-viber').value.trim();
             const telegram = document.getElementById('car-telegram').value.trim();
@@ -464,26 +437,10 @@
             const price = document.getElementById('car-price').value.trim();
             const desc = document.getElementById('car-desc').value.trim();
 
-            const sellerType = document.getElementById('seller-type').value;
-            let dealerInfo = null;
-
-            if (sellerType === 'dealer') {
-                const dealerName = document.getElementById('dealer-name').value.trim();
-                if (!dealerName) {
-                    alert('Please enter your Showroom / Dealership name.');
-                    return;
-                }
-                dealerInfo = {
-                    name: dealerName,
-                    logo: document.getElementById('dealer-logo').value.trim() || 'https://via.placeholder.com/100?text=Showroom',
-                    facebook: document.getElementById('dealer-fb').value.trim(),
-                    website: document.getElementById('dealer-website').value.trim()
-                };
-            }
-
             const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
 
             const listingData = {
+                user_id: currentUser.id, // Linked to logged-in user
                 brand,
                 title,
                 year,
@@ -493,9 +450,7 @@
                 price,
                 contacts: { phone, viber, telegram },
                 desc,
-                img_srcs: finalImages,
-                seller_type: sellerType,
-                dealer_info: dealerInfo
+                img_srcs: finalImages
             };
 
             const submitBtn = document.getElementById('form-submit-btn');
@@ -512,7 +467,8 @@
                     const { error } = await supabaseClient
                         .from('cars')
                         .update(listingData)
-                        .eq('id', editId);
+                        .eq('id', editId)
+                        .eq('user_id', currentUser.id); // Security measure
 
                     if (error) throw error;
                 } else {
@@ -522,13 +478,6 @@
                         .select();
 
                     if (error) throw error;
-
-                    if (data && data.length > 0) {
-                        let newId = data[0].id;
-                        let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
-                        myLocalPosts.push(String(newId));
-                        localStorage.setItem('myLocalPostIds', JSON.stringify(myLocalPosts));
-                    }
                 }
 
                 alert('Successfully posted to marketplace!');
@@ -547,7 +496,7 @@
         async function editListing(id) {
             triggerHaptic();
             let item = cloudListings.find(l => String(l.id) === String(id));
-            if (!item) return;
+            if (!item || !currentUser || item.user_id !== currentUser.id) return;
 
             switchTab('sell');
 
@@ -563,19 +512,6 @@
             document.getElementById('car-viber').value = item.contacts ? (item.contacts.viber || '') : '';
             document.getElementById('car-telegram').value = item.contacts ? (item.contacts.telegram || '') : '';
             document.getElementById('car-desc').value = item.desc || '';
-
-            if (item.seller_type === 'dealer' && item.dealer_info) {
-                setSellerType('dealer');
-                document.getElementById('dealer-name').value = item.dealer_info.name || '';
-                document.getElementById('dealer-logo').value = item.dealer_info.logo || '';
-                document.getElementById('dealer-logo-preview').src = item.dealer_info.logo || 'https://via.placeholder.com/100?text=Logo';
-                document.getElementById('dealer-fb').value = item.dealer_info.facebook || '';
-                document.getElementById('dealer-website').value = item.dealer_info.website || '';
-            } else {
-                setSellerType('individual');
-                document.getElementById('dealer-logo').value = '';
-                document.getElementById('dealer-logo-preview').src = 'https://via.placeholder.com/100?text=Logo';
-            }
 
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
             renderImagePreviews();
@@ -616,9 +552,6 @@
         function cancelEdit() {
             document.getElementById('car-form').reset();
             document.getElementById('edit-listing-id').value = '';
-            setSellerType('individual');
-            document.getElementById('dealer-logo').value = '';
-            document.getElementById('dealer-logo-preview').src = 'https://via.placeholder.com/100?text=Logo';
             activeEditImages = [];
             renderImagePreviews();
             document.getElementById('form-heading').innerText = '🚗 Sell Your Car';
@@ -626,6 +559,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
+        // Saved Search Functions
         function saveCurrentSearch() {
             const query = document.getElementById('search-input').value.trim();
             const brand = document.getElementById('filter-brand').value.trim();
@@ -641,6 +575,7 @@
 
             let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
             let exists = savedSearches.some(s => s.query === query && s.brand === brand && s.country === country);
+            
             if (exists) {
                 alert('This search alert is already saved!');
                 return;
@@ -689,52 +624,15 @@
             renderSavedSearchesBar();
         }
 
-        window.openDealerProfile = function(dealerNameEncoded) {
-            triggerHaptic();
-            let dealerName = decodeURIComponent(dealerNameEncoded);
-            let dealerCars = cloudListings.filter(item => item.seller_type === 'dealer' && item.dealer_info && item.dealer_info.name === dealerName);
-            if (dealerCars.length === 0) return;
+        function checkForNewMatchesOrPriceDrops() {
+            let cloudListingsCount = cloudListings.length;
+            let lastCheckedCount = parseInt(localStorage.getItem('lastCheckedListingCount') || '0');
 
-            let info = dealerCars[0].dealer_info;
-
-            document.getElementById('modal-dealer-name').innerText = info.name || dealerName;
-            document.getElementById('modal-dealer-logo').src = info.logo || 'https://via.placeholder.com/100?text=Logo';
-            document.getElementById('modal-dealer-car-count').innerText = dealerCars.length;
-
-            let linksContainer = document.getElementById('modal-dealer-links');
-            linksContainer.innerHTML = '';
-
-            if (info.facebook) {
-                linksContainer.innerHTML += `<a href="${info.facebook}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2 rounded-xl hover:bg-blue-600/20 transition">📘 Facebook Showroom Page</a>`;
+            if (cloudListingsCount > lastCheckedCount && lastCheckedCount > 0) {
+                let newCarsCount = cloudListingsCount - lastCheckedCount;
+                console.log(`🔔 New Alert: ${newCarsCount} new car(s) added to the cloud feed!`);
             }
-            if (info.website) {
-                linksContainer.innerHTML += `<a href="${info.website}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2 rounded-xl hover:bg-indigo-600/20 transition">🌐 Official Website</a>`;
-            }
-
-            let carsListContainer = document.getElementById('modal-dealer-cars-list');
-            carsListContainer.innerHTML = '';
-
-            dealerCars.forEach(car => {
-                let carCard = document.createElement('div');
-                carCard.className = "flex items-center space-x-3 bg-slate-950 border border-slate-800 p-2.5 rounded-xl";
-                let thumbImg = (car.img_srcs && car.img_srcs.length > 0) ? car.img_srcs[0] : 'https://via.placeholder.com/100';
-                carCard.innerHTML = `
-                    <img src="${thumbImg}" class="w-16 h-12 object-cover rounded-lg border border-slate-800">
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-white truncate">${car.brand || ''} ${car.title || ''} (${car.year || ''})</h4>
-                        <p class="text-xs text-blue-400 font-bold mt-0.5">${car.price}</p>
-                    </div>
-                `;
-                carsListContainer.appendChild(carCard);
-            });
-
-            document.getElementById('dealer-profile-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        window.closeDealerProfileModal = function() {
-            document.getElementById('dealer-profile-modal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
+            localStorage.setItem('lastCheckedListingCount', cloudListingsCount);
         }
 
         function renderFilteredListings() {
@@ -742,8 +640,10 @@
             container.innerHTML = '';
             
             let listings = cloudListings;
-            let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
-            let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
+            
+            // Get user-specific favorites
+            let favKey = currentUser ? `carFavorites_${currentUser.id}` : 'carFavorites';
+            let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
 
             if (currentTab === 'saved') {
                 listings = listings.filter(item => favorites.includes(String(item.id)));
@@ -775,28 +675,8 @@
                 
                 let priceBadgeHtml = '';
                 if (item.price_dropped_from) {
-                    priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop</span>`;
+                    priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop (was ${item.price_dropped_from})</span>`;
                 }
-
-                let sellerBadgeHtml = `<div class="flex items-center space-x-2 py-1">`;
-                if (item.seller_type === 'dealer' && item.dealer_info) {
-                    let encodedName = encodeURIComponent(item.dealer_info.name);
-                    sellerBadgeHtml += `
-                        <div onclick="openDealerProfile('${encodedName}')" class="flex items-center space-x-2 bg-slate-950 border border-slate-800 hover:border-blue-500/50 px-3 py-1.5 rounded-xl cursor-pointer transition w-full">
-                            <img src="${item.dealer_info.logo}" class="w-6 h-6 rounded-lg object-cover border border-slate-800">
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs font-bold text-white truncate flex items-center">
-                                    ${item.dealer_info.name} 
-                                    <span class="ml-1.5 text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.2 rounded-full font-bold">✓ Verified Dealer</span>
-                                </p>
-                            </div>
-                            <span class="text-xs text-blue-400 font-bold">Showroom ›</span>
-                        </div>
-                    `;
-                } else {
-                    sellerBadgeHtml += `<span class="text-[11px] text-slate-400 font-medium">👤 Individual Seller</span>`;
-                }
-                sellerBadgeHtml += `</div>`;
 
                 let contactsHtml = '<div class="space-y-2 pt-2">';
                 if (item.contacts) {
@@ -814,7 +694,9 @@
                 contactsHtml += '</div>';
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
-                const isOwner = myLocalPosts.includes(stringId);
+                
+                // Security: Edit/Delete buttons only show if the current user ID matches the database user ID
+                const isOwner = currentUser && item.user_id === currentUser.id;
 
                 let ownerActionsHtml = '';
                 if (isOwner) {
@@ -850,7 +732,6 @@
 
                 card.innerHTML = `
                     ${carouselHtml}
-                    ${sellerBadgeHtml}
                     <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
                     <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
@@ -954,8 +835,17 @@
         }
 
         function toggleFavorite(id) {
+            // Require login for saving cars
+            if (!currentUser) {
+                triggerHaptic();
+                alert('Please sign in with Google to save cars.');
+                loginWithGoogle();
+                return;
+            }
+
             let stringId = String(id);
-            let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
+            let favKey = `carFavorites_${currentUser.id}`;
+            let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
             
             if (favorites.includes(stringId)) {
                 favorites = favorites.filter(favId => favId !== stringId);
@@ -963,38 +853,42 @@
                 favorites.push(stringId);
             }
             
-            localStorage.setItem('carFavorites', JSON.stringify(favorites));
+            localStorage.setItem(favKey, JSON.stringify(favorites));
             renderFilteredListings();
             updateWishlistCount();
         }
 
         function updateWishlistCount() {
-            let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
+            if (!currentUser) {
+                document.getElementById('nav-badge').innerText = '';
+                return;
+            }
+            let favKey = `carFavorites_${currentUser.id}`;
+            let favorites = JSON.parse(localStorage.getItem(favKey)) || [];
             const badge = document.getElementById('nav-badge');
             badge.innerText = favorites.length > 0 ? `(${favorites.length})` : '';
         }
 
         async function deleteListing(id) {
             triggerHaptic();
+            if (!currentUser) return;
             if (!confirm('Are you sure you want to delete this listing?')) return;
 
             try {
                 const { error } = await supabaseClient
                     .from('cars')
                     .delete()
-                    .eq('id', id);
+                    .eq('id', id)
+                    .eq('user_id', currentUser.id); // Security measure
 
                 if (error) throw error;
                 
                 cloudListings = cloudListings.filter(item => String(item.id) !== String(id));
-                
-                let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
-                myLocalPosts = myLocalPosts.filter(postId => postId !== String(id));
-                localStorage.setItem('myLocalPostIds', JSON.stringify(myLocalPosts));
 
-                let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
+                let favKey = `carFavorites_${currentUser.id}`;
+                let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
                 favorites = favorites.filter(favId => favId !== String(id));
-                localStorage.setItem('carFavorites', JSON.stringify(favorites));
+                localStorage.setItem(favKey, JSON.stringify(favorites));
 
                 renderFilteredListings();
                 updateWishlistCount();
