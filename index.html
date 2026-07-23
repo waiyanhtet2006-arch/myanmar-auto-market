@@ -407,7 +407,6 @@
             reader.readAsDataURL(file);
         }
 
-        // Dealership Logo Gallery Selection
         document.getElementById('dealer-logo-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -690,7 +689,6 @@
             renderSavedSearchesBar();
         }
 
-        // Dealership Showroom Modal Trigger
         window.openDealerProfile = function(dealerNameEncoded) {
             triggerHaptic();
             let dealerName = decodeURIComponent(dealerNameEncoded);
@@ -780,7 +778,6 @@
                     priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop</span>`;
                 }
 
-                // Seller / Dealership Header Badge
                 let sellerBadgeHtml = `<div class="flex items-center space-x-2 py-1">`;
                 if (item.seller_type === 'dealer' && item.dealer_info) {
                     let encodedName = encodeURIComponent(item.dealer_info.name);
