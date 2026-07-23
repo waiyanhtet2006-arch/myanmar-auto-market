@@ -6,55 +6,62 @@
     <title>Myanmar Auto Market - ကားအရောင်းအဝယ်</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta+Sans', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans pb-20">
-    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-30">
+<body class="bg-slate-950 text-slate-100 font-sans pb-24">
+    <!-- Premium Header -->
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">🚗 Myanmar Auto Market</h1>
-            <span id="header-subtitle" class="text-xs bg-blue-700 px-2.5 py-1 rounded-full font-medium">Live Cloud FYP</span>
+            <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Myanmar Auto Market</h1>
+            <span id="header-subtitle" class="text-[11px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-1 rounded-full font-semibold tracking-wide">LIVE CLOUD</span>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
-        <div id="welcome-banner" class="bg-white p-4 rounded-lg shadow">
-            <h2 class="text-lg font-semibold text-gray-800">Welcome! ကြိုဆိုပါတယ်</h2>
-            <p class="text-sm text-gray-600">The live cloud-synced Burmese car marketplace.</p>
+        <!-- Welcome Banner -->
+        <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg">
+            <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar.</p>
         </div>
 
-        <section id="form-section" class="bg-white p-6 rounded-lg shadow-md hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="form-heading" class="text-xl font-bold text-gray-800">🚗 Sell Your Car</h2>
-                <button type="button" id="cancel-edit-btn" onclick="triggerHaptic(); switchTab('feed')" class="hidden text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 font-semibold">Cancel</button>
+        <!-- Sell / Edit Form Section -->
+        <section id="form-section" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl hidden space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                <h2 id="form-heading" class="text-lg font-bold text-white">🚗 Sell Your Car</h2>
+                <button type="button" id="cancel-edit-btn" onclick="triggerHaptic(); switchTab('feed')" class="hidden text-xs bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg hover:bg-slate-700 font-semibold transition">Cancel</button>
             </div>
             
             <form id="car-form" class="space-y-4">
                 <input type="hidden" id="edit-listing-id" value="">
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Brand (Type)</label>
-                    <input type="text" id="car-brand" placeholder="e.g., Toyota, Honda..." required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Brand (Type)</label>
+                    <input type="text" id="car-brand" placeholder="e.g., Toyota, Honda..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Car Name / Model (Type)</label>
-                    <input type="text" id="car-title" placeholder="e.g., Crown Athlete, Probox..." required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Car Name / Model (Type)</label>
+                    <input type="text" id="car-title" placeholder="e.g., Crown Athlete, Probox..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Model Year (Type)</label>
-                        <input type="text" id="car-year" placeholder="e.g., 2004" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Model Year</label>
+                        <input type="text" id="car-year" placeholder="e.g., 2004" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Color (Type)</label>
-                        <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Color</label>
+                        <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Made in (Select)</label>
-                        <select id="car-country" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Made in</label>
+                        <select id="car-country" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500 transition">
                             <option value="Japan">Japan</option>
                             <option value="Thailand">Thailand</option>
                             <option value="China">China</option>
@@ -65,58 +72,61 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Mileage (Optional)</label>
-                        <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Mileage</label>
+                        <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Price (USD / MMK)</label>
-                    <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Price</label>
+                    <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                 </div>
 
-                <div class="border-t pt-3 space-y-3">
-                    <label class="block text-sm font-bold text-gray-800">📱 Instant Chat & Contact Info (Fill at least one)</label>
+                <div class="border-t border-slate-800 pt-4 space-y-3">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📱 Contact Info (Fill at least one)</label>
                     <div>
-                        <label class="block text-xs font-medium text-gray-600">Phone Number</label>
-                        <input type="text" id="car-phone" placeholder="e.g., 09-912345678" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
+                        <input type="text" id="car-phone" placeholder="e.g., 09-912345678" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-600">Viber Number</label>
-                        <input type="text" id="car-viber" placeholder="e.g., 09-912345678" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Viber Number</label>
+                        <input type="text" id="car-viber" placeholder="e.g., 09-912345678" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-600">Telegram Username / Number</label>
-                        <input type="text" id="car-telegram" placeholder="e.g., @username or phone" class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-sm">
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Telegram Username / Number</label>
+                        <input type="text" id="car-telegram" placeholder="e.g., @username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
-                <div class="border-t pt-3">
+                <div class="border-t border-slate-800 pt-4">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="block text-sm font-medium text-gray-700">Manage Photos (Up to 10)</label>
-                        <span id="photo-count-indicator" class="text-xs text-gray-500 font-semibold">0 / 10</span>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Photos (Up to 10)</label>
+                        <span id="photo-count-indicator" class="text-xs text-slate-400 font-semibold">0 / 10</span>
                     </div>
                     
                     <div id="current-images-preview" class="grid grid-cols-4 gap-2 mb-3"></div>
 
-                    <input type="file" id="car-images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <p class="text-xs text-gray-500 mt-1">Select up to 10 photos. Auto-compressed for cloud sync.</p>
+                    <input type="file" id="car-images" accept="image/*" multiple class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/10 file:text-blue-400 hover:file:bg-blue-600/20 transition cursor-pointer">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Description</label>
+                    <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition"></textarea>
                 </div>
-                <button type="submit" id="form-submit-btn" onclick="triggerHaptic()" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700">Post Live Listing</button>
+
+                <button type="submit" id="form-submit-btn" onclick="triggerHaptic()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-600/20 transition">Post Live Listing</button>
             </form>
         </section>
 
-        <section id="search-section" class="bg-white p-4 rounded-lg shadow-md space-y-3">
-            <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full p-2 border border-gray-300 rounded-md text-sm">
+        <!-- Search & Filter Section -->
+        <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
+            <div class="relative">
+                <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+            </div>
             
             <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="filter-brand" placeholder="Filter by Brand..." class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
-                <select id="filter-country" onchange="triggerHaptic()" class="p-1.5 border border-gray-300 rounded-md text-xs bg-white">
+                <input type="text" id="filter-brand" placeholder="Filter by Brand..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500 transition">
                     <option value="">All Countries</option>
                     <option value="Japan">Japan</option>
                     <option value="Thailand">Thailand</option>
@@ -129,46 +139,46 @@
             </div>
         </section>
 
+        <!-- Feed Header -->
         <section class="space-y-4">
-            <div class="flex justify-between items-center">
-                <h2 id="feed-title" class="text-xl font-bold text-gray-800">📋 Available Cars (FYP)</h2>
-                <button onclick="triggerHaptic(); fetchCloudListings()" class="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-md font-semibold hover:bg-blue-200">🔄 Refresh Cloud</button>
+            <div class="flex justify-between items-center px-1">
+                <h2 id="feed-title" class="text-lg font-bold text-slate-100">📋 Available Cars (FYP)</h2>
+                <button onclick="triggerHaptic(); fetchCloudListings()" class="text-xs bg-slate-900 border border-slate-800 text-blue-400 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-800 transition shadow-sm">🔄 Refresh</button>
             </div>
             <div id="listings-container" class="space-y-4"></div>
         </section>
     </main>
 
-    <!-- Facebook Style Fullscreen Photo Viewer Modal -->
-    <div id="fb-photo-modal" class="fixed inset-0 bg-black z-50 hidden flex flex-col justify-between select-none">
-        <div class="flex justify-between items-center p-4 bg-gradient-to-b from-black/80 to-transparent text-white z-10">
-            <span id="fb-modal-counter" class="text-sm font-medium">1 / 1</span>
-            <button onclick="triggerHaptic(); closeFbPhotoModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-xl font-bold backdrop-blur-md">✕</button>
+    <!-- Fullscreen Facebook-Style Photo Lightbox -->
+    <div id="fb-photo-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
+        <div class="flex justify-between items-center p-4 bg-slate-900/60 border-b border-slate-800 text-white z-10">
+            <span id="fb-modal-counter" class="text-xs font-semibold text-slate-300 tracking-wider">1 / 1</span>
+            <button onclick="triggerHaptic(); closeFbPhotoModal()" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-sm font-bold text-slate-200 transition">✕</button>
         </div>
 
         <div class="relative flex-1 flex items-center justify-center overflow-hidden px-2">
-            <button id="fb-prev-btn" onclick="triggerHaptic(); changeFbModalSlide(-1)" class="absolute left-3 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center text-xl z-10 transition">‹</button>
-            
+            <button id="fb-prev-btn" onclick="triggerHaptic(); changeFbModalSlide(-1)" class="absolute left-3 bg-slate-900/80 hover:bg-slate-800 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg z-10 border border-slate-700 transition">‹</button>
             <img id="fb-modal-img" src="" class="max-h-full max-w-full object-contain transition-transform duration-200" alt="Full Image">
-
-            <button id="fb-next-btn" onclick="triggerHaptic(); changeFbModalSlide(1)" class="absolute right-3 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center text-xl z-10 transition">›</button>
+            <button id="fb-next-btn" onclick="triggerHaptic(); changeFbModalSlide(1)" class="absolute right-3 bg-slate-900/80 hover:bg-slate-800 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg z-10 border border-slate-700 transition">›</button>
         </div>
 
-        <div id="fb-modal-thumbs" class="p-3 bg-black/80 flex items-center justify-center space-x-2 overflow-x-auto min-h-[70px]"></div>
+        <div id="fb-modal-thumbs" class="p-3 bg-slate-900/80 border-t border-slate-800 flex items-center justify-center space-x-2 overflow-x-auto min-h-[72px]"></div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+    <!-- Premium Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-xl border-t border-slate-800 shadow-2xl z-40">
         <div class="max-w-md mx-auto grid grid-cols-3 h-16">
-            <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-600 font-bold transition">
+            <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-400 font-bold transition">
                 <span class="text-xl">🏠</span>
-                <span class="text-xs mt-0.5">Feed</span>
+                <span class="text-[10px] mt-1 font-semibold tracking-wider">Feed</span>
             </button>
-            <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-gray-400 font-medium hover:text-gray-600 transition">
+            <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition">
                 <span class="text-xl">➕</span>
-                <span class="text-xs mt-0.5">Sell Car</span>
+                <span class="text-[10px] mt-1 font-semibold tracking-wider">Sell Car</span>
             </button>
-            <button onclick="triggerHaptic(); switchTab('saved')" id="nav-btn-saved" class="flex flex-col items-center justify-center text-gray-400 font-medium hover:text-gray-600 transition relative">
+            <button onclick="triggerHaptic(); switchTab('saved')" id="nav-btn-saved" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition relative">
                 <span class="text-xl">❤️</span>
-                <span class="text-xs mt-0.5">Saved <span id="nav-badge" class="text-[10px]"></span></span>
+                <span class="text-[10px] mt-1 font-semibold tracking-wider">Saved <span id="nav-badge" class="text-[9px] text-blue-400"></span></span>
             </button>
         </div>
     </nav>
@@ -182,7 +192,6 @@
         let activeEditImages = [];
         let cloudListings = [];
 
-        // Facebook Lightbox Viewer State
         let currentModalImages = [];
         let currentModalIndex = 0;
 
@@ -217,33 +226,33 @@
             const feedTitle = document.getElementById('feed-title');
             const headerSubtitle = document.getElementById('header-subtitle');
 
-            document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
-            document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
-            document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-gray-400 font-medium transition";
+            document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
+            document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
+            document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
 
             if (tab === 'feed') {
-                document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
+                document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
                 formSection.classList.add('hidden');
                 searchSection.classList.remove('hidden');
                 welcomeBanner.classList.remove('hidden');
                 feedTitle.innerText = "📋 Available Cars (FYP)";
-                headerSubtitle.innerText = "Live Cloud FYP";
+                headerSubtitle.innerText = "LIVE CLOUD";
                 renderFilteredListings();
             } else if (tab === 'sell') {
-                document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
+                document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
                 formSection.classList.remove('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
                 feedTitle.innerText = "🚗 Manage Your Listing";
-                headerSubtitle.innerText = "Cloud Post / Edit Mode";
+                headerSubtitle.innerText = "POST / EDIT";
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (tab === 'saved') {
-                document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-blue-600 font-bold transition";
+                document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
                 formSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
                 feedTitle.innerText = "❤️ Your Saved Cars";
-                headerSubtitle.innerText = "Wishlist Garage";
+                headerSubtitle.innerText = "WISHLIST";
                 renderFilteredListings();
             }
             updateWishlistCount();
@@ -441,16 +450,16 @@
             countIndicator.innerText = `${activeEditImages.length} / 10`;
 
             if (activeEditImages.length === 0) {
-                container.innerHTML = '<div class="col-span-4 text-xs text-gray-400 py-1">No images added yet.</div>';
+                container.innerHTML = '<div class="col-span-4 text-xs text-slate-500 py-1">No images added yet.</div>';
                 return;
             }
 
             activeEditImages.forEach((src, idx) => {
                 const wrapper = document.createElement('div');
-                wrapper.className = "relative bg-gray-50 border border-gray-200 rounded-lg p-1 flex items-center justify-center";
+                wrapper.className = "relative bg-slate-950 border border-slate-800 rounded-xl p-1 flex items-center justify-center";
                 wrapper.innerHTML = `
-                    <img src="${src}" class="w-full h-16 object-cover rounded" loading="lazy">
-                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-700 cursor-pointer">✕</button>
+                    <img src="${src}" class="w-full h-16 object-cover rounded-lg" loading="lazy">
+                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-1.5 -right-1.5 bg-rose-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md hover:bg-rose-500 cursor-pointer">✕</button>
                 `;
                 container.appendChild(wrapper);
             });
@@ -496,7 +505,7 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">${currentTab === 'saved' ? 'No saved cars in your wishlist.' : 'No cars found matching your search.'}</p>`;
+                container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${currentTab === 'saved' ? 'No saved cars in your wishlist.' : 'No cars found matching your search.'}</p>`;
                 return;
             }
 
@@ -507,17 +516,17 @@
                 const isFav = favorites.includes(stringId);
                 const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                 
-                let contactsHtml = '<div class="space-y-1.5 pt-1">';
+                let contactsHtml = '<div class="space-y-2 pt-2">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
-                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-50 text-blue-700 text-center text-sm font-semibold py-1.5 rounded-md border border-blue-200 hover:bg-blue-100 transition">📞 Call: ${item.contacts.phone}</a>`;
+                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">📞 Call: ${item.contacts.phone}</a>`;
                     }
                     if (item.contacts.viber) {
-                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-50 text-purple-700 text-center text-sm font-semibold py-1.5 rounded-md border border-purple-200 hover:bg-purple-100 transition">🟣 Viber: ${item.contacts.viber}</a>`;
+                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-600/10 border border-purple-500/20 text-purple-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-purple-600/20 transition">🟣 Viber: ${item.contacts.viber}</a>`;
                     }
                     if (item.contacts.telegram) {
                         let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
-                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 text-sky-700 text-center text-sm font-semibold py-1.5 rounded-md border border-sky-200 hover:bg-sky-100 transition">✈️ Telegram: ${item.contacts.telegram}</a>`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${item.contacts.telegram}</a>`;
                     }
                 }
                 contactsHtml += '</div>';
@@ -528,116 +537,47 @@
                 let ownerActionsHtml = '';
                 if (isOwner) {
                     ownerActionsHtml = `
-                        <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-100">
-                            <button onclick="editListing('${item.id}')" class="bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-md hover:bg-gray-200 transition">✏️ Edit</button>
-                            <button onclick="deleteListing('${item.id}')" class="bg-red-100 text-red-600 text-sm font-semibold py-2 rounded-md hover:bg-red-200 transition">🗑️ Delete</button>
+                        <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800">
+                            <button onclick="editListing('${item.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded-xl transition">✏️ Edit</button>
+                            <button onclick="deleteListing('${item.id}')" class="bg-rose-600/10 border border-rose-500/20 hover:bg-rose-600/20 text-rose-400 text-xs font-bold py-2 rounded-xl transition">🗑️ Delete</button>
                         </div>
                     `;
                 }
 
-                // Render saved comments from local storage per listing
-                let commentsKey = `carComments_${stringId}`;
-                let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
-                let commentsHtml = '';
-                comments.forEach((c, cIdx) => {
-                    commentsHtml += `
-                        <div class="bg-gray-50 p-2 rounded text-xs space-y-0.5 relative group">
-                            <div class="flex justify-between items-center font-semibold text-gray-700">
-                                <span>${escapeHtml(c.name)}</span>
-                                <span class="text-[10px] text-gray-400">${c.time}</span>
-                            </div>
-                            <p class="text-gray-600">${escapeHtml(c.text)}</p>
-                            <button onclick="triggerHaptic(); deleteComment('${stringId}', ${cIdx})" class="absolute top-1 right-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition text-[10px]">✕</button>
-                        </div>
-                    `;
-                });
-
                 const card = document.createElement('div');
-                card.className = "bg-white p-4 rounded-lg shadow-md space-y-2 relative";
+                card.className = "bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3 relative";
                 
                 let carouselHtml = `
-                    <div class="relative overflow-hidden rounded-md bg-black">
-                        <img id="img-${item.id}" src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-48 object-cover cursor-pointer hover:opacity-95 transition" loading="lazy">
-                        <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md text-lg hover:scale-110 transition z-10">
+                    <div class="relative overflow-hidden rounded-xl bg-slate-950 border border-slate-800">
+                        <img id="img-${item.id}" src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
+                        <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md border border-slate-700 p-2 rounded-full shadow-lg text-base hover:scale-110 transition z-10">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                 `;
 
                 if (images.length > 1) {
                     carouselHtml += `
-                        <div class="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-md cursor-pointer" onclick="openFbPhotoModal('${item.id}', 0)">
+                        <div class="absolute bottom-2.5 left-2.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer" onclick="openFbPhotoModal('${item.id}', 0)">
                             <span id="counter-${item.id}">1</span> / ${images.length}
                         </div>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">‹</button>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm hover:bg-black">›</button>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-900 border border-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition">‹</button>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-900 border border-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition">›</button>
                     `;
                 }
                 carouselHtml += `</div>`;
 
                 card.innerHTML = `
                     ${carouselHtml}
-                    <h3 class="text-lg font-bold text-gray-800">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
-                    <p class="text-xs text-gray-500">🎨 Color: <span class="font-semibold text-gray-700">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-gray-700">${item.country || 'Japan'}</span></p>
-                    <p class="text-blue-600 font-semibold text-lg">${item.price}</p>
-                    <p class="text-sm text-gray-600">${item.desc}</p>
+                    <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
+                    <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
+                    <p class="text-blue-400 font-bold text-lg">${item.price}</p>
+                    <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
                     ${contactsHtml}
                     ${ownerActionsHtml}
-
-                    <!-- Comment Section -->
-                    <div class="border-t pt-3 mt-3 space-y-2">
-                        <div class="flex justify-between items-center text-xs font-bold text-gray-700">
-                            <span>💬 Comments (${comments.length})</span>
-                        </div>
-                        <div id="comments-list-${stringId}" class="space-y-1.5 max-h-36 overflow-y-auto">
-                            ${commentsHtml || '<p class="text-xs text-gray-400 italic">No comments yet. Be the first to comment!</p>'}
-                        </div>
-                        <form onsubmit="postComment(event, '${stringId}')" class="flex gap-1 pt-1">
-                            <input type="text" id="comment-name-${stringId}" placeholder="Your name" required class="w-1/3 p-1.5 border border-gray-300 rounded text-xs">
-                            <input type="text" id="comment-text-${stringId}" placeholder="Write a comment..." required class="flex-1 p-1.5 border border-gray-300 rounded text-xs">
-                            <button type="submit" onclick="triggerHaptic()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-700">Post</button>
-                        </form>
-                    </div>
                 `;
                 fragment.appendChild(card);
             });
             container.appendChild(fragment);
-        }
-
-        window.postComment = function(event, listingId) {
-            event.preventDefault();
-            triggerHaptic();
-
-            const nameInput = document.getElementById(`comment-name-${listingId}`);
-            const textInput = document.getElementById(`comment-text-${listingId}`);
-
-            const name = nameInput.value.trim();
-            const text = textInput.value.trim();
-            if (!name || !text) return;
-
-            let commentsKey = `carComments_${listingId}`;
-            let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
-
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            comments.push({ name, text, time: timeStr });
-            localStorage.setItem(commentsKey, JSON.stringify(comments));
-
-            nameInput.value = '';
-            textInput.value = '';
-            renderFilteredListings();
-        }
-
-        window.deleteComment = function(listingId, commentIndex) {
-            let commentsKey = `carComments_${listingId}`;
-            let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
-            comments.splice(commentIndex, 1);
-            localStorage.setItem(commentsKey, JSON.stringify(comments));
-            renderFilteredListings();
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
         window.changeSlide = function(id, direction) {
@@ -659,7 +599,6 @@
             if (counterElement) counterElement.innerText = newIndex + 1;
         }
 
-        // Facebook Style Photo Modal Functions
         window.openFbPhotoModal = function(id, index = 0) {
             let item = cloudListings.find(l => String(l.id) === String(id));
             if (!item || !item.img_srcs || item.img_srcs.length === 0) return;
@@ -717,7 +656,7 @@
                 currentModalImages.forEach((src, idx) => {
                     const thumb = document.createElement('img');
                     thumb.src = src;
-                    thumb.className = `w-12 h-12 object-cover rounded cursor-pointer transition-all ${idx === currentModalIndex ? 'border-2 border-white scale-110 opacity-100' : 'opacity-60 hover:opacity-100'}`;
+                    thumb.className = `w-12 h-12 object-cover rounded-lg cursor-pointer transition-all border ${idx === currentModalIndex ? 'border-blue-500 scale-105 opacity-100 shadow-md' : 'border-slate-800 opacity-50 hover:opacity-100'}`;
                     thumb.onclick = () => {
                         triggerHaptic();
                         currentModalIndex = idx;
@@ -765,7 +704,7 @@
                 
                 let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
                 myLocalPosts = myLocalPosts.filter(postId => postId !== String(id));
-                localStorage.setItem('myLocalPostIds', JSON.stringify(myLocalPosts));
+                localStorage.setItem('myLocalPostIds', JSON.stringify(myLinePosts = myLocalPosts));
 
                 let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
                 favorites = favorites.filter(favId => favId !== String(id));
