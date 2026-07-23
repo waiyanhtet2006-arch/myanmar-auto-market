@@ -454,11 +454,12 @@
             container.innerHTML = '';
             
             let listings = cloudListings;
-            let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-            let myLocalPosts = JSON.parse(localStorage.getItem('myLocalPostIds')) || [];
+            // Ensure all loaded favorites are strings for consistent comparison
+            let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
+            let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
 
             if (currentTab === 'saved') {
-                listings = listings.filter(item => favorites.includes(item.id));
+                listings = listings.filter(item => favorites.includes(String(item.id)));
             }
 
             const query = document.getElementById('search-input').value.toLowerCase();
@@ -481,7 +482,8 @@
             const fragment = document.createDocumentFragment();
 
             filtered.forEach(item => {
-                const isFav = favorites.includes(item.id);
+                const stringId = String(item.id);
+                const isFav = favorites.includes(stringId);
                 const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                 
                 let contactsHtml = '<div class="space-y-1.5 pt-1">';
@@ -500,9 +502,7 @@
                 contactsHtml += '</div>';
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
-
-                // Instantly checks if this post belongs to this device/browser
-                const isOwner = myLocalPosts.includes(String(item.id));
+                const isOwner = myLocalPosts.includes(stringId);
 
                 let ownerActionsHtml = '';
                 if (isOwner) {
@@ -570,12 +570,15 @@
         }
 
         function toggleFavorite(id) {
-            let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-            if (favorites.includes(id)) {
-                favorites = favorites.filter(favId => String(favId) !== String(id));
+            let stringId = String(id);
+            let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
+            
+            if (favorites.includes(stringId)) {
+                favorites = favorites.filter(favId => favId !== stringId);
             } else {
-                favorites.push(id);
+                favorites.push(stringId);
             }
+            
             localStorage.setItem('carFavorites', JSON.stringify(favorites));
             renderFilteredListings();
             updateWishlistCount();
@@ -601,12 +604,12 @@
                 
                 cloudListings = cloudListings.filter(item => String(item.id) !== String(id));
                 
-                let myLocalPosts = JSON.parse(localStorage.getItem('myLocalPostIds')) || [];
-                myLocalPosts = myLocalPosts.filter(postId => String(postId) !== String(id));
+                let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
+                myLocalPosts = myLocalPosts.filter(postId => postId !== String(id));
                 localStorage.setItem('myLocalPostIds', JSON.stringify(myLocalPosts));
 
-                let favorites = JSON.parse(localStorage.getItem('carFavorites')) || [];
-                favorites = favorites.filter(favId => String(favId) !== String(id));
+                let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
+                favorites = favorites.filter(favId => favId !== String(id));
                 localStorage.setItem('carFavorites', JSON.stringify(favorites));
 
                 renderFilteredListings();
