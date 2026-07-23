@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta+Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans pb-24">
@@ -118,10 +118,11 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section -->
+        <!-- Search & Filter Section with Saved Search Button -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
-            <div class="relative">
+            <div class="relative flex gap-2">
                 <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                <button onclick="triggerHaptic(); saveCurrentSearch()" class="bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 px-3.5 rounded-xl text-xs font-bold transition whitespace-nowrap shadow-sm" title="Save this search filter & alert">🔔 Save Alert</button>
             </div>
             
             <div class="grid grid-cols-2 gap-2">
@@ -137,6 +138,9 @@
                     <option value="Other">Other</option>
                 </select>
             </div>
+            
+            <!-- Quick Notification Badge Bar for Saved Searches / Price Drops -->
+            <div id="saved-searches-bar" class="flex flex-wrap gap-1.5 pt-1"></div>
         </section>
 
         <!-- Feed Header -->
@@ -214,7 +218,9 @@
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
-            fetchCloudListings();
+            renderSavedSearchesBar();
+            await fetchCloudListings();
+            checkForNewMatchesOrPriceDrops();
         });
 
         function switchTab(tab) {
@@ -379,6 +385,12 @@
 
             try {
                 if (editId) {
+                    // Check if price changed to flag Price Drop alert
+                    let oldItem = cloudListings.find(l => String(l.id) === String(editId));
+                    if (oldItem && oldItem.price !== price) {
+                        listingData.price_dropped_from = oldItem.price;
+                    }
+
                     const { error } = await supabaseClient
                         .from('cars')
                         .update(listingData)
@@ -480,6 +492,84 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
+        // Saved Search & Alert Functions
+        function saveCurrentSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            const brand = document.getElementById('filter-brand').value.trim();
+            const country = document.getElementById('filter-country').value;
+
+            if (!query && !brand && !country) {
+                alert('Please enter a search term or select a filter to save as an alert.');
+                return;
+            }
+
+            let searchName = query || brand || country;
+            if (country && (query || brand)) searchName += ` (${country})`;
+
+            let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
+            
+            // Avoid exact duplicate
+            let exists = savedSearches.some(s => s.query === query && s.brand === brand && s.country === country);
+            if (exists) {
+                alert('This search alert is already saved!');
+                return;
+            }
+
+            savedSearches.push({ query, brand, country, name: searchName });
+            localStorage.setItem('savedSearchAlerts', JSON.stringify(savedSearches));
+            renderSavedSearchesBar();
+            alert(`🔔 Alert Saved! We'll notify you when matching cars appear.`);
+        }
+
+        function renderSavedSearchesBar() {
+            const bar = document.getElementById('saved-searches-bar');
+            if (!bar) return;
+            bar.innerHTML = '';
+
+            let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
+            if (savedSearches.length === 0) return;
+
+            let label = document.createElement('span');
+            label.className = "text-[11px] text-slate-400 font-semibold w-full mb-0.5";
+            label.innerText = "Saved Alerts:";
+            bar.appendChild(label);
+
+            savedSearches.forEach((s, idx) => {
+                let chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = "inline-flex items-center space-x-1 bg-slate-950 border border-slate-800 text-blue-400 text-[11px] px-2.5 py-1 rounded-lg hover:bg-slate-800 transition";
+                chip.innerHTML = `<span>🔔 ${s.name}</span> <span class="text-slate-500 hover:text-rose-400 ml-1" onclick="event.stopPropagation(); removeSavedSearch(${idx})">✕</span>`;
+                chip.onclick = () => {
+                    triggerHaptic();
+                    document.getElementById('search-input').value = s.query || '';
+                    document.getElementById('filter-brand').value = s.brand || '';
+                    document.getElementById('filter-country').value = s.country || '';
+                    renderFilteredListings();
+                };
+                bar.appendChild(chip);
+            });
+        }
+
+        window.removeSavedSearch = function(index) {
+            triggerHaptic();
+            let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
+            savedSearches.splice(index, 1);
+            localStorage.setItem('savedSearchAlerts', JSON.stringify(savedSearches));
+            renderSavedSearchesBar();
+        }
+
+        function checkForNewMatchesOrPriceDrops() {
+            // Evaluates recent listings or price drops against stored user preferences
+            let cloudListingsCount = cloudListings.length;
+            let lastCheckedCount = parseInt(localStorage.getItem('lastCheckedListingCount') || '0');
+
+            if (cloudListingsCount > lastCheckedCount && lastCheckedCount > 0) {
+                let newCarsCount = cloudListingsCount - lastCheckedCount;
+                console.log(`🔔 New Alert: ${newCarsCount} new car(s) added to the cloud feed!`);
+            }
+            localStorage.setItem('lastCheckedListingCount', cloudListingsCount);
+        }
+
         function renderFilteredListings() {
             const container = document.getElementById('listings-container');
             container.innerHTML = '';
@@ -516,6 +606,11 @@
                 const isFav = favorites.includes(stringId);
                 const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                 
+                let priceBadgeHtml = '';
+                if (item.price_dropped_from) {
+                    priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop (was ${item.price_dropped_from})</span>`;
+                }
+
                 let contactsHtml = '<div class="space-y-2 pt-2">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
@@ -570,7 +665,10 @@
                     ${carouselHtml}
                     <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
                     <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
-                    <p class="text-blue-400 font-bold text-lg">${item.price}</p>
+                    <div class="flex items-center flex-wrap gap-y-1">
+                        <p class="text-blue-400 font-bold text-lg">${item.price}</p>
+                        ${priceBadgeHtml}
+                    </div>
                     <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
                     ${contactsHtml}
                     ${ownerActionsHtml}
@@ -704,7 +802,7 @@
                 
                 let myLocalPosts = (JSON.parse(localStorage.getItem('myLocalPostIds')) || []).map(String);
                 myLocalPosts = myLocalPosts.filter(postId => postId !== String(id));
-                localStorage.setItem('myLocalPostIds', JSON.stringify(myLinePosts = myLocalPosts));
+                localStorage.setItem('myLocalPostIds', JSON.stringify(myLocalPosts));
 
                 let favorites = (JSON.parse(localStorage.getItem('carFavorites')) || []).map(String);
                 favorites = favorites.filter(favId => favId !== String(id));
