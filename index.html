@@ -12,23 +12,28 @@
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans pb-24">
+    <!-- Premium Header -->
     <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex flex-col">
                 <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Auto Market</h1>
                 <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE CLOUD</span>
             </div>
+            <!-- Auth Container -->
             <div id="auth-container" class="flex items-center gap-2">
-                </div>
+                <!-- Buttons injected via JS -->
+            </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
+        <!-- Welcome Banner -->
         <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg">
             <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
             <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar.</p>
         </div>
 
+        <!-- User Dashboard / Profile Section -->
         <section id="dashboard-section" class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl hidden space-y-4">
             <div class="flex items-center gap-4 pb-4 border-b border-slate-800">
                 <div id="profile-avatar-container" class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-xl font-bold text-white shadow-lg overflow-hidden border-2 border-slate-700">
@@ -41,9 +46,27 @@
                 </div>
             </div>
 
+            <!-- TikTok Style Profile Stats Bar (Following / Followers / Likes) -->
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950 border border-slate-800 p-3 rounded-xl">
+                <div>
+                    <span id="dashboard-stat-following" class="text-base font-bold text-white">0</span>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Following</p>
+                </div>
+                <div>
+                    <span id="dashboard-stat-followers" class="text-base font-bold text-blue-400">0</span>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Followers</p>
+                </div>
+                <div>
+                    <span id="dashboard-stat-likes" class="text-base font-bold text-indigo-400">0</span>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Listings</p>
+                </div>
+            </div>
+
+            <!-- Showroom / Account Name Editor with Display Type Switcher -->
             <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-3">
                 <div class="flex justify-between items-center">
                     <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Profile & Display Settings</label>
+                    <!-- Type Selector Tabs -->
                     <div class="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800">
                         <button type="button" onclick="triggerHaptic(); setDisplayType('showroom')" id="type-btn-showroom" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition bg-blue-600 text-white">Showroom</button>
                         <button type="button" onclick="triggerHaptic(); setDisplayType('account')" id="type-btn-account" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition text-slate-400 hover:text-slate-200">Account</button>
@@ -81,23 +104,13 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 text-center">
-                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                    <span id="stat-posts-count" class="text-lg font-bold text-blue-400">0</span>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Your Listings</p>
-                </div>
-                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                    <span id="stat-saved-count" class="text-lg font-bold text-indigo-400">0</span>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Saved Wishlist</p>
-                </div>
-            </div>
-
             <div class="pt-2 flex gap-2">
                 <button onclick="triggerHaptic(); switchTab('sell')" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">➕ Post New Car</button>
                 <button onclick="triggerHaptic(); logout()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs transition border border-slate-700">Log Out</button>
             </div>
         </section>
 
+        <!-- Sell / Edit Form Section -->
         <section id="form-section" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl hidden space-y-4">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                 <h2 id="form-heading" class="text-lg font-bold text-white">🚗 Sell Your Car</h2>
@@ -188,7 +201,14 @@
             </form>
         </section>
 
+        <!-- Search & Filter Section (All Fully Optional) -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-2.5">
+            <!-- Feed Mode Tabs (FYP vs Following) -->
+            <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-1">
+                <button type="button" onclick="triggerHaptic(); setFeedMode('fyp')" id="feed-mode-fyp" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-blue-600 text-white">🔥 For You (FYP)</button>
+                <button type="button" onclick="triggerHaptic(); setFeedMode('following')" id="feed-mode-following" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-slate-200">👥 Following</button>
+            </div>
+
             <div class="relative">
                 <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
             </div>
@@ -220,6 +240,7 @@
             </div>
         </section>
 
+        <!-- Feed Header -->
         <section class="space-y-4">
             <div class="flex justify-between items-center px-1">
                 <h2 id="feed-title" class="text-lg font-bold text-slate-100">📋 Available Cars (FYP)</h2>
@@ -229,7 +250,9 @@
         </section>
     </main>
 
+    <!-- Facebook / TikTok Style Profile Modal Page -->
     <div id="profile-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex flex-col overflow-y-auto">
+        <!-- Modal Top Bar -->
         <div class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-20 px-4 py-3.5 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <button onclick="triggerHaptic(); closeProfileModal()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-200 font-bold transition">←</button>
@@ -238,6 +261,7 @@
             <span id="modal-header-badge" class="text-[10px] bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider">Showroom</span>
         </div>
 
+        <!-- Profile Header Details Box -->
         <div class="max-w-md w-full mx-auto p-4 space-y-4">
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-3">
                 <div id="modal-profile-avatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white shadow-xl border-2 border-slate-700">
@@ -248,22 +272,35 @@
                     <p id="modal-profile-type-label" class="text-xs text-blue-400 font-semibold mt-0.5">Verified Showroom</p>
                 </div>
 
-                <p id="modal-profile-bio" class="text-xs text-slate-300 leading-relaxed px-2 hidden"></p>
-
-                <div id="modal-profile-links" class="flex flex-wrap items-center justify-center gap-2 pt-1"></div>
-
-                <div class="grid grid-cols-2 gap-4 w-full pt-3 border-t border-slate-800">
-                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                        <span id="modal-profile-count" class="text-base font-bold text-blue-400">0</span>
-                        <p class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Active Listings</p>
+                <!-- TikTok Style Stats Display in Modal -->
+                <div class="grid grid-cols-3 gap-3 w-full py-2 bg-slate-950 border border-slate-800 rounded-xl px-2">
+                    <div>
+                        <span id="modal-stat-following" class="text-sm font-bold text-white">0</span>
+                        <p class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Following</p>
                     </div>
-                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                        <span class="text-base font-bold text-emerald-400">Active</span>
-                        <p class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Status</p>
+                    <div>
+                        <span id="modal-stat-followers" class="text-sm font-bold text-blue-400">0</span>
+                        <p class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Followers</p>
+                    </div>
+                    <div>
+                        <span id="modal-stat-listings" class="text-sm font-bold text-indigo-400">0</span>
+                        <p class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Listings</p>
                     </div>
                 </div>
+
+                <!-- Follow / Unfollow Action Button -->
+                <div id="modal-follow-action-container" class="w-full pt-1">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- Bio Display -->
+                <p id="modal-profile-bio" class="text-xs text-slate-300 leading-relaxed px-2 hidden"></p>
+
+                <!-- Profile Contact / Social Links Pills -->
+                <div id="modal-profile-links" class="flex flex-wrap items-center justify-center gap-2 pt-1"></div>
             </div>
 
+            <!-- Profile Posts Feed Section -->
             <div class="space-y-3">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Listings by this profile</h3>
                 <div id="modal-listings-container" class="space-y-4"></div>
@@ -271,6 +308,7 @@
         </div>
     </div>
 
+    <!-- Fullscreen Facebook-Style Photo Lightbox -->
     <div id="fb-photo-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
         <div class="flex justify-between items-center p-4 bg-slate-900/60 border-b border-slate-800 text-white z-10">
             <span id="fb-modal-counter" class="text-xs font-semibold text-slate-300 tracking-wider">1 / 1</span>
@@ -286,6 +324,7 @@
         <div id="fb-modal-thumbs" class="p-3 bg-slate-900/80 border-t border-slate-800 flex items-center justify-center space-x-2 overflow-x-auto min-h-[72px]"></div>
     </div>
 
+    <!-- Premium Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-xl border-t border-slate-800 shadow-2xl z-40">
         <div class="max-w-md mx-auto grid grid-cols-4 h-16">
             <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-400 font-bold transition">
@@ -313,9 +352,11 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentTab = 'feed';
+        let feedMode = 'fyp'; // 'fyp' or 'following'
         let activeEditImages = [];
         let cloudListings = [];
         let profilesMap = {}; 
+        let followsList = []; // Array of user_ids that current user follows
         let currentModalImages = [];
         let currentModalIndex = 0;
         let selectedDisplayType = 'showroom';
@@ -342,10 +383,10 @@
             currentUser = session?.user || null;
             updateAuthUI();
 
-            supabaseClient.auth.onAuthStateChange((_event, session) => {
+            supabaseClient.auth.onAuthStateChange(async (_event, session) => {
                 currentUser = session?.user || null;
                 updateAuthUI();
-                renderFilteredListings();
+                await fetchCloudData();
             });
 
             switchTab('feed');
@@ -391,6 +432,30 @@
             switchTab('feed'); 
         }
 
+        function setFeedMode(mode) {
+            feedMode = mode;
+            const btnFyp = document.getElementById('feed-mode-fyp');
+            const btnFollowing = document.getElementById('feed-mode-following');
+            const feedTitle = document.getElementById('feed-title');
+
+            if (mode === 'fyp') {
+                btnFyp.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-blue-600 text-white";
+                btnFollowing.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-slate-200";
+                feedTitle.innerText = "📋 Available Cars (FYP)";
+            } else {
+                if (!currentUser) {
+                    alert('Please sign in with Google to view your Following feed.');
+                    loginWithGoogle();
+                    feedMode = 'fyp';
+                    return;
+                }
+                btnFollowing.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-blue-600 text-white";
+                btnFyp.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-slate-200";
+                feedTitle.innerText = "👥 Following Feed";
+            }
+            renderFilteredListings();
+        }
+
         function switchTab(tab) {
             if ((tab === 'sell' || tab === 'profile') && !currentUser) {
                 triggerHaptic();
@@ -419,7 +484,7 @@
                 dashboardSection.classList.add('hidden');
                 searchSection.classList.remove('hidden');
                 welcomeBanner.classList.remove('hidden');
-                feedTitle.innerText = "📋 Available Cars (FYP)";
+                feedTitle.innerText = feedMode === 'following' ? "👥 Following Feed" : "📋 Available Cars (FYP)";
                 headerSubtitle.innerText = "LIVE CLOUD";
                 renderFilteredListings();
             } else if (tab === 'profile') {
@@ -482,11 +547,74 @@
                     });
                 }
 
+                // Fetch Follows
+                const { data: followsData, error: followsError } = await supabaseClient
+                    .from('follows')
+                    .select('*');
+
+                if (!followsError && followsData) {
+                    followsList = followsData;
+                }
+
                 if (currentTab === 'profile') updateProfileDashboardData();
                 renderFilteredListings();
             } catch (err) {
                 console.error(err);
                 renderFilteredListings();
+            }
+        }
+
+        function getFollowerCount(userId) {
+            return followsList.filter(f => f.following_id === userId).length;
+        }
+
+        function getFollowingCount(userId) {
+            return followsList.filter(f => f.follower_id === userId).length;
+        }
+
+        function isFollowing(targetUserId) {
+            if (!currentUser) return false;
+            return followsList.some(f => f.follower_id === currentUser.id && f.following_id === targetUserId);
+        }
+
+        async function toggleFollow(targetUserId) {
+            if (!currentUser) {
+                triggerHaptic();
+                alert('Please sign in to follow accounts.');
+                loginWithGoogle();
+                return;
+            }
+            if (currentUser.id === targetUserId) {
+                alert('You cannot follow yourself.');
+                return;
+            }
+
+            triggerHaptic();
+            const currentlyFollowing = isFollowing(targetUserId);
+
+            try {
+                if (currentlyFollowing) {
+                    const { error } = await supabaseClient
+                        .from('follows')
+                        .delete()
+                        .eq('follower_id', currentUser.id)
+                        .eq('following_id', targetUserId);
+                    if (error) throw error;
+                    followsList = followsList.filter(f => !(f.follower_id === currentUser.id && f.following_id === targetUserId));
+                } else {
+                    const { error } = await supabaseClient
+                        .from('follows')
+                        .insert([{ follower_id: currentUser.id, following_id: targetUserId }]);
+                    if (error) throw error;
+                    followsList.push({ follower_id: currentUser.id, following_id: targetUserId });
+                }
+
+                openProfileModal(targetUserId);
+                renderFilteredListings();
+                if (currentTab === 'profile') updateProfileDashboardData();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to update follow status.');
             }
         }
 
@@ -546,6 +674,7 @@
                 };
 
                 alert('Profile settings saved successfully!');
+                updateProfileDashboardData();
                 renderFilteredListings();
             } catch (err) {
                 console.error(err);
@@ -584,11 +713,9 @@
             }
 
             const userPosts = cloudListings.filter(item => item.user_id === currentUser.id);
-            document.getElementById('stat-posts-count').innerText = userPosts.length;
-
-            let favKey = `carFavorites_${currentUser.id}`;
-            let favorites = JSON.parse(localStorage.getItem(favKey)) || [];
-            document.getElementById('stat-saved-count').innerText = favorites.length;
+            document.getElementById('dashboard-stat-likes').innerText = userPosts.length;
+            document.getElementById('dashboard-stat-following').innerText = getFollowingCount(currentUser.id);
+            document.getElementById('dashboard-stat-followers').innerText = getFollowerCount(currentUser.id);
         }
 
         function compressImage(file, callback) {
@@ -797,7 +924,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Open Facebook / Instagram style profile modal page
+        // Open Facebook / TikTok style profile modal page
         window.openProfileModal = function(userId) {
             triggerHaptic();
             const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', phone: '', facebook_link: '', tiktok_link: '' };
@@ -810,6 +937,7 @@
             const avatarEl = document.getElementById('modal-profile-avatar');
             const bioEl = document.getElementById('modal-profile-bio');
             const linksContainer = document.getElementById('modal-profile-links');
+            const followActionContainer = document.getElementById('modal-follow-action-container');
 
             if (profileObj.type === 'account') {
                 badgeEl.innerText = 'Account';
@@ -820,6 +948,26 @@
             }
 
             avatarEl.innerHTML = `<span class="text-2xl font-bold text-white">${profileObj.name.charAt(0).toUpperCase()}</span>`;
+
+            // TikTok Stats
+            document.getElementById('modal-stat-following').innerText = getFollowingCount(userId);
+            document.getElementById('modal-stat-followers').innerText = getFollowerCount(userId);
+            const userListings = cloudListings.filter(item => item.user_id === userId);
+            document.getElementById('modal-stat-listings').innerText = userListings.length;
+
+            // Follow Button render
+            if (!currentUser || currentUser.id !== userId) {
+                const followingThisUser = isFollowing(userId);
+                followActionContainer.innerHTML = `
+                    <button onclick="toggleFollow('${userId}')" class="w-full py-2.5 rounded-xl text-xs font-bold transition shadow-sm ${followingThisUser ? 'bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700' : 'bg-blue-600 hover:bg-blue-500 text-white'}">
+                        ${followingThisUser ? '✓ Following' : '+ Follow'}
+                    </button>
+                `;
+                followActionContainer.classList.remove('hidden');
+            } else {
+                followActionContainer.innerHTML = '';
+                followActionContainer.classList.add('hidden');
+            }
 
             // Render Bio
             if (profileObj.bio && profileObj.bio.trim() !== '') {
@@ -857,9 +1005,6 @@
                     </a>
                 `;
             }
-
-            const userListings = cloudListings.filter(item => item.user_id === userId);
-            document.getElementById('modal-profile-count').innerText = userListings.length;
 
             const container = document.getElementById('modal-listings-container');
             container.innerHTML = '';
@@ -954,6 +1099,13 @@
             } else if (currentTab === 'profile') {
                 if (!currentUser) return;
                 listings = listings.filter(item => item.user_id === currentUser.id);
+            } else if (currentTab === 'feed' && feedMode === 'following') {
+                if (!currentUser) {
+                    container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">Please sign in to view your Following feed.</p>`;
+                    return;
+                }
+                const followedIds = followsList.filter(f => f.follower_id === currentUser.id).map(f => f.following_id);
+                listings = listings.filter(item => followedIds.includes(item.user_id));
             }
 
             const carQuery = document.getElementById('search-car-input').value.toLowerCase().trim();
@@ -988,6 +1140,7 @@
                 let emptyMsg = 'No cars found matching your search.';
                 if (currentTab === 'saved') emptyMsg = 'No saved cars in your wishlist.';
                 if (currentTab === 'profile') emptyMsg = 'You have not posted any car listings yet.';
+                if (currentTab === 'feed' && feedMode === 'following') emptyMsg = 'No posts from accounts you follow yet. Visit profiles to follow showrooms!';
                 container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${emptyMsg}</p>`;
                 return;
             }
