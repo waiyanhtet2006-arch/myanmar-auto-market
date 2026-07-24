@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <!-- TikTok Style Profile Stats Bar (Following / Followers / Likes) -->
+            <!-- TikTok Style Profile Stats Bar -->
             <div class="grid grid-cols-3 gap-2 text-center bg-slate-950 border border-slate-800 p-3 rounded-xl">
                 <div>
                     <span id="dashboard-stat-following" class="text-base font-bold text-white">0</span>
@@ -201,7 +201,7 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section (All Fully Optional) -->
+        <!-- Search & Filter Section -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-2.5">
             <!-- Feed Mode Tabs (FYP vs Following) -->
             <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-1">
@@ -289,9 +289,7 @@
                 </div>
 
                 <!-- Follow / Unfollow Action Button -->
-                <div id="modal-follow-action-container" class="w-full pt-1">
-                    <!-- Injected via JS -->
-                </div>
+                <div id="modal-follow-action-container" class="w-full pt-1"></div>
 
                 <!-- Bio Display -->
                 <p id="modal-profile-bio" class="text-xs text-slate-300 leading-relaxed px-2 hidden"></p>
@@ -352,15 +350,14 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentTab = 'feed';
-        let feedMode = 'fyp'; // 'fyp' or 'following'
+        let feedMode = 'fyp'; 
         let activeEditImages = [];
         let cloudListings = [];
         let profilesMap = {}; 
-        let followsList = []; // Array of user_ids that current user follows
+        let followsList = []; 
         let currentModalImages = [];
         let currentModalIndex = 0;
         let selectedDisplayType = 'showroom';
-        
         let currentUser = null;
 
         function triggerHaptic() {
@@ -547,7 +544,6 @@
                     });
                 }
 
-                // Fetch Follows
                 const { data: followsData, error: followsError } = await supabaseClient
                     .from('follows')
                     .select('*');
@@ -924,7 +920,6 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Open Facebook / TikTok style profile modal page
         window.openProfileModal = function(userId) {
             triggerHaptic();
             const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', phone: '', facebook_link: '', tiktok_link: '' };
@@ -949,13 +944,11 @@
 
             avatarEl.innerHTML = `<span class="text-2xl font-bold text-white">${profileObj.name.charAt(0).toUpperCase()}</span>`;
 
-            // TikTok Stats
             document.getElementById('modal-stat-following').innerText = getFollowingCount(userId);
             document.getElementById('modal-stat-followers').innerText = getFollowerCount(userId);
             const userListings = cloudListings.filter(item => item.user_id === userId);
             document.getElementById('modal-stat-listings').innerText = userListings.length;
 
-            // Follow Button render
             if (!currentUser || currentUser.id !== userId) {
                 const followingThisUser = isFollowing(userId);
                 followActionContainer.innerHTML = `
@@ -969,7 +962,6 @@
                 followActionContainer.classList.add('hidden');
             }
 
-            // Render Bio
             if (profileObj.bio && profileObj.bio.trim() !== '') {
                 bioEl.innerText = profileObj.bio;
                 bioEl.classList.remove('hidden');
@@ -977,12 +969,8 @@
                 bioEl.classList.add('hidden');
             }
 
-            // Render Social/Contact Link Pills
             linksContainer.innerHTML = '';
-            let hasLinks = false;
-
             if (profileObj.phone && profileObj.phone.trim() !== '') {
-                hasLinks = true;
                 linksContainer.innerHTML += `
                     <a href="tel:${profileObj.phone}" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-blue-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
                         📞 ${profileObj.phone}
@@ -990,7 +978,6 @@
                 `;
             }
             if (profileObj.facebook_link && profileObj.facebook_link.trim() !== '') {
-                hasLinks = true;
                 linksContainer.innerHTML += `
                     <a href="${profileObj.facebook_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-blue-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
                         📘 Facebook
@@ -998,7 +985,6 @@
                 `;
             }
             if (profileObj.tiktok_link && profileObj.tiktok_link.trim() !== '') {
-                hasLinks = true;
                 linksContainer.innerHTML += `
                     <a href="${profileObj.tiktok_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-indigo-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
                         🎵 TikTok
@@ -1045,7 +1031,7 @@
                     
                     let carouselHtml = `
                         <div class="relative overflow-hidden rounded-xl bg-slate-950 border border-slate-800">
-                            <img id="modal-img-${item.id}" src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
+                            <img src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
                             <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md border border-slate-700 p-2 rounded-full shadow-lg text-base hover:scale-110 transition z-10">
                                 ${isFav ? '❤️' : '🤍'}
                             </button>
@@ -1090,7 +1076,6 @@
             container.innerHTML = '';
             
             let listings = cloudListings;
-            
             let favKey = currentUser ? `carFavorites_${currentUser.id}` : 'carFavorites';
             let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
 
@@ -1119,7 +1104,6 @@
             const filtered = listings.filter(item => {
                 const profileObj = profilesMap[item.user_id] || {};
                 const profileName = (profileObj.name || '').toLowerCase();
-                
                 const carText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''}`.toLowerCase();
                 
                 const matchesCarQuery = !carQuery || carText.includes(carQuery);
@@ -1258,7 +1242,7 @@
             let item = cloudListings.find(l => String(l.id) === String(id));
             if (!item || !item.img_srcs || item.img_srcs.length === 0) return;
 
-            let imgElement = document.getElementById(`img-${id}`) || document.getElementById(`modal-img-${id}`);
+            let imgElement = document.getElementById(`img-${id}`);
             if (imgElement) {
                 let currentSrc = imgElement.src;
                 let foundIdx = item.img_srcs.indexOf(currentSrc);
