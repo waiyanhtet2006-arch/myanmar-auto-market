@@ -20,7 +20,7 @@
                 <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE CLOUD</span>
             </div>
             <!-- Auth Container -->
-            <div id="auth-container">
+            <div id="auth-container" class="flex items-center gap-2">
                 <!-- Buttons injected via JS -->
             </div>
         </div>
@@ -32,6 +32,36 @@
             <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
             <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar.</p>
         </div>
+
+        <!-- User Dashboard / Profile Section -->
+        <section id="dashboard-section" class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl hidden space-y-4">
+            <div class="flex items-center gap-4 pb-4 border-b border-slate-800">
+                <div id="profile-avatar-container" class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-xl font-bold text-white shadow-lg overflow-hidden border-2 border-slate-700">
+                    👤
+                </div>
+                <div>
+                    <h2 id="profile-name" class="text-base font-bold text-white">Guest User</h2>
+                    <p id="profile-email" class="text-xs text-slate-400">Not signed in</p>
+                    <span class="inline-block mt-1 text-[10px] bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-semibold">Verified Seller</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+                    <span id="stat-posts-count" class="text-lg font-bold text-blue-400">0</span>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Your Listings</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+                    <span id="stat-saved-count" class="text-lg font-bold text-indigo-400">0</span>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Saved Wishlist</p>
+                </div>
+            </div>
+
+            <div class="pt-2 flex gap-2">
+                <button onclick="triggerHaptic(); switchTab('sell')" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">➕ Post New Car</button>
+                <button onclick="triggerHaptic(); logout()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs transition border border-slate-700">Log Out</button>
+            </div>
+        </section>
 
         <!-- Sell / Edit Form Section -->
         <section id="form-section" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl hidden space-y-4">
@@ -176,10 +206,14 @@
 
     <!-- Premium Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-xl border-t border-slate-800 shadow-2xl z-40">
-        <div class="max-w-md mx-auto grid grid-cols-3 h-16">
+        <div class="max-w-md mx-auto grid grid-cols-4 h-16">
             <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-400 font-bold transition">
                 <span class="text-xl">🏠</span>
                 <span class="text-[10px] mt-1 font-semibold tracking-wider">Feed</span>
+            </button>
+            <button onclick="triggerHaptic(); switchTab('profile')" id="nav-btn-profile" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition">
+                <span class="text-xl">👤</span>
+                <span class="text-[10px] mt-1 font-semibold tracking-wider">Dashboard</span>
             </button>
             <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition">
                 <span class="text-xl">➕</span>
@@ -248,14 +282,22 @@
         function updateAuthUI() {
             const authContainer = document.getElementById('auth-container');
             if (currentUser) {
+                const meta = currentUser.user_metadata || {};
+                const avatar = meta.avatar_url || meta.picture;
+                let avatarHtml = avatar ? `<img src="${avatar}" class="w-7 h-7 rounded-full border border-slate-700 object-cover">` : `<div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">👤</div>`;
+                
                 authContainer.innerHTML = `
-                    <button onclick="logout()" class="text-[11px] bg-slate-800 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-full font-semibold hover:bg-slate-700 transition shadow-sm">
-                        Log out
+                    <button onclick="switchTab('profile')" class="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700 px-2.5 py-1 rounded-full text-xs font-semibold text-slate-200 hover:bg-slate-700 transition shadow-sm">
+                        ${avatarHtml}
+                        <span class="max-w-[80px] truncate">${meta.full_name || meta.name || 'My Profile'}</span>
+                    </button>
+                    <button onclick="logout()" class="text-[11px] bg-slate-900 text-slate-400 border border-slate-800 px-2.5 py-1.5 rounded-full font-semibold hover:text-white transition">
+                        ✕
                     </button>
                 `;
             } else {
                 authContainer.innerHTML = `
-                    <button onclick="loginWithGoogle()" class="text-[11px] bg-white text-slate-900 border border-slate-200 px-3 py-1.5 rounded-full font-bold shadow-sm hover:bg-slate-200 flex items-center gap-1.5 transition">
+                    <button onclick="loginWithGoogle()" class="text-[11px] bg-white text-slate-900 border border-slate-200 px-3.5 py-1.5 rounded-full font-bold shadow-sm hover:bg-slate-200 flex items-center gap-1.5 transition">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
                         Sign in
                     </button>
@@ -277,17 +319,17 @@
         async function logout() {
             triggerHaptic();
             await supabaseClient.auth.signOut();
-            switchTab('feed'); // Kick them back to feed if they were on a protected tab
+            switchTab('feed'); 
         }
 
         // -------------------------
         // APP LOGIC
         // -------------------------
         function switchTab(tab) {
-            // Protect Sell Tab
-            if (tab === 'sell' && !currentUser) {
+            // Protect Sell and Profile Tabs
+            if ((tab === 'sell' || tab === 'profile') && !currentUser) {
                 triggerHaptic();
-                alert('Please sign in with Google to post a car listing.');
+                alert('Please sign in with Google to access this feature.');
                 loginWithGoogle();
                 return;
             }
@@ -297,24 +339,38 @@
             const formSection = document.getElementById('form-section');
             const searchSection = document.getElementById('search-section');
             const welcomeBanner = document.getElementById('welcome-banner');
+            const dashboardSection = document.getElementById('dashboard-section');
             const feedTitle = document.getElementById('feed-title');
             const headerSubtitle = document.getElementById('header-subtitle');
 
             document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
+            document.getElementById('nav-btn-profile').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
             document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
             document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
 
             if (tab === 'feed') {
                 document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
                 formSection.classList.add('hidden');
+                dashboardSection.classList.add('hidden');
                 searchSection.classList.remove('hidden');
                 welcomeBanner.classList.remove('hidden');
                 feedTitle.innerText = "📋 Available Cars (FYP)";
                 headerSubtitle.innerText = "LIVE CLOUD";
                 renderFilteredListings();
+            } else if (tab === 'profile') {
+                document.getElementById('nav-btn-profile').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
+                formSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+                searchSection.classList.add('hidden');
+                welcomeBanner.classList.add('hidden');
+                feedTitle.innerText = "👤 Your Profile Posts";
+                headerSubtitle.innerText = "DASHBOARD";
+                updateProfileDashboardData();
+                renderFilteredListings();
             } else if (tab === 'sell') {
                 document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
                 formSection.classList.remove('hidden');
+                dashboardSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
                 feedTitle.innerText = "🚗 Manage Your Listing";
@@ -323,6 +379,7 @@
             } else if (tab === 'saved') {
                 document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
                 formSection.classList.add('hidden');
+                dashboardSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
                 feedTitle.innerText = "❤️ Your Saved Cars";
@@ -330,6 +387,32 @@
                 renderFilteredListings();
             }
             updateWishlistCount();
+        }
+
+        function updateProfileDashboardData() {
+            if (!currentUser) return;
+            const meta = currentUser.user_metadata || {};
+            const name = meta.full_name || meta.name || 'User';
+            const email = currentUser.email || '';
+            const avatar = meta.avatar_url || meta.picture;
+
+            document.getElementById('profile-name').innerText = name;
+            document.getElementById('profile-email').innerText = email;
+
+            const avatarContainer = document.getElementById('profile-avatar-container');
+            if (avatar) {
+                avatarContainer.innerHTML = `<img src="${avatar}" class="w-full h-full object-cover">`;
+            } else {
+                avatarContainer.innerHTML = `<span class="text-xl font-bold text-white">${name.charAt(0).toUpperCase()}</span>`;
+            }
+
+            // Update stats
+            const userPosts = cloudListings.filter(item => item.user_id === currentUser.id);
+            document.getElementById('stat-posts-count').innerText = userPosts.length;
+
+            let favKey = `carFavorites_${currentUser.id}`;
+            let favorites = JSON.parse(localStorage.getItem(favKey)) || [];
+            document.getElementById('stat-saved-count').innerText = favorites.length;
         }
 
         async function fetchCloudListings() {
@@ -345,6 +428,7 @@
                 } else {
                     cloudListings = data || [];
                 }
+                if (currentTab === 'profile') updateProfileDashboardData();
                 renderFilteredListings();
             } catch (err) {
                 console.error('Cloud connection error:', err);
@@ -440,7 +524,7 @@
             const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
 
             const listingData = {
-                user_id: currentUser.id, // Linked to logged-in user
+                user_id: currentUser.id, 
                 brand,
                 title,
                 year,
@@ -468,7 +552,7 @@
                         .from('cars')
                         .update(listingData)
                         .eq('id', editId)
-                        .eq('user_id', currentUser.id); // Security measure
+                        .eq('user_id', currentUser.id); 
 
                     if (error) throw error;
                 } else {
@@ -482,7 +566,7 @@
 
                 alert('Successfully posted to marketplace!');
                 cancelEdit();
-                switchTab('feed');
+                switchTab('profile'); // Send them straight to their dashboard profile to see their posts!
                 await fetchCloudListings();
             } catch (err) {
                 console.error('Supabase write error:', err);
@@ -641,12 +725,14 @@
             
             let listings = cloudListings;
             
-            // Get user-specific favorites
             let favKey = currentUser ? `carFavorites_${currentUser.id}` : 'carFavorites';
             let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
 
             if (currentTab === 'saved') {
                 listings = listings.filter(item => favorites.includes(String(item.id)));
+            } else if (currentTab === 'profile') {
+                if (!currentUser) return;
+                listings = listings.filter(item => item.user_id === currentUser.id);
             }
 
             const query = document.getElementById('search-input').value.toLowerCase();
@@ -662,7 +748,10 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${currentTab === 'saved' ? 'No saved cars in your wishlist.' : 'No cars found matching your search.'}</p>`;
+                let emptyMsg = 'No cars found matching your search.';
+                if (currentTab === 'saved') emptyMsg = 'No saved cars in your wishlist.';
+                if (currentTab === 'profile') emptyMsg = 'You have not posted any car listings yet.';
+                container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${emptyMsg}</p>`;
                 return;
             }
 
@@ -695,7 +784,6 @@
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
                 
-                // Security: Edit/Delete buttons only show if the current user ID matches the database user ID
                 const isOwner = currentUser && item.user_id === currentUser.id;
 
                 let ownerActionsHtml = '';
@@ -835,7 +923,6 @@
         }
 
         function toggleFavorite(id) {
-            // Require login for saving cars
             if (!currentUser) {
                 triggerHaptic();
                 alert('Please sign in with Google to save cars.');
@@ -854,6 +941,7 @@
             }
             
             localStorage.setItem(favKey, JSON.stringify(favorites));
+            if (currentTab === 'profile') updateProfileDashboardData();
             renderFilteredListings();
             updateWishlistCount();
         }
@@ -879,7 +967,7 @@
                     .from('cars')
                     .delete()
                     .eq('id', id)
-                    .eq('user_id', currentUser.id); // Security measure
+                    .eq('user_id', currentUser.id); 
 
                 if (error) throw error;
                 
@@ -890,6 +978,7 @@
                 favorites = favorites.filter(favId => favId !== String(id));
                 localStorage.setItem(favKey, JSON.stringify(favorites));
 
+                if (currentTab === 'profile') updateProfileDashboardData();
                 renderFilteredListings();
                 updateWishlistCount();
                 alert('Listing deleted successfully.');
