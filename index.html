@@ -46,9 +46,16 @@
                 </div>
             </div>
 
-            <!-- Showroom / Account Name Editor -->
-            <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-2">
-                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Showroom / Account Name</label>
+            <!-- Showroom / Account Name Editor with Display Type Switcher -->
+            <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Display Name Settings</label>
+                    <!-- Type Selector Tabs -->
+                    <div class="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800">
+                        <button type="button" onclick="triggerHaptic(); setDisplayType('showroom')" id="type-btn-showroom" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition bg-blue-600 text-white">Showroom</button>
+                        <button type="button" onclick="triggerHaptic(); setDisplayType('account')" id="type-btn-account" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition text-slate-400 hover:text-slate-200">Account</button>
+                    </div>
+                </div>
                 <div class="flex gap-2">
                     <input type="text" id="showroom-name-input" placeholder="e.g., Royal Auto Showroom" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     <button onclick="triggerHaptic(); saveShowroomName()" id="save-showroom-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm">Save</button>
@@ -166,7 +173,7 @@
         <!-- Search & Filter Section -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
             <div class="relative flex gap-2">
-                <input type="text" id="search-input" placeholder="🔍 Search Cars or Showroom Name..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                <input type="text" id="search-input" placeholder="🔍 Search Cars or Showroom/Account Name..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
                 <button onclick="triggerHaptic(); saveCurrentSearch()" class="bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 px-3.5 rounded-xl text-xs font-bold transition whitespace-nowrap shadow-sm" title="Save this search filter & alert">🔔 Save Alert</button>
             </div>
             
@@ -243,9 +250,10 @@
         let currentTab = 'feed';
         let activeEditImages = [];
         let cloudListings = [];
-        let profilesMap = {}; // Maps user_id -> showroom_name
+        let profilesMap = {}; // Maps user_id -> { name, type }
         let currentModalImages = [];
         let currentModalIndex = 0;
+        let selectedDisplayType = 'showroom'; // default
         
         let currentUser = null;
 
@@ -393,7 +401,7 @@
                 if (carsError) console.error(carsError);
                 cloudListings = carsData || [];
 
-                // Fetch profiles (showroom names)
+                // Fetch profiles (showroom/account names & display type)
                 const { data: profilesData, error: profilesError } = await supabaseClient
                     .from('profiles')
                     .select('*');
@@ -401,7 +409,10 @@
                 if (!profilesError && profilesData) {
                     profilesMap = {};
                     profilesData.forEach(p => {
-                        profilesMap[p.user_id] = p.showroom_name;
+                        profilesMap[p.user_id] = {
+                            name: p.showroom_name,
+                            type: p.display_type || 'showroom' // 'showroom' or 'account'
+                        };
                     });
                 }
 
@@ -413,11 +424,25 @@
             }
         }
 
+        function setDisplayType(type) {
+            selectedDisplayType = type;
+            const btnShowroom = document.getElementById('type-btn-showroom');
+            const btnAccount = document.getElementById('type-btn-account');
+
+            if (type === 'showroom') {
+                btnShowroom.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition bg-blue-600 text-white";
+                btnAccount.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition text-slate-400 hover:text-slate-200";
+            } else {
+                btnAccount.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition bg-blue-600 text-white";
+                btnShowroom.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition text-slate-400 hover:text-slate-200";
+            }
+        }
+
         async function saveShowroomName() {
             if (!currentUser) return;
             const showroomNameInput = document.getElementById('showroom-name-input').value.trim();
             if (!showroomNameInput) {
-                alert('Please enter a showroom name.');
+                alert('Please enter a display name.');
                 return;
             }
 
@@ -428,16 +453,24 @@
             try {
                 const { error } = await supabaseClient
                     .from('profiles')
-                    .upsert({ user_id: currentUser.id, showroom_name: showroomNameInput });
+                    .upsert({ 
+                        user_id: currentUser.id, 
+                        showroom_name: showroomNameInput,
+                        display_type: selectedDisplayType 
+                    });
 
                 if (error) throw error;
 
-                profilesMap[currentUser.id] = showroomNameInput;
-                alert('Showroom name saved successfully!');
+                profilesMap[currentUser.id] = {
+                    name: showroomNameInput,
+                    type: selectedDisplayType
+                };
+
+                alert('Display settings saved successfully!');
                 renderFilteredListings();
             } catch (err) {
                 console.error(err);
-                alert('Failed to save showroom name.');
+                alert('Failed to save display settings.');
             } finally {
                 btn.innerText = 'Save';
                 btn.disabled = false;
@@ -461,9 +494,10 @@
                 avatarContainer.innerHTML = `<span class="text-xl font-bold text-white">${name.charAt(0).toUpperCase()}</span>`;
             }
 
-            // Populate current showroom name input
+            // Populate current profile settings if available
             if (profilesMap[currentUser.id]) {
-                document.getElementById('showroom-name-input').value = profilesMap[currentUser.id];
+                document.getElementById('showroom-name-input').value = profilesMap[currentUser.id].name;
+                setDisplayType(profilesMap[currentUser.id].type || 'showroom');
             }
 
             const userPosts = cloudListings.filter(item => item.user_id === currentUser.id);
@@ -765,8 +799,9 @@
             const selectedCountry = document.getElementById('filter-country').value;
 
             const filtered = listings.filter(item => {
-                const showroomName = (profilesMap[item.user_id] || '').toLowerCase();
-                const combinedText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''} ${showroomName}`.toLowerCase();
+                const profileObj = profilesMap[item.user_id] || {};
+                const profileName = (profileObj.name || '').toLowerCase();
+                const combinedText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''} ${profileName}`.toLowerCase();
                 const matchesQuery = combinedText.includes(query);
                 const matchesBrand = !filterBrandInput || (item.brand && item.brand.toLowerCase().includes(filterBrandInput));
                 const matchesCountry = !selectedCountry || item.country === selectedCountry;
@@ -787,7 +822,16 @@
                 const stringId = String(item.id);
                 const isFav = favorites.includes(stringId);
                 const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
-                const showroom = profilesMap[item.user_id] ? `🏢 Showroom: <span class="font-semibold text-blue-400">${profilesMap[item.user_id]}</span>` : '';
+                
+                const profileObj = profilesMap[item.user_id];
+                let headerBadge = '';
+                if (profileObj && profileObj.name) {
+                    if (profileObj.type === 'account') {
+                        headerBadge = `👤 Account: <span class="font-semibold text-blue-400">${profileObj.name}</span>`;
+                    } else {
+                        headerBadge = `🏢 Showroom: <span class="font-semibold text-blue-400">${profileObj.name}</span>`;
+                    }
+                }
                 
                 let priceBadgeHtml = '';
                 if (item.price_dropped_from) {
@@ -846,7 +890,7 @@
 
                 card.innerHTML = `
                     ${carouselHtml}
-                    ${showroom ? `<div class="text-xs pt-1">${showroom}</div>` : ''}
+                    ${headerBadge ? `<div class="text-xs pt-1">${headerBadge}</div>` : ''}
                     <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
                     <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
