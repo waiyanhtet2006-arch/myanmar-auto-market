@@ -170,7 +170,7 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section with Two Search Bars -->
+        <!-- Search & Filter Section (All Fully Optional) -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-2.5">
             <div class="relative">
                 <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
@@ -180,9 +180,13 @@
             </div>
             
             <div class="grid grid-cols-2 gap-2 pt-1">
-                <input type="text" id="filter-brand" placeholder="Filter by Brand..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                <input type="text" id="filter-brand" placeholder="Optional: Brand..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                <input type="text" id="filter-color" placeholder="Optional: Color..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
                 <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500 transition">
-                    <option value="">All Countries</option>
+                    <option value="">All Countries (Optional)</option>
                     <option value="Japan">Japan</option>
                     <option value="Thailand">Thailand</option>
                     <option value="China">China</option>
@@ -191,6 +195,11 @@
                     <option value="South Korea">South Korea</option>
                     <option value="Other">Other</option>
                 </select>
+                <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1 text-xs">
+                    <input type="number" id="filter-year-from" placeholder="From Yr" class="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none text-center">
+                    <span class="text-slate-500">-</span>
+                    <input type="number" id="filter-year-to" placeholder="To Yr" class="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none text-center">
+                </div>
             </div>
         </section>
 
@@ -250,10 +259,10 @@
         let currentTab = 'feed';
         let activeEditImages = [];
         let cloudListings = [];
-        let profilesMap = {}; // Maps user_id -> { name, type }
+        let profilesMap = {}; 
         let currentModalImages = [];
         let currentModalIndex = 0;
-        let selectedDisplayType = 'showroom'; // default
+        let selectedDisplayType = 'showroom';
         
         let currentUser = null;
 
@@ -726,10 +735,13 @@
                 listings = listings.filter(item => item.user_id === currentUser.id);
             }
 
-            const carQuery = document.getElementById('search-car-input').value.toLowerCase();
-            const showroomQuery = document.getElementById('search-showroom-input').value.toLowerCase();
-            const filterBrandInput = document.getElementById('filter-brand').value.toLowerCase();
+            const carQuery = document.getElementById('search-car-input').value.toLowerCase().trim();
+            const showroomQuery = document.getElementById('search-showroom-input').value.toLowerCase().trim();
+            const filterBrandInput = document.getElementById('filter-brand').value.toLowerCase().trim();
+            const filterColorInput = document.getElementById('filter-color').value.toLowerCase().trim();
             const selectedCountry = document.getElementById('filter-country').value;
+            const yearFrom = parseInt(document.getElementById('filter-year-from').value) || null;
+            const yearTo = parseInt(document.getElementById('filter-year-to').value) || null;
 
             const filtered = listings.filter(item => {
                 const profileObj = profilesMap[item.user_id] || {};
@@ -737,12 +749,19 @@
                 
                 const carText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''}`.toLowerCase();
                 
+                // Fully optional logic: empty fields evaluate to true automatically
                 const matchesCarQuery = !carQuery || carText.includes(carQuery);
                 const matchesShowroomQuery = !showroomQuery || profileName.includes(showroomQuery);
                 const matchesBrand = !filterBrandInput || (item.brand && item.brand.toLowerCase().includes(filterBrandInput));
+                const matchesColor = !filterColorInput || (item.color && item.color.toLowerCase().includes(filterColorInput));
                 const matchesCountry = !selectedCountry || item.country === selectedCountry;
 
-                return matchesCarQuery && matchesShowroomQuery && matchesBrand && matchesCountry;
+                const itemYear = parseInt(item.year) || 0;
+                let matchesYearRange = true;
+                if (yearFrom !== null && itemYear < yearFrom) matchesYearRange = false;
+                if (yearTo !== null && itemYear > yearTo) matchesYearRange = false;
+
+                return matchesCarQuery && matchesShowroomQuery && matchesBrand && matchesColor && matchesCountry && matchesYearRange;
             });
 
             if (filtered.length === 0) {
@@ -999,7 +1018,10 @@
         document.getElementById('search-car-input').addEventListener('input', () => renderFilteredListings());
         document.getElementById('search-showroom-input').addEventListener('input', () => renderFilteredListings());
         document.getElementById('filter-brand').addEventListener('input', () => renderFilteredListings());
+        document.getElementById('filter-color').addEventListener('input', () => renderFilteredListings());
         document.getElementById('filter-country').addEventListener('change', () => renderFilteredListings());
+        document.getElementById('filter-year-from').addEventListener('input', () => renderFilteredListings());
+        document.getElementById('filter-year-to').addEventListener('input', () => renderFilteredListings());
     </script>
 </body>
 </html>
