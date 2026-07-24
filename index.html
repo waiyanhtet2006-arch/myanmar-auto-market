@@ -46,6 +46,15 @@
                 </div>
             </div>
 
+            <!-- Showroom / Account Name Editor -->
+            <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-2">
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Showroom / Account Name</label>
+                <div class="flex gap-2">
+                    <input type="text" id="showroom-name-input" placeholder="e.g., Royal Auto Showroom" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                    <button onclick="triggerHaptic(); saveShowroomName()" id="save-showroom-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm">Save</button>
+                </div>
+            </div>
+
             <div class="grid grid-cols-2 gap-3 text-center">
                 <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
                     <span id="stat-posts-count" class="text-lg font-bold text-blue-400">0</span>
@@ -157,7 +166,7 @@
         <!-- Search & Filter Section -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
             <div class="relative flex gap-2">
-                <input type="text" id="search-input" placeholder="🔍 General Search (e.g., Crown, Toyota)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                <input type="text" id="search-input" placeholder="🔍 Search Cars or Showroom Name..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
                 <button onclick="triggerHaptic(); saveCurrentSearch()" class="bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 px-3.5 rounded-xl text-xs font-bold transition whitespace-nowrap shadow-sm" title="Save this search filter & alert">🔔 Save Alert</button>
             </div>
             
@@ -182,7 +191,7 @@
         <section class="space-y-4">
             <div class="flex justify-between items-center px-1">
                 <h2 id="feed-title" class="text-lg font-bold text-slate-100">📋 Available Cars (FYP)</h2>
-                <button onclick="triggerHaptic(); fetchCloudListings()" class="text-xs bg-slate-900 border border-slate-800 text-blue-400 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-800 transition shadow-sm">🔄 Refresh</button>
+                <button onclick="triggerHaptic(); fetchCloudData()" class="text-xs bg-slate-900 border border-slate-800 text-blue-400 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-800 transition shadow-sm">🔄 Refresh</button>
             </div>
             <div id="listings-container" class="space-y-4"></div>
         </section>
@@ -234,10 +243,10 @@
         let currentTab = 'feed';
         let activeEditImages = [];
         let cloudListings = [];
+        let profilesMap = {}; // Maps user_id -> showroom_name
         let currentModalImages = [];
         let currentModalIndex = 0;
         
-        // Auth State
         let currentUser = null;
 
         function triggerHaptic() {
@@ -256,29 +265,23 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Check existing session
             const { data: { session } } = await supabaseClient.auth.getSession();
             currentUser = session?.user || null;
             updateAuthUI();
 
-            // Listen for auth changes (login/logout)
             supabaseClient.auth.onAuthStateChange((_event, session) => {
                 currentUser = session?.user || null;
                 updateAuthUI();
-                renderFilteredListings(); // Re-render to show/hide edit buttons
+                renderFilteredListings();
             });
 
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
             renderSavedSearchesBar();
-            await fetchCloudListings();
-            checkForNewMatchesOrPriceDrops();
+            await fetchCloudData();
         });
 
-        // -------------------------
-        // AUTHENTICATION FUNCTIONS
-        // -------------------------
         function updateAuthUI() {
             const authContainer = document.getElementById('auth-container');
             if (currentUser) {
@@ -307,13 +310,7 @@
 
         async function loginWithGoogle() {
             triggerHaptic();
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-            });
-            if (error) {
-                console.error("Login Error:", error);
-                alert("Failed to log in with Google.");
-            }
+            await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
         }
 
         async function logout() {
@@ -322,11 +319,7 @@
             switchTab('feed'); 
         }
 
-        // -------------------------
-        // APP LOGIC
-        // -------------------------
         function switchTab(tab) {
-            // Protect Sell and Profile Tabs
             if ((tab === 'sell' || tab === 'profile') && !currentUser) {
                 triggerHaptic();
                 alert('Please sign in with Google to access this feature.');
@@ -389,6 +382,68 @@
             updateWishlistCount();
         }
 
+        async function fetchCloudData() {
+            try {
+                // Fetch cars
+                const { data: carsData, error: carsError } = await supabaseClient
+                    .from('cars')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (carsError) console.error(carsError);
+                cloudListings = carsData || [];
+
+                // Fetch profiles (showroom names)
+                const { data: profilesData, error: profilesError } = await supabaseClient
+                    .from('profiles')
+                    .select('*');
+
+                if (!profilesError && profilesData) {
+                    profilesMap = {};
+                    profilesData.forEach(p => {
+                        profilesMap[p.user_id] = p.showroom_name;
+                    });
+                }
+
+                if (currentTab === 'profile') updateProfileDashboardData();
+                renderFilteredListings();
+            } catch (err) {
+                console.error(err);
+                renderFilteredListings();
+            }
+        }
+
+        async function saveShowroomName() {
+            if (!currentUser) return;
+            const showroomNameInput = document.getElementById('showroom-name-input').value.trim();
+            if (!showroomNameInput) {
+                alert('Please enter a showroom name.');
+                return;
+            }
+
+            const btn = document.getElementById('save-showroom-btn');
+            btn.innerText = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('profiles')
+                    .upsert({ user_id: currentUser.id, showroom_name: showroomNameInput });
+
+                if (error) throw error;
+
+                profilesMap[currentUser.id] = showroomNameInput;
+                alert('Showroom name saved successfully!');
+                renderFilteredListings();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to save showroom name.');
+            } finally {
+                btn.innerText = 'Save';
+                btn.disabled = false;
+            }
+        }
+
         function updateProfileDashboardData() {
             if (!currentUser) return;
             const meta = currentUser.user_metadata || {};
@@ -406,35 +461,17 @@
                 avatarContainer.innerHTML = `<span class="text-xl font-bold text-white">${name.charAt(0).toUpperCase()}</span>`;
             }
 
-            // Update stats
+            // Populate current showroom name input
+            if (profilesMap[currentUser.id]) {
+                document.getElementById('showroom-name-input').value = profilesMap[currentUser.id];
+            }
+
             const userPosts = cloudListings.filter(item => item.user_id === currentUser.id);
             document.getElementById('stat-posts-count').innerText = userPosts.length;
 
             let favKey = `carFavorites_${currentUser.id}`;
             let favorites = JSON.parse(localStorage.getItem(favKey)) || [];
             document.getElementById('stat-saved-count').innerText = favorites.length;
-        }
-
-        async function fetchCloudListings() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('cars')
-                    .select('*')
-                    .order('id', { ascending: false });
-
-                if (error) {
-                    console.error('Supabase fetch error:', error);
-                    cloudListings = [];
-                } else {
-                    cloudListings = data || [];
-                }
-                if (currentTab === 'profile') updateProfileDashboardData();
-                renderFilteredListings();
-            } catch (err) {
-                console.error('Cloud connection error:', err);
-                cloudListings = [];
-                renderFilteredListings();
-            }
         }
 
         function compressImage(file, callback) {
@@ -566,10 +603,10 @@
 
                 alert('Successfully posted to marketplace!');
                 cancelEdit();
-                switchTab('profile'); // Send them straight to their dashboard profile to see their posts!
-                await fetchCloudListings();
+                switchTab('profile');
+                await fetchCloudData();
             } catch (err) {
-                console.error('Supabase write error:', err);
+                console.error(err);
                 alert('Cloud sync failed: ' + err.message);
             } finally {
                 submitBtn.innerText = 'Post Live Listing';
@@ -643,7 +680,6 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Saved Search Functions
         function saveCurrentSearch() {
             const query = document.getElementById('search-input').value.trim();
             const brand = document.getElementById('filter-brand').value.trim();
@@ -708,17 +744,6 @@
             renderSavedSearchesBar();
         }
 
-        function checkForNewMatchesOrPriceDrops() {
-            let cloudListingsCount = cloudListings.length;
-            let lastCheckedCount = parseInt(localStorage.getItem('lastCheckedListingCount') || '0');
-
-            if (cloudListingsCount > lastCheckedCount && lastCheckedCount > 0) {
-                let newCarsCount = cloudListingsCount - lastCheckedCount;
-                console.log(`🔔 New Alert: ${newCarsCount} new car(s) added to the cloud feed!`);
-            }
-            localStorage.setItem('lastCheckedListingCount', cloudListingsCount);
-        }
-
         function renderFilteredListings() {
             const container = document.getElementById('listings-container');
             container.innerHTML = '';
@@ -740,7 +765,8 @@
             const selectedCountry = document.getElementById('filter-country').value;
 
             const filtered = listings.filter(item => {
-                const combinedText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''}`.toLowerCase();
+                const showroomName = (profilesMap[item.user_id] || '').toLowerCase();
+                const combinedText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''} ${showroomName}`.toLowerCase();
                 const matchesQuery = combinedText.includes(query);
                 const matchesBrand = !filterBrandInput || (item.brand && item.brand.toLowerCase().includes(filterBrandInput));
                 const matchesCountry = !selectedCountry || item.country === selectedCountry;
@@ -761,6 +787,7 @@
                 const stringId = String(item.id);
                 const isFav = favorites.includes(stringId);
                 const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
+                const showroom = profilesMap[item.user_id] ? `🏢 Showroom: <span class="font-semibold text-blue-400">${profilesMap[item.user_id]}</span>` : '';
                 
                 let priceBadgeHtml = '';
                 if (item.price_dropped_from) {
@@ -783,7 +810,6 @@
                 contactsHtml += '</div>';
 
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
-                
                 const isOwner = currentUser && item.user_id === currentUser.id;
 
                 let ownerActionsHtml = '';
@@ -820,6 +846,7 @@
 
                 card.innerHTML = `
                     ${carouselHtml}
+                    ${showroom ? `<div class="text-xs pt-1">${showroom}</div>` : ''}
                     <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
                     <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
@@ -983,7 +1010,7 @@
                 updateWishlistCount();
                 alert('Listing deleted successfully.');
             } catch (err) {
-                console.error('Delete error:', err);
+                console.error(err);
                 alert('Failed to delete listing.');
             }
         }
