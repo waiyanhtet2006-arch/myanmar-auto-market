@@ -209,17 +209,50 @@
                 <h2 id="feed-title" class="text-lg font-bold text-slate-100">📋 Available Cars (FYP)</h2>
                 <button onclick="triggerHaptic(); fetchCloudData()" class="text-xs bg-slate-900 border border-slate-800 text-blue-400 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-800 transition shadow-sm">🔄 Refresh</button>
             </div>
-            <!-- Active Profile View Banner (Hidden by default) -->
-            <div id="active-profile-banner" class="hidden bg-blue-600/10 border border-blue-500/30 p-3.5 rounded-xl flex justify-between items-center">
-                <div>
-                    <span class="text-[10px] uppercase font-bold text-blue-400 tracking-wider">Viewing Profile</span>
-                    <h3 id="active-profile-banner-name" class="text-sm font-bold text-white">Showroom Name</h3>
-                </div>
-                <button onclick="triggerHaptic(); clearProfileFilter()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-semibold transition border border-slate-700">Show All Cars</button>
-            </div>
             <div id="listings-container" class="space-y-4"></div>
         </section>
     </main>
+
+    <!-- Facebook / Instagram Style Profile Modal Page -->
+    <div id="profile-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex flex-col overflow-y-auto">
+        <!-- Modal Top Bar -->
+        <div class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-20 px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button onclick="triggerHaptic(); closeProfileModal()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-200 font-bold transition">←</button>
+                <span id="modal-header-username" class="text-sm font-bold text-white">Profile</span>
+            </div>
+            <span id="modal-header-badge" class="text-[10px] bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider">Showroom</span>
+        </div>
+
+        <!-- Profile Header Details Box -->
+        <div class="max-w-md w-full mx-auto p-4 space-y-4">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-3">
+                <div id="modal-profile-avatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white shadow-xl border-2 border-slate-700">
+                    👤
+                </div>
+                <div>
+                    <h2 id="modal-profile-name" class="text-lg font-bold text-white tracking-tight">Showroom Name</h2>
+                    <p id="modal-profile-type-label" class="text-xs text-blue-400 font-semibold mt-0.5">Verified Showroom</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 w-full pt-3 border-t border-slate-800">
+                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                        <span id="modal-profile-count" class="text-base font-bold text-blue-400">0</span>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Active Listings</p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                        <span class="text-base font-bold text-emerald-400">Active</span>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Status</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Posts Feed Section -->
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Listings by this profile</h3>
+                <div id="modal-listings-container" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Fullscreen Facebook-Style Photo Lightbox -->
     <div id="fb-photo-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
@@ -271,7 +304,6 @@
         let currentModalImages = [];
         let currentModalIndex = 0;
         let selectedDisplayType = 'showroom';
-        let targetedUserId = null; // Filter by specific profile creator ID
         
         let currentUser = null;
 
@@ -353,8 +385,6 @@
             }
 
             currentTab = tab;
-            targetedUserId = null; // Clear profile view filter on tab switch
-            document.getElementById('active-profile-banner').classList.add('hidden');
             
             const formSection = document.getElementById('form-section');
             const searchSection = document.getElementById('search-section');
@@ -730,28 +760,108 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        window.filterByProfile = function(userId) {
+        // Open Facebook / Instagram style profile modal page
+        window.openProfileModal = function(userId) {
             triggerHaptic();
-            targetedUserId = userId;
-            const profileObj = profilesMap[userId];
-            const banner = document.getElementById('active-profile-banner');
-            const bannerName = document.getElementById('active-profile-banner-name');
+            const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom' };
             
-            if (profileObj && profileObj.name) {
-                bannerName.innerText = profileObj.name;
+            document.getElementById('modal-header-username').innerText = profileObj.name;
+            document.getElementById('modal-profile-name').innerText = profileObj.name;
+            
+            const badgeEl = document.getElementById('modal-header-badge');
+            const typeLabelEl = document.getElementById('modal-profile-type-label');
+            const avatarEl = document.getElementById('modal-profile-avatar');
+
+            if (profileObj.type === 'account') {
+                badgeEl.innerText = 'Account';
+                typeLabelEl.innerText = 'Verified Account';
             } else {
-                bannerName.innerText = "Showroom / Account Profile";
+                badgeEl.innerText = 'Showroom';
+                typeLabelEl.innerText = 'Verified Showroom';
             }
-            banner.classList.remove('hidden');
-            renderFilteredListings();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            avatarEl.innerHTML = `<span class="text-2xl font-bold text-white">${profileObj.name.charAt(0).toUpperCase()}</span>`;
+
+            const userListings = cloudListings.filter(item => item.user_id === userId);
+            document.getElementById('modal-profile-count').innerText = userListings.length;
+
+            const container = document.getElementById('modal-listings-container');
+            container.innerHTML = '';
+
+            if (userListings.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">No listings found for this profile.</p>';
+            } else {
+                let favKey = currentUser ? `carFavorites_${currentUser.id}` : 'carFavorites';
+                let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
+
+                const fragment = document.createDocumentFragment();
+                userListings.forEach(item => {
+                    const stringId = String(item.id);
+                    const isFav = favorites.includes(stringId);
+                    const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
+                    
+                    let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop</span>` : '';
+
+                    let contactsHtml = '<div class="space-y-2 pt-2">';
+                    if (item.contacts) {
+                        if (item.contacts.phone) {
+                            contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">📞 Call: ${item.contacts.phone}</a>`;
+                        }
+                        if (item.contacts.viber) {
+                            contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-600/10 border border-purple-500/20 text-purple-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-purple-600/20 transition">🟣 Viber: ${item.contacts.viber}</a>`;
+                        }
+                        if (item.contacts.telegram) {
+                            let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
+                            contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${item.contacts.telegram}</a>`;
+                        }
+                    }
+                    contactsHtml += '</div>';
+
+                    let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
+                    
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3 relative";
+                    
+                    let carouselHtml = `
+                        <div class="relative overflow-hidden rounded-xl bg-slate-950 border border-slate-800">
+                            <img id="modal-img-${item.id}" src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
+                            <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md border border-slate-700 p-2 rounded-full shadow-lg text-base hover:scale-110 transition z-10">
+                                ${isFav ? '❤️' : '🤍'}
+                            </button>
+                    `;
+
+                    if (images.length > 1) {
+                        carouselHtml += `
+                            <div class="absolute bottom-2.5 left-2.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer">
+                                1 / ${images.length}
+                            </div>
+                        `;
+                    }
+                    carouselHtml += `</div>`;
+
+                    card.innerHTML = `
+                        ${carouselHtml}
+                        <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
+                        <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
+                        <div class="flex items-center flex-wrap gap-y-1">
+                            <p class="text-blue-400 font-bold text-lg">${item.price}</p>
+                            ${priceBadgeHtml}
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
+                        ${contactsHtml}
+                    `;
+                    fragment.appendChild(card);
+                });
+                container.appendChild(fragment);
+            }
+
+            document.getElementById('profile-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
-        function clearProfileFilter() {
-            triggerHaptic();
-            targetedUserId = null;
-            document.getElementById('active-profile-banner').classList.add('hidden');
-            renderFilteredListings();
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
         function renderFilteredListings() {
@@ -770,10 +880,6 @@
                 listings = listings.filter(item => item.user_id === currentUser.id);
             }
 
-            if (targetedUserId) {
-                listings = listings.filter(item => item.user_id === targetedUserId);
-            }
-
             const carQuery = document.getElementById('search-car-input').value.toLowerCase().trim();
             const showroomQuery = document.getElementById('search-showroom-input').value.toLowerCase().trim();
             const filterBrandInput = document.getElementById('filter-brand').value.toLowerCase().trim();
@@ -788,7 +894,6 @@
                 
                 const carText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''}`.toLowerCase();
                 
-                // Fully optional logic: empty fields evaluate to true automatically
                 const matchesCarQuery = !carQuery || carText.includes(carQuery);
                 const matchesShowroomQuery = !showroomQuery || profileName.includes(showroomQuery);
                 const matchesBrand = !filterBrandInput || (item.brand && item.brand.toLowerCase().includes(filterBrandInput));
@@ -807,7 +912,6 @@
                 let emptyMsg = 'No cars found matching your search.';
                 if (currentTab === 'saved') emptyMsg = 'No saved cars in your wishlist.';
                 if (currentTab === 'profile') emptyMsg = 'You have not posted any car listings yet.';
-                if (targetedUserId) emptyMsg = 'This profile has no other active listings.';
                 container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${emptyMsg}</p>`;
                 return;
             }
@@ -823,9 +927,9 @@
                 let headerBadge = '';
                 if (profileObj && profileObj.name) {
                     if (profileObj.type === 'account') {
-                        headerBadge = `👤 Account: <span onclick="filterByProfile('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
+                        headerBadge = `👤 Account: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     } else {
-                        headerBadge = `🏢 Showroom: <span onclick="filterByProfile('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
+                        headerBadge = `🏢 Showroom: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     }
                 }
                 
@@ -925,7 +1029,7 @@
             let item = cloudListings.find(l => String(l.id) === String(id));
             if (!item || !item.img_srcs || item.img_srcs.length === 0) return;
 
-            let imgElement = document.getElementById(`img-${id}`);
+            let imgElement = document.getElementById(`img-${id}`) || document.getElementById(`modal-img-${id}`);
             if (imgElement) {
                 let currentSrc = imgElement.src;
                 let foundIdx = item.img_srcs.indexOf(currentSrc);
