@@ -209,6 +209,14 @@
                 <h2 id="feed-title" class="text-lg font-bold text-slate-100">📋 Available Cars (FYP)</h2>
                 <button onclick="triggerHaptic(); fetchCloudData()" class="text-xs bg-slate-900 border border-slate-800 text-blue-400 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-800 transition shadow-sm">🔄 Refresh</button>
             </div>
+            <!-- Active Profile View Banner (Hidden by default) -->
+            <div id="active-profile-banner" class="hidden bg-blue-600/10 border border-blue-500/30 p-3.5 rounded-xl flex justify-between items-center">
+                <div>
+                    <span class="text-[10px] uppercase font-bold text-blue-400 tracking-wider">Viewing Profile</span>
+                    <h3 id="active-profile-banner-name" class="text-sm font-bold text-white">Showroom Name</h3>
+                </div>
+                <button onclick="triggerHaptic(); clearProfileFilter()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-semibold transition border border-slate-700">Show All Cars</button>
+            </div>
             <div id="listings-container" class="space-y-4"></div>
         </section>
     </main>
@@ -263,6 +271,7 @@
         let currentModalImages = [];
         let currentModalIndex = 0;
         let selectedDisplayType = 'showroom';
+        let targetedUserId = null; // Filter by specific profile creator ID
         
         let currentUser = null;
 
@@ -344,6 +353,8 @@
             }
 
             currentTab = tab;
+            targetedUserId = null; // Clear profile view filter on tab switch
+            document.getElementById('active-profile-banner').classList.add('hidden');
             
             const formSection = document.getElementById('form-section');
             const searchSection = document.getElementById('search-section');
@@ -719,6 +730,30 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
+        window.filterByProfile = function(userId) {
+            triggerHaptic();
+            targetedUserId = userId;
+            const profileObj = profilesMap[userId];
+            const banner = document.getElementById('active-profile-banner');
+            const bannerName = document.getElementById('active-profile-banner-name');
+            
+            if (profileObj && profileObj.name) {
+                bannerName.innerText = profileObj.name;
+            } else {
+                bannerName.innerText = "Showroom / Account Profile";
+            }
+            banner.classList.remove('hidden');
+            renderFilteredListings();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function clearProfileFilter() {
+            triggerHaptic();
+            targetedUserId = null;
+            document.getElementById('active-profile-banner').classList.add('hidden');
+            renderFilteredListings();
+        }
+
         function renderFilteredListings() {
             const container = document.getElementById('listings-container');
             container.innerHTML = '';
@@ -733,6 +768,10 @@
             } else if (currentTab === 'profile') {
                 if (!currentUser) return;
                 listings = listings.filter(item => item.user_id === currentUser.id);
+            }
+
+            if (targetedUserId) {
+                listings = listings.filter(item => item.user_id === targetedUserId);
             }
 
             const carQuery = document.getElementById('search-car-input').value.toLowerCase().trim();
@@ -768,6 +807,7 @@
                 let emptyMsg = 'No cars found matching your search.';
                 if (currentTab === 'saved') emptyMsg = 'No saved cars in your wishlist.';
                 if (currentTab === 'profile') emptyMsg = 'You have not posted any car listings yet.';
+                if (targetedUserId) emptyMsg = 'This profile has no other active listings.';
                 container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${emptyMsg}</p>`;
                 return;
             }
@@ -783,9 +823,9 @@
                 let headerBadge = '';
                 if (profileObj && profileObj.name) {
                     if (profileObj.type === 'account') {
-                        headerBadge = `👤 Account: <span class="font-semibold text-blue-400">${profileObj.name}</span>`;
+                        headerBadge = `👤 Account: <span onclick="filterByProfile('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     } else {
-                        headerBadge = `🏢 Showroom: <span class="font-semibold text-blue-400">${profileObj.name}</span>`;
+                        headerBadge = `🏢 Showroom: <span onclick="filterByProfile('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     }
                 }
                 
