@@ -12,28 +12,23 @@
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans pb-24">
-    <!-- Premium Header -->
     <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex flex-col">
                 <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Auto Market</h1>
                 <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE CLOUD</span>
             </div>
-            <!-- Auth Container -->
             <div id="auth-container" class="flex items-center gap-2">
-                <!-- Buttons injected via JS -->
-            </div>
+                </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
-        <!-- Welcome Banner -->
         <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg">
             <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
             <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar.</p>
         </div>
 
-        <!-- User Dashboard / Profile Section -->
         <section id="dashboard-section" class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl hidden space-y-4">
             <div class="flex items-center gap-4 pb-4 border-b border-slate-800">
                 <div id="profile-avatar-container" class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-xl font-bold text-white shadow-lg overflow-hidden border-2 border-slate-700">
@@ -46,19 +41,43 @@
                 </div>
             </div>
 
-            <!-- Showroom / Account Name Editor with Display Type Switcher -->
             <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-3">
                 <div class="flex justify-between items-center">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Display Name Settings</label>
-                    <!-- Type Selector Tabs -->
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Profile & Display Settings</label>
                     <div class="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800">
                         <button type="button" onclick="triggerHaptic(); setDisplayType('showroom')" id="type-btn-showroom" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition bg-blue-600 text-white">Showroom</button>
                         <button type="button" onclick="triggerHaptic(); setDisplayType('account')" id="type-btn-account" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition text-slate-400 hover:text-slate-200">Account</button>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <input type="text" id="showroom-name-input" placeholder="e.g., Royal Auto Showroom" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
-                    <button onclick="triggerHaptic(); saveShowroomName()" id="save-showroom-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm">Save</button>
+
+                <div class="space-y-2.5">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Showroom / Display Name</label>
+                        <input type="text" id="showroom-name-input" placeholder="e.g., Royal Auto Showroom" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Bio / About</label>
+                        <textarea id="profile-bio-input" rows="2" placeholder="Tell buyers a bit about yourself or your dealership..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Contact Phone Number</label>
+                        <input type="text" id="profile-phone-input" placeholder="e.g., +95 9 123 456 789" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Facebook Link</label>
+                            <input type="url" id="profile-fb-input" placeholder="https://facebook.com/..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">TikTok Link</label>
+                            <input type="url" id="profile-tiktok-input" placeholder="https://tiktok.com/@..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                    </div>
+
+                    <button onclick="triggerHaptic(); saveShowroomName()" id="save-showroom-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm mt-1">Save Profile Changes</button>
                 </div>
             </div>
 
@@ -79,7 +98,6 @@
             </div>
         </section>
 
-        <!-- Sell / Edit Form Section -->
         <section id="form-section" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl hidden space-y-4">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                 <h2 id="form-heading" class="text-lg font-bold text-white">🚗 Sell Your Car</h2>
@@ -170,7 +188,6 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section (All Fully Optional) -->
         <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-2.5">
             <div class="relative">
                 <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
@@ -203,7 +220,6 @@
             </div>
         </section>
 
-        <!-- Feed Header -->
         <section class="space-y-4">
             <div class="flex justify-between items-center px-1">
                 <h2 id="feed-title" class="text-lg font-bold text-slate-100">📋 Available Cars (FYP)</h2>
@@ -213,9 +229,7 @@
         </section>
     </main>
 
-    <!-- Facebook / Instagram Style Profile Modal Page -->
     <div id="profile-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex flex-col overflow-y-auto">
-        <!-- Modal Top Bar -->
         <div class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-20 px-4 py-3.5 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <button onclick="triggerHaptic(); closeProfileModal()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-200 font-bold transition">←</button>
@@ -224,7 +238,6 @@
             <span id="modal-header-badge" class="text-[10px] bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider">Showroom</span>
         </div>
 
-        <!-- Profile Header Details Box -->
         <div class="max-w-md w-full mx-auto p-4 space-y-4">
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col items-center text-center space-y-3">
                 <div id="modal-profile-avatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white shadow-xl border-2 border-slate-700">
@@ -234,6 +247,11 @@
                     <h2 id="modal-profile-name" class="text-lg font-bold text-white tracking-tight">Showroom Name</h2>
                     <p id="modal-profile-type-label" class="text-xs text-blue-400 font-semibold mt-0.5">Verified Showroom</p>
                 </div>
+
+                <p id="modal-profile-bio" class="text-xs text-slate-300 leading-relaxed px-2 hidden"></p>
+
+                <div id="modal-profile-links" class="flex flex-wrap items-center justify-center gap-2 pt-1"></div>
+
                 <div class="grid grid-cols-2 gap-4 w-full pt-3 border-t border-slate-800">
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <span id="modal-profile-count" class="text-base font-bold text-blue-400">0</span>
@@ -246,7 +264,6 @@
                 </div>
             </div>
 
-            <!-- Profile Posts Feed Section -->
             <div class="space-y-3">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Listings by this profile</h3>
                 <div id="modal-listings-container" class="space-y-4"></div>
@@ -254,7 +271,6 @@
         </div>
     </div>
 
-    <!-- Fullscreen Facebook-Style Photo Lightbox -->
     <div id="fb-photo-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
         <div class="flex justify-between items-center p-4 bg-slate-900/60 border-b border-slate-800 text-white z-10">
             <span id="fb-modal-counter" class="text-xs font-semibold text-slate-300 tracking-wider">1 / 1</span>
@@ -270,7 +286,6 @@
         <div id="fb-modal-thumbs" class="p-3 bg-slate-900/80 border-t border-slate-800 flex items-center justify-center space-x-2 overflow-x-auto min-h-[72px]"></div>
     </div>
 
-    <!-- Premium Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-xl border-t border-slate-800 shadow-2xl z-40">
         <div class="max-w-md mx-auto grid grid-cols-4 h-16">
             <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-400 font-bold transition">
@@ -458,7 +473,11 @@
                     profilesData.forEach(p => {
                         profilesMap[p.user_id] = {
                             name: p.showroom_name,
-                            type: p.display_type || 'showroom'
+                            type: p.display_type || 'showroom',
+                            bio: p.bio || '',
+                            phone: p.phone || '',
+                            facebook_link: p.facebook_link || '',
+                            tiktok_link: p.tiktok_link || ''
                         };
                     });
                 }
@@ -488,6 +507,11 @@
         async function saveShowroomName() {
             if (!currentUser) return;
             const showroomNameInput = document.getElementById('showroom-name-input').value.trim();
+            const bioInput = document.getElementById('profile-bio-input').value.trim();
+            const phoneInput = document.getElementById('profile-phone-input').value.trim();
+            const fbInput = document.getElementById('profile-fb-input').value.trim();
+            const tiktokInput = document.getElementById('profile-tiktok-input').value.trim();
+
             if (!showroomNameInput) {
                 alert('Please enter a display name.');
                 return;
@@ -503,23 +527,31 @@
                     .upsert({ 
                         user_id: currentUser.id, 
                         showroom_name: showroomNameInput,
-                        display_type: selectedDisplayType 
+                        display_type: selectedDisplayType,
+                        bio: bioInput,
+                        phone: phoneInput,
+                        facebook_link: fbInput,
+                        tiktok_link: tiktokInput
                     });
 
                 if (error) throw error;
 
                 profilesMap[currentUser.id] = {
                     name: showroomNameInput,
-                    type: selectedDisplayType
+                    type: selectedDisplayType,
+                    bio: bioInput,
+                    phone: phoneInput,
+                    facebook_link: fbInput,
+                    tiktok_link: tiktokInput
                 };
 
-                alert('Display settings saved successfully!');
+                alert('Profile settings saved successfully!');
                 renderFilteredListings();
             } catch (err) {
                 console.error(err);
-                alert('Failed to save display settings.');
+                alert('Failed to save profile settings.');
             } finally {
-                btn.innerText = 'Save';
+                btn.innerText = 'Save Profile Changes';
                 btn.disabled = false;
             }
         }
@@ -542,8 +574,13 @@
             }
 
             if (profilesMap[currentUser.id]) {
-                document.getElementById('showroom-name-input').value = profilesMap[currentUser.id].name;
-                setDisplayType(profilesMap[currentUser.id].type || 'showroom');
+                const p = profilesMap[currentUser.id];
+                document.getElementById('showroom-name-input').value = p.name || '';
+                document.getElementById('profile-bio-input').value = p.bio || '';
+                document.getElementById('profile-phone-input').value = p.phone || '';
+                document.getElementById('profile-fb-input').value = p.facebook_link || '';
+                document.getElementById('profile-tiktok-input').value = p.tiktok_link || '';
+                setDisplayType(p.type || 'showroom');
             }
 
             const userPosts = cloudListings.filter(item => item.user_id === currentUser.id);
@@ -763,7 +800,7 @@
         // Open Facebook / Instagram style profile modal page
         window.openProfileModal = function(userId) {
             triggerHaptic();
-            const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom' };
+            const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', phone: '', facebook_link: '', tiktok_link: '' };
             
             document.getElementById('modal-header-username').innerText = profileObj.name;
             document.getElementById('modal-profile-name').innerText = profileObj.name;
@@ -771,6 +808,8 @@
             const badgeEl = document.getElementById('modal-header-badge');
             const typeLabelEl = document.getElementById('modal-profile-type-label');
             const avatarEl = document.getElementById('modal-profile-avatar');
+            const bioEl = document.getElementById('modal-profile-bio');
+            const linksContainer = document.getElementById('modal-profile-links');
 
             if (profileObj.type === 'account') {
                 badgeEl.innerText = 'Account';
@@ -781,6 +820,43 @@
             }
 
             avatarEl.innerHTML = `<span class="text-2xl font-bold text-white">${profileObj.name.charAt(0).toUpperCase()}</span>`;
+
+            // Render Bio
+            if (profileObj.bio && profileObj.bio.trim() !== '') {
+                bioEl.innerText = profileObj.bio;
+                bioEl.classList.remove('hidden');
+            } else {
+                bioEl.classList.add('hidden');
+            }
+
+            // Render Social/Contact Link Pills
+            linksContainer.innerHTML = '';
+            let hasLinks = false;
+
+            if (profileObj.phone && profileObj.phone.trim() !== '') {
+                hasLinks = true;
+                linksContainer.innerHTML += `
+                    <a href="tel:${profileObj.phone}" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-blue-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
+                        📞 ${profileObj.phone}
+                    </a>
+                `;
+            }
+            if (profileObj.facebook_link && profileObj.facebook_link.trim() !== '') {
+                hasLinks = true;
+                linksContainer.innerHTML += `
+                    <a href="${profileObj.facebook_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-blue-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
+                        📘 Facebook
+                    </a>
+                `;
+            }
+            if (profileObj.tiktok_link && profileObj.tiktok_link.trim() !== '') {
+                hasLinks = true;
+                linksContainer.innerHTML += `
+                    <a href="${profileObj.tiktok_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-indigo-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
+                        🎵 TikTok
+                    </a>
+                `;
+            }
 
             const userListings = cloudListings.filter(item => item.user_id === userId);
             document.getElementById('modal-profile-count').innerText = userListings.length;
