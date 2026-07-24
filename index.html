@@ -170,14 +170,16 @@
             </form>
         </section>
 
-        <!-- Search & Filter Section -->
-        <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
-            <div class="relative flex gap-2">
-                <input type="text" id="search-input" placeholder="🔍 Search Cars or Showroom/Account Name..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
-                <button onclick="triggerHaptic(); saveCurrentSearch()" class="bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 px-3.5 rounded-xl text-xs font-bold transition whitespace-nowrap shadow-sm" title="Save this search filter & alert">🔔 Save Alert</button>
+        <!-- Search & Filter Section with Two Search Bars -->
+        <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-2.5">
+            <div class="relative">
+                <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+            </div>
+            <div class="relative">
+                <input type="text" id="search-showroom-input" placeholder="🏢 Search Accounts & Showrooms..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
             </div>
             
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-2 pt-1">
                 <input type="text" id="filter-brand" placeholder="Filter by Brand..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
                 <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500 transition">
                     <option value="">All Countries</option>
@@ -190,8 +192,6 @@
                     <option value="Other">Other</option>
                 </select>
             </div>
-            
-            <div id="saved-searches-bar" class="flex flex-wrap gap-1.5 pt-1"></div>
         </section>
 
         <!-- Feed Header -->
@@ -286,7 +286,6 @@
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
-            renderSavedSearchesBar();
             await fetchCloudData();
         });
 
@@ -392,7 +391,6 @@
 
         async function fetchCloudData() {
             try {
-                // Fetch cars
                 const { data: carsData, error: carsError } = await supabaseClient
                     .from('cars')
                     .select('*')
@@ -401,7 +399,6 @@
                 if (carsError) console.error(carsError);
                 cloudListings = carsData || [];
 
-                // Fetch profiles (showroom/account names & display type)
                 const { data: profilesData, error: profilesError } = await supabaseClient
                     .from('profiles')
                     .select('*');
@@ -411,7 +408,7 @@
                     profilesData.forEach(p => {
                         profilesMap[p.user_id] = {
                             name: p.showroom_name,
-                            type: p.display_type || 'showroom' // 'showroom' or 'account'
+                            type: p.display_type || 'showroom'
                         };
                     });
                 }
@@ -494,7 +491,6 @@
                 avatarContainer.innerHTML = `<span class="text-xl font-bold text-white">${name.charAt(0).toUpperCase()}</span>`;
             }
 
-            // Populate current profile settings if available
             if (profilesMap[currentUser.id]) {
                 document.getElementById('showroom-name-input').value = profilesMap[currentUser.id].name;
                 setDisplayType(profilesMap[currentUser.id].type || 'showroom');
@@ -714,70 +710,6 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        function saveCurrentSearch() {
-            const query = document.getElementById('search-input').value.trim();
-            const brand = document.getElementById('filter-brand').value.trim();
-            const country = document.getElementById('filter-country').value;
-
-            if (!query && !brand && !country) {
-                alert('Please enter a search term or select a filter to save as an alert.');
-                return;
-            }
-
-            let searchName = query || brand || country;
-            if (country && (query || brand)) searchName += ` (${country})`;
-
-            let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
-            let exists = savedSearches.some(s => s.query === query && s.brand === brand && s.country === country);
-            
-            if (exists) {
-                alert('This search alert is already saved!');
-                return;
-            }
-
-            savedSearches.push({ query, brand, country, name: searchName });
-            localStorage.setItem('savedSearchAlerts', JSON.stringify(savedSearches));
-            renderSavedSearchesBar();
-            alert(`🔔 Alert Saved! We'll notify you when matching cars appear.`);
-        }
-
-        function renderSavedSearchesBar() {
-            const bar = document.getElementById('saved-searches-bar');
-            if (!bar) return;
-            bar.innerHTML = '';
-
-            let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
-            if (savedSearches.length === 0) return;
-
-            let label = document.createElement('span');
-            label.className = "text-[11px] text-slate-400 font-semibold w-full mb-0.5";
-            label.innerText = "Saved Alerts:";
-            bar.appendChild(label);
-
-            savedSearches.forEach((s, idx) => {
-                let chip = document.createElement('button');
-                chip.type = 'button';
-                chip.className = "inline-flex items-center space-x-1 bg-slate-950 border border-slate-800 text-blue-400 text-[11px] px-2.5 py-1 rounded-lg hover:bg-slate-800 transition";
-                chip.innerHTML = `<span>🔔 ${s.name}</span> <span class="text-slate-500 hover:text-rose-400 ml-1" onclick="event.stopPropagation(); removeSavedSearch(${idx})">✕</span>`;
-                chip.onclick = () => {
-                    triggerHaptic();
-                    document.getElementById('search-input').value = s.query || '';
-                    document.getElementById('filter-brand').value = s.brand || '';
-                    document.getElementById('filter-country').value = s.country || '';
-                    renderFilteredListings();
-                };
-                bar.appendChild(chip);
-            });
-        }
-
-        window.removeSavedSearch = function(index) {
-            triggerHaptic();
-            let savedSearches = JSON.parse(localStorage.getItem('savedSearchAlerts')) || [];
-            savedSearches.splice(index, 1);
-            localStorage.setItem('savedSearchAlerts', JSON.stringify(savedSearches));
-            renderSavedSearchesBar();
-        }
-
         function renderFilteredListings() {
             const container = document.getElementById('listings-container');
             container.innerHTML = '';
@@ -794,18 +726,23 @@
                 listings = listings.filter(item => item.user_id === currentUser.id);
             }
 
-            const query = document.getElementById('search-input').value.toLowerCase();
+            const carQuery = document.getElementById('search-car-input').value.toLowerCase();
+            const showroomQuery = document.getElementById('search-showroom-input').value.toLowerCase();
             const filterBrandInput = document.getElementById('filter-brand').value.toLowerCase();
             const selectedCountry = document.getElementById('filter-country').value;
 
             const filtered = listings.filter(item => {
                 const profileObj = profilesMap[item.user_id] || {};
                 const profileName = (profileObj.name || '').toLowerCase();
-                const combinedText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''} ${profileName}`.toLowerCase();
-                const matchesQuery = combinedText.includes(query);
+                
+                const carText = `${item.brand || ''} ${item.title || ''} ${item.year || ''} ${item.color || ''}`.toLowerCase();
+                
+                const matchesCarQuery = !carQuery || carText.includes(carQuery);
+                const matchesShowroomQuery = !showroomQuery || profileName.includes(showroomQuery);
                 const matchesBrand = !filterBrandInput || (item.brand && item.brand.toLowerCase().includes(filterBrandInput));
                 const matchesCountry = !selectedCountry || item.country === selectedCountry;
-                return matchesQuery && matchesBrand && matchesCountry;
+
+                return matchesCarQuery && matchesShowroomQuery && matchesBrand && matchesCountry;
             });
 
             if (filtered.length === 0) {
@@ -1059,7 +996,8 @@
             }
         }
 
-        document.getElementById('search-input').addEventListener('input', () => renderFilteredListings());
+        document.getElementById('search-car-input').addEventListener('input', () => renderFilteredListings());
+        document.getElementById('search-showroom-input').addEventListener('input', () => renderFilteredListings());
         document.getElementById('filter-brand').addEventListener('input', () => renderFilteredListings());
         document.getElementById('filter-country').addEventListener('change', () => renderFilteredListings());
     </script>
