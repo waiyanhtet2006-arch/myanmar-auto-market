@@ -12,11 +12,23 @@
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans pb-24">
+    <!-- Custom Friendly Toast Notification Modal -->
+    <div id="custom-toast" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4 text-center transform transition-all scale-95 opacity-0" id="toast-box">
+            <div id="toast-icon" class="w-12 h-12 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center text-xl mx-auto">✨</div>
+            <div class="space-y-1">
+                <h3 id="toast-title" class="text-base font-bold text-white tracking-tight">Notification</h3>
+                <p id="toast-message" class="text-xs text-slate-300 leading-relaxed"></p>
+            </div>
+            <button onclick="closeToast()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm">Got it, thanks!</button>
+        </div>
+    </div>
+
     <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex flex-col">
                 <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Auto Market</h1>
-                <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE CLOUD</span>
+                <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE SYNC</span>
             </div>
             <div id="auth-container" class="flex items-center gap-2">
                 </div>
@@ -26,7 +38,7 @@
     <main class="max-w-md mx-auto p-4 space-y-4">
         <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg">
             <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
-            <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier cloud-synced automobile marketplace in Myanmar.</p>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier automobile marketplace in Myanmar.</p>
         </div>
 
         <section id="dashboard-section" class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl hidden space-y-4">
@@ -360,6 +372,31 @@
             }
         }
 
+        // Friendly custom notification system replacing standard alert() boxes
+        function showToast(title, message, icon = '✨') {
+            const toast = document.getElementById('custom-toast');
+            const toastBox = document.getElementById('toast-box');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = message;
+            document.getElementById('toast-icon').innerText = icon;
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toastBox.classList.remove('scale-95', 'opacity-0');
+                toastBox.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('custom-toast');
+            const toastBox = document.getElementById('toast-box');
+            toastBox.classList.remove('scale-100', 'opacity-100');
+            toastBox.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 150);
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
             currentUser = session?.user || null;
@@ -427,7 +464,7 @@
                 feedTitle.innerText = "📋 Available Cars (FYP)";
             } else {
                 if (!currentUser) {
-                    alert('Please sign in with Google to view your Following feed.');
+                    showToast('Sign In Required', 'Please sign in with Google to view your Following feed.', '🔒');
                     loginWithGoogle();
                     feedMode = 'fyp';
                     return;
@@ -442,7 +479,7 @@
         function switchTab(tab) {
             if ((tab === 'sell' || tab === 'profile') && !currentUser) {
                 triggerHaptic();
-                alert('Please sign in with Google to access this feature.');
+                showToast('Sign In Required', 'Please sign in with Google to access this feature.', '🔒');
                 loginWithGoogle();
                 return;
             }
@@ -468,7 +505,7 @@
                 searchSection.classList.remove('hidden');
                 welcomeBanner.classList.remove('hidden');
                 feedTitle.innerText = feedMode === 'following' ? "👥 Following Feed" : "📋 Available Cars (FYP)";
-                headerSubtitle.innerText = "LIVE CLOUD";
+                headerSubtitle.innerText = "LIVE SYNC";
                 renderFilteredListings();
             } else if (tab === 'profile') {
                 document.getElementById('nav-btn-profile').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
@@ -564,12 +601,12 @@
         async function toggleFollow(targetUserId) {
             if (!currentUser) {
                 triggerHaptic();
-                alert('Please sign in to follow accounts.');
+                showToast('Sign In Required', 'Please sign in to follow accounts.', '🔒');
                 loginWithGoogle();
                 return;
             }
             if (currentUser.id === targetUserId) {
-                alert('You cannot follow yourself.');
+                showToast('Notice', 'You cannot follow yourself.', 'ℹ️');
                 return;
             }
 
@@ -598,7 +635,7 @@
                 if (currentTab === 'profile') updateProfileDashboardData();
             } catch (err) {
                 console.error(err);
-                alert('Failed to update follow status.');
+                showToast('Error', 'Failed to update follow status.', '⚠️');
             }
         }
 
@@ -651,11 +688,11 @@
 
                 if (upsertError) throw upsertError;
 
-                alert('Profile picture updated successfully!');
+                showToast('Success!', 'Profile picture updated successfully.', '🎉');
                 await fetchCloudData();
             } catch (err) {
                 console.error(err);
-                alert('Failed to upload avatar: ' + err.message);
+                showToast('Upload Failed', err.message, '⚠️');
             }
         }
 
@@ -668,7 +705,7 @@
             const tiktokInput = document.getElementById('profile-tiktok-input').value.trim();
 
             if (!showroomNameInput) {
-                alert('Please enter a display name.');
+                showToast('Missing Info', 'Please enter a display name.', '⚠️');
                 return;
             }
 
@@ -703,13 +740,13 @@
                     tiktok_link: tiktokInput
                 };
 
-                alert('Profile settings saved successfully!');
+                showToast('Saved!', 'Your profile settings have been updated.', '✨');
                 updateProfileDashboardData();
                 renderFilteredListings();
                 updateAuthUI();
             } catch (err) {
                 console.error(err);
-                alert('Failed to save profile settings.');
+                showToast('Error', 'Failed to save profile settings.', '⚠️');
             } finally {
                 btn.innerText = 'Save Profile Changes';
                 btn.disabled = false;
@@ -788,7 +825,7 @@
             if (files.length === 0) return;
 
             if (activeEditImages.length + files.length > 10) {
-                alert('Maximum limit is 10 photos total.');
+                showToast('Limit Reached', 'Maximum limit is 10 photos total.', '⚠️');
                 e.target.value = '';
                 return;
             }
@@ -811,7 +848,7 @@
             triggerHaptic();
             
             if (!currentUser) {
-                alert('You must be logged in to post.');
+                showToast('Sign In Required', 'You must be logged in to post.', '🔒');
                 return;
             }
             
@@ -820,7 +857,7 @@
             const telegram = document.getElementById('car-telegram').value.trim();
 
             if (!phone && !viber && !telegram) {
-                alert('Please provide at least one contact method (Phone, Viber, or Telegram).');
+                showToast('Contact Info Required', 'Please provide at least one contact method (Phone, Viber, or Telegram).', '📱');
                 return;
             }
 
@@ -851,7 +888,7 @@
             };
 
             const submitBtn = document.getElementById('form-submit-btn');
-            submitBtn.innerText = 'Syncing to Cloud...';
+            submitBtn.innerText = 'Publishing...';
             submitBtn.disabled = true;
 
             try {
@@ -877,13 +914,13 @@
                     if (error) throw error;
                 }
 
-                alert('Successfully posted to marketplace!');
+                showToast('Successfully Posted!', 'Your car is now live on the marketplace for buyers to see.', '🎉');
                 cancelEdit();
                 switchTab('profile');
                 await fetchCloudData();
             } catch (err) {
                 console.error(err);
-                alert('Cloud sync failed: ' + err.message);
+                showToast('Sync Failed', err.message, '⚠️');
             } finally {
                 submitBtn.innerText = 'Post Live Listing';
                 submitBtn.disabled = false;
@@ -913,7 +950,7 @@
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
             renderImagePreviews();
 
-            document.getElementById('form-heading').innerText = '✏️ Edit Cloud Listing';
+            document.getElementById('form-heading').innerText = '✏️ Edit Listing';
             document.getElementById('form-submit-btn').innerText = 'Update Live Listing';
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
         }
@@ -1349,7 +1386,7 @@
         function toggleFavorite(id) {
             if (!currentUser) {
                 triggerHaptic();
-                alert('Please sign in with Google to save cars.');
+                showToast('Sign In Required', 'Please sign in with Google to save cars.', '🔒');
                 loginWithGoogle();
                 return;
             }
@@ -1405,10 +1442,10 @@
                 if (currentTab === 'profile') updateProfileDashboardData();
                 renderFilteredListings();
                 updateWishlistCount();
-                alert('Listing deleted successfully.');
+                showToast('Deleted', 'Listing removed successfully.', '🗑️');
             } catch (err) {
                 console.error(err);
-                alert('Failed to delete listing.');
+                showToast('Error', 'Failed to delete listing.', '⚠️');
             }
         }
 
