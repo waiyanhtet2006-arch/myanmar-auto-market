@@ -20,7 +20,7 @@
                 <h3 id="toast-title" class="text-base font-bold text-white tracking-tight">Notification</h3>
                 <p id="toast-message" class="text-xs text-slate-300 leading-relaxed"></p>
             </div>
-            <button onclick="closeToast()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm">Got it, thanks!</button>
+            <button onclick="closeToast()" id="toast-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm">Got it, thanks!</button>
         </div>
     </div>
 
@@ -30,15 +30,21 @@
                 <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">🚗 Auto Market</h1>
                 <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE SYNC</span>
             </div>
-            <div id="auth-container" class="flex items-center gap-2">
-                </div>
+            <div class="flex items-center gap-2">
+                <!-- Language Switcher Dropdown -->
+                <select id="lang-switcher" onchange="switchLanguage(this.value)" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold px-2.5 py-1.5 rounded-full focus:outline-none focus:border-blue-500 transition cursor-pointer">
+                    <option value="my">မြန်မာ</option>
+                    <option value="en">English</option>
+                </select>
+                <div id="auth-container" class="flex items-center gap-2"></div>
+            </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
         <div id="welcome-banner" class="bg-gradient-to-br from-slate-900 to-slate-900/50 border border-slate-800/80 p-5 rounded-2xl shadow-lg">
-            <h2 class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
-            <p class="text-xs text-slate-400 mt-1 leading-relaxed">The premier automobile marketplace in Myanmar.</p>
+            <h2 id="txt-welcome-title" class="text-base font-bold text-white tracking-tight">Welcome! ကြိုဆိုပါတယ်</h2>
+            <p id="txt-welcome-desc" class="text-xs text-slate-400 mt-1 leading-relaxed">The premier automobile marketplace in Myanmar.</p>
         </div>
 
         <section id="dashboard-section" class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl hidden space-y-4">
@@ -47,7 +53,7 @@
                     <div id="profile-avatar-container" class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-xl font-bold text-white shadow-lg overflow-hidden border-2 border-slate-700">
                         👤
                     </div>
-                    <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-white">
+                    <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-white" id="txt-edit-photo">
                         📷 Edit
                     </div>
                 </div>
@@ -56,28 +62,28 @@
                 <div>
                     <h2 id="profile-name" class="text-base font-bold text-white">Guest User</h2>
                     <p id="profile-email" class="text-xs text-slate-400">Not signed in</p>
-                    <span class="inline-block mt-1 text-[10px] bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-semibold">Verified Seller</span>
+                    <span id="txt-verified-badge" class="inline-block mt-1 text-[10px] bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-semibold">Verified Seller</span>
                 </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2 text-center bg-slate-950 border border-slate-800 p-3 rounded-xl">
                 <div>
                     <span id="dashboard-stat-following" class="text-base font-bold text-white">0</span>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Following</p>
+                    <p id="txt-stat-following" class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Following</p>
                 </div>
                 <div>
                     <span id="dashboard-stat-followers" class="text-base font-bold text-blue-400">0</span>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Followers</p>
+                    <p id="txt-stat-followers" class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Followers</p>
                 </div>
                 <div>
                     <span id="dashboard-stat-likes" class="text-base font-bold text-indigo-400">0</span>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Listings</p>
+                    <p id="txt-stat-listings" class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Listings</p>
                 </div>
             </div>
 
             <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-3">
                 <div class="flex justify-between items-center">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Profile & Display Settings</label>
+                    <label id="txt-profile-settings" class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Profile & Display Settings</label>
                     <div class="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800">
                         <button type="button" onclick="triggerHaptic(); setDisplayType('showroom')" id="type-btn-showroom" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition bg-blue-600 text-white">Showroom</button>
                         <button type="button" onclick="triggerHaptic(); setDisplayType('account')" id="type-btn-account" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition text-slate-400 hover:text-slate-200">Account</button>
@@ -86,27 +92,27 @@
 
                 <div class="space-y-2.5">
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Showroom / Display Name</label>
+                        <label id="txt-label-showroom" class="block text-[11px] font-medium text-slate-400 mb-1">Showroom / Display Name</label>
                         <input type="text" id="showroom-name-input" placeholder="e.g., Royal Auto Showroom" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Bio / About</label>
+                        <label id="txt-label-bio" class="block text-[11px] font-medium text-slate-400 mb-1">Bio / About</label>
                         <textarea id="profile-bio-input" rows="2" placeholder="Tell buyers a bit about yourself or your dealership..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Contact Phone Number</label>
+                        <label id="txt-label-phone" class="block text-[11px] font-medium text-slate-400 mb-1">Contact Phone Number</label>
                         <input type="text" id="profile-phone-input" placeholder="e.g., +95 9 123 456 789" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Facebook Link</label>
+                            <label id="txt-label-fb" class="block text-[11px] font-medium text-slate-400 mb-1">Facebook Link</label>
                             <input type="url" id="profile-fb-input" placeholder="https://facebook.com/..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-slate-400 mb-1">TikTok Link</label>
+                            <label id="txt-label-tiktok" class="block text-[11px] font-medium text-slate-400 mb-1">TikTok Link</label>
                             <input type="url" id="profile-tiktok-input" placeholder="https://tiktok.com/@..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                         </div>
                     </div>
@@ -116,8 +122,8 @@
             </div>
 
             <div class="pt-2 flex gap-2">
-                <button onclick="triggerHaptic(); switchTab('sell')" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">➕ Post New Car</button>
-                <button onclick="triggerHaptic(); logout()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs transition border border-slate-700">Log Out</button>
+                <button onclick="triggerHaptic(); switchTab('sell')" id="txt-btn-post-new" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition">➕ Post New Car</button>
+                <button onclick="triggerHaptic(); logout()" id="txt-btn-logout" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-bold text-xs transition border border-slate-700">Log Out</button>
             </div>
         </section>
 
@@ -131,29 +137,29 @@
                 <input type="hidden" id="edit-listing-id" value="">
                 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Brand (Type)</label>
+                    <label id="txt-form-brand" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Brand (Type)</label>
                     <input type="text" id="car-brand" placeholder="e.g., Toyota, Honda..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Car Name / Model (Type)</label>
+                    <label id="txt-form-title" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Car Name / Model (Type)</label>
                     <input type="text" id="car-title" placeholder="e.g., Crown Athlete, Probox..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Model Year</label>
+                        <label id="txt-form-year" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Model Year</label>
                         <input type="text" id="car-year" placeholder="e.g., 2004" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Color</label>
+                        <label id="txt-form-color" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Color</label>
                         <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Made in</label>
+                        <label id="txt-form-country" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Made in</label>
                         <select id="car-country" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500 transition">
                             <option value="Japan">Japan</option>
                             <option value="Thailand">Thailand</option>
@@ -165,20 +171,20 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Mileage</label>
+                        <label id="txt-form-mileage" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Mileage</label>
                         <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Price</label>
+                    <label id="txt-form-price" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Price</label>
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                 </div>
 
                 <div class="border-t border-slate-800 pt-4 space-y-3">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📱 Contact Info (Fill at least one)</label>
+                    <label id="txt-form-contact-info" class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📱 Contact Info (Fill at least one)</label>
                     <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
+                        <label id="txt-form-phone" class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
                         <input type="text" id="car-phone" placeholder="e.g., 09-912345678" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
                     </div>
                     <div>
@@ -193,7 +199,7 @@
 
                 <div class="border-t border-slate-800 pt-4">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Photos (Up to 10)</label>
+                        <label id="txt-form-photos" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Photos (Up to 10)</label>
                         <span id="photo-count-indicator" class="text-xs text-slate-400 font-semibold">0 / 10</span>
                     </div>
                     
@@ -203,7 +209,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Description</label>
+                    <label id="txt-form-desc" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Description</label>
                     <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition"></textarea>
                 </div>
 
@@ -231,7 +237,7 @@
 
             <div class="grid grid-cols-2 gap-2">
                 <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500 transition">
-                    <option value="">All Countries (Optional)</option>
+                    <option value="" id="txt-opt-all-countries">All Countries (Optional)</option>
                     <option value="Japan">Japan</option>
                     <option value="Thailand">Thailand</option>
                     <option value="China">China</option>
@@ -251,7 +257,7 @@
         <section class="space-y-4">
             <div class="flex justify-between items-center px-1">
                 <h2 id="feed-title" class="text-lg font-bold text-slate-100">📋 Available Cars (FYP)</h2>
-                <button onclick="triggerHaptic(); fetchCloudData()" class="text-xs bg-slate-900 border border-slate-800 text-blue-400 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-800 transition shadow-sm">🔄 Refresh</button>
+                <button onclick="triggerHaptic(); fetchCloudData()" id="txt-btn-refresh" class="text-xs bg-slate-900 border border-slate-800 text-blue-400 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-800 transition shadow-sm">🔄 Refresh</button>
             </div>
             <div id="listings-container" class="space-y-4"></div>
         </section>
@@ -279,15 +285,15 @@
                 <div class="grid grid-cols-3 gap-3 w-full py-2 bg-slate-950 border border-slate-800 rounded-xl px-2">
                     <div>
                         <span id="modal-stat-following" class="text-sm font-bold text-white">0</span>
-                        <p class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Following</p>
+                        <p id="txt-modal-following" class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Following</p>
                     </div>
                     <div>
                         <span id="modal-stat-followers" class="text-sm font-bold text-blue-400">0</span>
-                        <p class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Followers</p>
+                        <p id="txt-modal-followers" class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Followers</p>
                     </div>
                     <div>
                         <span id="modal-stat-listings" class="text-sm font-bold text-indigo-400">0</span>
-                        <p class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Listings</p>
+                        <p id="txt-modal-listings" class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Listings</p>
                     </div>
                 </div>
 
@@ -299,7 +305,7 @@
             </div>
 
             <div class="space-y-3">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Listings by this profile</h3>
+                <h3 id="txt-modal-listings-title" class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Listings by this profile</h3>
                 <div id="modal-listings-container" class="space-y-4"></div>
             </div>
         </div>
@@ -324,19 +330,19 @@
         <div class="max-w-md mx-auto grid grid-cols-4 h-16">
             <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-blue-400 font-bold transition">
                 <span class="text-xl">🏠</span>
-                <span class="text-[10px] mt-1 font-semibold tracking-wider">Feed</span>
+                <span id="txt-nav-feed" class="text-[10px] mt-1 font-semibold tracking-wider">Feed</span>
             </button>
             <button onclick="triggerHaptic(); switchTab('profile')" id="nav-btn-profile" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition">
                 <span class="text-xl">👤</span>
-                <span class="text-[10px] mt-1 font-semibold tracking-wider">Dashboard</span>
+                <span id="txt-nav-dashboard" class="text-[10px] mt-1 font-semibold tracking-wider">Dashboard</span>
             </button>
             <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition">
                 <span class="text-xl">➕</span>
-                <span class="text-[10px] mt-1 font-semibold tracking-wider">Sell Car</span>
+                <span id="txt-nav-sell" class="text-[10px] mt-1 font-semibold tracking-wider">Sell Car</span>
             </button>
             <button onclick="triggerHaptic(); switchTab('saved')" id="nav-btn-saved" class="flex flex-col items-center justify-center text-slate-500 font-medium hover:text-slate-300 transition relative">
                 <span class="text-xl">❤️</span>
-                <span class="text-[10px] mt-1 font-semibold tracking-wider">Saved <span id="nav-badge" class="text-[9px] text-blue-400"></span></span>
+                <span class="text-[10px] mt-1 font-semibold tracking-wider"><span id="txt-nav-saved">Saved</span> <span id="nav-badge" class="text-[9px] text-blue-400"></span></span>
             </button>
         </div>
     </nav>
@@ -356,6 +362,254 @@
         let currentModalIndex = 0;
         let selectedDisplayType = 'showroom';
         let currentUser = null;
+        let currentLang = 'my';
+
+        // Translation Dictionary
+        const translations = {
+            my: {
+                headerSubtitleLive: "LIVE SYNC",
+                headerSubtitleDashboard: "DASHBOARD",
+                headerSubtitlePost: "POST / EDIT",
+                headerSubtitleWishlist: "WISHLIST",
+                welcomeTitle: "Welcome! ကြိုဆိုပါတယ်",
+                welcomeDesc: "The premier automobile marketplace in Myanmar.",
+                editPhoto: "📷 Edit",
+                verifiedSeller: "Verified Seller",
+                verifiedShowroom: "Verified Showroom",
+                verifiedAccount: "Verified Account",
+                statFollowing: "Following",
+                statFollowers: "Followers",
+                statListings: "Listings",
+                profileSettings: "🏢 Profile & Display Settings",
+                showroomTab: "Showroom",
+                accountTab: "Account",
+                labelShowroom: "Showroom / Display Name",
+                labelBio: "Bio / About",
+                labelPhone: "Contact Phone Number",
+                labelFb: "Facebook Link",
+                labelTiktok: "TikTok Link",
+                saveProfileBtn: "Save Profile Changes",
+                postNewCarBtn: "➕ Post New Car",
+                logoutBtn: "Log Out",
+                sellCarTitle: "🚗 Sell Your Car",
+                editListingTitle: "✏️ Edit Listing",
+                cancelBtn: "Cancel",
+                formBrand: "Brand (Type)",
+                formTitle: "Car Name / Model (Type)",
+                formYear: "Model Year",
+                formColor: "Color",
+                formCountry: "Made in",
+                formMileage: "Mileage",
+                formPrice: "Price",
+                formContactInfo: "📱 Contact Info (Fill at least one)",
+                formPhone: "Phone Number",
+                formViber: "Viber Number",
+                formTelegram: "Telegram Username / Number",
+                formPhotos: "Photos (Up to 10)",
+                formDesc: "Description",
+                submitPost: "Post Live Listing",
+                submitUpdate: "Update Live Listing",
+                feedFyp: "🔥 For You (FYP)",
+                feedFollowing: "👥 Following",
+                searchCarPlaceholder: "🔍 Search Cars (Brand, Model, Year...)",
+                searchShowroomPlaceholder: "🏢 Search Accounts & Showrooms...",
+                filterBrandPlaceholder: "Optional: Brand...",
+                filterColorPlaceholder: "Optional: Color...",
+                optAllCountries: "All Countries (Optional)",
+                feedTitleFyp: "📋 Available Cars (FYP)",
+                feedTitleFollowing: "👥 Following Feed",
+                feedTitleProfile: "👤 Your Profile Posts",
+                feedTitleSaved: "❤️ Your Saved Cars",
+                refreshBtn: "🔄 Refresh",
+                navFeed: "Feed",
+                navDashboard: "Dashboard",
+                navSell: "Sell Car",
+                navSaved: "Saved",
+                modalProfileTitle: "Profile",
+                modalFollowersTitle: "Followers",
+                modalListingsTitle: "Listings by this profile",
+                followBtn: "+ Follow",
+                followingBtn: "✓ Following",
+                toastGotIt: "Got it, thanks!",
+                toastSignInReq: "Sign In Required",
+                toastSignInMsg: "Please sign in with Google to access this feature.",
+                toastSavedSuccess: "Successfully Posted!",
+                toastSavedMsg: "Your car is now live on the marketplace for buyers to see.",
+                toastProfileUpdated: "Saved!",
+                toastProfileMsg: "Your profile settings have been updated.",
+                toastDeleted: "Deleted",
+                toastDeletedMsg: "Listing removed successfully."
+            },
+            en: {
+                headerSubtitleLive: "LIVE SYNC",
+                headerSubtitleDashboard: "DASHBOARD",
+                headerSubtitlePost: "POST / EDIT",
+                headerSubtitleWishlist: "WISHLIST",
+                welcomeTitle: "Welcome!",
+                welcomeDesc: "The premier automobile marketplace in Myanmar.",
+                editPhoto: "📷 Edit",
+                verifiedSeller: "Verified Seller",
+                verifiedShowroom: "Verified Showroom",
+                verifiedAccount: "Verified Account",
+                statFollowing: "Following",
+                statFollowers: "Followers",
+                statListings: "Listings",
+                profileSettings: "🏢 Profile & Display Settings",
+                showroomTab: "Showroom",
+                accountTab: "Account",
+                labelShowroom: "Showroom / Display Name",
+                labelBio: "Bio / About",
+                labelPhone: "Contact Phone Number",
+                labelFb: "Facebook Link",
+                labelTiktok: "TikTok Link",
+                saveProfileBtn: "Save Profile Changes",
+                postNewCarBtn: "➕ Post New Car",
+                logoutBtn: "Log Out",
+                sellCarTitle: "🚗 Sell Your Car",
+                editListingTitle: "✏️ Edit Listing",
+                cancelBtn: "Cancel",
+                formBrand: "Brand (Type)",
+                formTitle: "Car Name / Model (Type)",
+                formYear: "Model Year",
+                formColor: "Color",
+                formCountry: "Made in",
+                formMileage: "Mileage",
+                formPrice: "Price",
+                formContactInfo: "📱 Contact Info (Fill at least one)",
+                formPhone: "Phone Number",
+                formViber: "Viber Number",
+                formTelegram: "Telegram Username / Number",
+                formPhotos: "Photos (Up to 10)",
+                formDesc: "Description",
+                submitPost: "Post Live Listing",
+                submitUpdate: "Update Live Listing",
+                feedFyp: "🔥 For You (FYP)",
+                feedFollowing: "👥 Following",
+                searchCarPlaceholder: "🔍 Search Cars (Brand, Model, Year...)",
+                searchShowroomPlaceholder: "🏢 Search Accounts & Showrooms...",
+                filterBrandPlaceholder: "Optional: Brand...",
+                filterColorPlaceholder: "Optional: Color...",
+                optAllCountries: "All Countries (Optional)",
+                feedTitleFyp: "📋 Available Cars (FYP)",
+                feedTitleFollowing: "👥 Following Feed",
+                feedTitleProfile: "👤 Your Profile Posts",
+                feedTitleSaved: "❤️ Your Saved Cars",
+                refreshBtn: "🔄 Refresh",
+                navFeed: "Feed",
+                navDashboard: "Dashboard",
+                navSell: "Sell Car",
+                navSaved: "Saved",
+                modalProfileTitle: "Profile",
+                modalFollowersTitle: "Followers",
+                modalListingsTitle: "Listings by this profile",
+                followBtn: "+ Follow",
+                followingBtn: "✓ Following",
+                toastGotIt: "Got it, thanks!",
+                toastSignInReq: "Sign In Required",
+                toastSignInMsg: "Please sign in with Google to access this feature.",
+                toastSavedSuccess: "Successfully Posted!",
+                toastSavedMsg: "Your car is now live on the marketplace for buyers to see.",
+                toastProfileUpdated: "Saved!",
+                toastProfileMsg: "Your profile settings have been updated.",
+                toastDeleted: "Deleted",
+                toastDeletedMsg: "Listing removed successfully."
+            }
+        };
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('lang-switcher').value = lang;
+            
+            // Update static UI elements
+            document.getElementById('txt-welcome-title').innerText = translations[lang].welcomeTitle;
+            document.getElementById('txt-welcome-desc').innerText = translations[lang].welcomeDesc;
+            document.getElementById('txt-edit-photo').innerText = translations[lang].editPhoto;
+            document.getElementById('txt-verified-badge').innerText = translations[lang].verifiedSeller;
+            document.getElementById('txt-stat-following').innerText = translations[lang].statFollowing;
+            document.getElementById('txt-stat-followers').innerText = translations[lang].statFollowers;
+            document.getElementById('txt-stat-listings').innerText = translations[lang].statListings;
+            document.getElementById('txt-profile-settings').innerText = translations[lang].profileSettings;
+            
+            document.getElementById('type-btn-showroom').innerText = translations[lang].showroomTab;
+            document.getElementById('type-btn-account').innerText = translations[lang].accountTab;
+
+            document.getElementById('txt-label-showroom').innerText = translations[lang].labelShowroom;
+            document.getElementById('txt-label-bio').innerText = translations[lang].labelBio;
+            document.getElementById('txt-label-phone').innerText = translations[lang].labelPhone;
+            document.getElementById('txt-label-fb').innerText = translations[lang].labelFb;
+            document.getElementById('txt-label-tiktok').innerText = translations[lang].labelTiktok;
+            document.getElementById('save-showroom-btn').innerText = translations[lang].saveProfileBtn;
+
+            document.getElementById('txt-btn-post-new').innerText = translations[lang].postNewCarBtn;
+            document.getElementById('txt-btn-logout').innerText = translations[lang].logoutBtn;
+
+            document.getElementById('form-heading').innerText = document.getElementById('edit-listing-id').value ? translations[lang].editListingTitle : translations[lang].sellCarTitle;
+            document.getElementById('cancel-edit-btn').innerText = translations[lang].cancelBtn;
+
+            document.getElementById('txt-form-brand').innerText = translations[lang].formBrand;
+            document.getElementById('txt-form-title').innerText = translations[lang].formTitle;
+            document.getElementById('txt-form-year').innerText = translations[lang].formYear;
+            document.getElementById('txt-form-color').innerText = translations[lang].formColor;
+            document.getElementById('txt-form-country').innerText = translations[lang].formCountry;
+            document.getElementById('txt-form-mileage').innerText = translations[lang].formMileage;
+            document.getElementById('txt-form-price').innerText = translations[lang].formPrice;
+            document.getElementById('txt-form-contact-info').innerText = translations[lang].formContactInfo;
+            document.getElementById('txt-form-phone').innerText = translations[lang].formPhone;
+            document.getElementById('txt-form-photos').innerText = translations[lang].formPhotos;
+            document.getElementById('txt-form-desc').innerText = translations[lang].formDesc;
+            
+            const submitBtn = document.getElementById('form-submit-btn');
+            if (submitBtn.innerText !== 'Publishing...' && submitBtn.innerText !== 'Updating...') {
+                submitBtn.innerText = document.getElementById('edit-listing-id').value ? translations[lang].submitUpdate : translations[lang].submitPost;
+            }
+
+            document.getElementById('feed-mode-fyp').innerText = translations[lang].feedFyp;
+            document.getElementById('feed-mode-following').innerText = translations[lang].feedFollowing;
+
+            document.getElementById('search-car-input').placeholder = translations[lang].searchCarPlaceholder;
+            document.getElementById('search-showroom-input').placeholder = translations[lang].searchShowroomPlaceholder;
+            document.getElementById('filter-brand').placeholder = translations[lang].filterBrandPlaceholder;
+            document.getElementById('filter-color').placeholder = translations[lang].filterColorPlaceholder;
+            document.getElementById('txt-opt-all-countries').innerText = translations[lang].optAllCountries;
+            document.getElementById('txt-btn-refresh').innerText = translations[lang].refreshBtn;
+
+            document.getElementById('txt-nav-feed').innerText = translations[lang].navFeed;
+            document.getElementById('txt-nav-dashboard').innerText = translations[lang].navDashboard;
+            document.getElementById('txt-nav-sell').innerText = translations[lang].navSell;
+            document.getElementById('txt-nav-saved').innerText = translations[lang].navSaved;
+            document.getElementById('toast-btn').innerText = translations[lang].toastGotIt;
+
+            document.getElementById('txt-modal-following').innerText = translations[lang].statFollowing;
+            document.getElementById('txt-modal-followers').innerText = translations[lang].statFollowers;
+            document.getElementById('txt-modal-listings').innerText = translations[lang].statListings;
+            document.getElementById('txt-modal-listings-title').innerText = translations[lang].modalListingsTitle;
+
+            // Refresh dynamic headers & listings
+            updateHeaderSubtitle();
+            updateFeedTitle();
+            renderFilteredListings();
+        }
+
+        function updateHeaderSubtitle() {
+            const headerSubtitle = document.getElementById('header-subtitle');
+            if (currentTab === 'feed') headerSubtitle.innerText = translations[currentLang].headerSubtitleLive;
+            else if (currentTab === 'profile') headerSubtitle.innerText = translations[currentLang].headerSubtitleDashboard;
+            else if (currentTab === 'sell') headerSubtitle.innerText = translations[currentLang].headerSubtitlePost;
+            else if (currentTab === 'saved') headerSubtitle.innerText = translations[currentLang].headerSubtitleWishlist;
+        }
+
+        function updateFeedTitle() {
+            const feedTitle = document.getElementById('feed-title');
+            if (currentTab === 'feed') {
+                feedTitle.innerText = feedMode === 'following' ? translations[currentLang].feedTitleFollowing : translations[currentLang].feedTitleFyp;
+            } else if (currentTab === 'profile') {
+                feedTitle.innerText = translations[currentLang].feedTitleProfile;
+            } else if (currentTab === 'sell') {
+                feedTitle.innerText = translations[currentLang].sellCarTitle;
+            } else if (currentTab === 'saved') {
+                feedTitle.innerText = translations[currentLang].feedTitleSaved;
+            }
+        }
 
         function triggerHaptic() {
             if (navigator.vibrate) {
@@ -372,7 +626,6 @@
             }
         }
 
-        // Friendly custom notification system replacing standard alert() boxes
         function showToast(title, message, icon = '✨') {
             const toast = document.getElementById('custom-toast');
             const toastBox = document.getElementById('toast-box');
@@ -408,6 +661,7 @@
                 await fetchCloudData();
             });
 
+            switchLanguage('my');
             switchTab('feed');
             updateWishlistCount();
             renderImagePreviews();
@@ -456,30 +710,28 @@
             feedMode = mode;
             const btnFyp = document.getElementById('feed-mode-fyp');
             const btnFollowing = document.getElementById('feed-mode-following');
-            const feedTitle = document.getElementById('feed-title');
 
             if (mode === 'fyp') {
                 btnFyp.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-blue-600 text-white";
                 btnFollowing.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-slate-200";
-                feedTitle.innerText = "📋 Available Cars (FYP)";
             } else {
                 if (!currentUser) {
-                    showToast('Sign In Required', 'Please sign in with Google to view your Following feed.', '🔒');
+                    showToast(translations[currentLang].toastSignInReq, translations[currentLang].toastSignInMsg, '🔒');
                     loginWithGoogle();
                     feedMode = 'fyp';
                     return;
                 }
                 btnFollowing.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-blue-600 text-white";
                 btnFyp.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-slate-200";
-                feedTitle.innerText = "👥 Following Feed";
             }
+            updateFeedTitle();
             renderFilteredListings();
         }
 
         function switchTab(tab) {
             if ((tab === 'sell' || tab === 'profile') && !currentUser) {
                 triggerHaptic();
-                showToast('Sign In Required', 'Please sign in with Google to access this feature.', '🔒');
+                showToast(translations[currentLang].toastSignInReq, translations[currentLang].toastSignInMsg, '🔒');
                 loginWithGoogle();
                 return;
             }
@@ -490,8 +742,6 @@
             const searchSection = document.getElementById('search-section');
             const welcomeBanner = document.getElementById('welcome-banner');
             const dashboardSection = document.getElementById('dashboard-section');
-            const feedTitle = document.getElementById('feed-title');
-            const headerSubtitle = document.getElementById('header-subtitle');
 
             document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
             document.getElementById('nav-btn-profile').className = "flex flex-col items-center justify-center text-slate-500 font-medium transition";
@@ -504,8 +754,6 @@
                 dashboardSection.classList.add('hidden');
                 searchSection.classList.remove('hidden');
                 welcomeBanner.classList.remove('hidden');
-                feedTitle.innerText = feedMode === 'following' ? "👥 Following Feed" : "📋 Available Cars (FYP)";
-                headerSubtitle.innerText = "LIVE SYNC";
                 renderFilteredListings();
             } else if (tab === 'profile') {
                 document.getElementById('nav-btn-profile').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
@@ -513,8 +761,6 @@
                 dashboardSection.classList.remove('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
-                feedTitle.innerText = "👤 Your Profile Posts";
-                headerSubtitle.innerText = "DASHBOARD";
                 updateProfileDashboardData();
                 renderFilteredListings();
             } else if (tab === 'sell') {
@@ -523,8 +769,6 @@
                 dashboardSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
-                feedTitle.innerText = "🚗 Manage Your Listing";
-                headerSubtitle.innerText = "POST / EDIT";
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (tab === 'saved') {
                 document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-blue-400 font-bold transition";
@@ -532,10 +776,10 @@
                 dashboardSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
-                feedTitle.innerText = "❤️ Your Saved Cars";
-                headerSubtitle.innerText = "WISHLIST";
                 renderFilteredListings();
             }
+            updateHeaderSubtitle();
+            updateFeedTitle();
             updateWishlistCount();
         }
 
@@ -601,12 +845,12 @@
         async function toggleFollow(targetUserId) {
             if (!currentUser) {
                 triggerHaptic();
-                showToast('Sign In Required', 'Please sign in to follow accounts.', '🔒');
+                showToast(translations[currentLang].toastSignInReq, translations[currentLang].toastSignInMsg, '🔒');
                 loginWithGoogle();
                 return;
             }
             if (currentUser.id === targetUserId) {
-                showToast('Notice', 'You cannot follow yourself.', 'ℹ️');
+                showToast('Notice', currentLang === 'my' ? 'သင်ကိုယ်တိုင်ကို Follow လုပ်လို့မရပါ။' : 'You cannot follow yourself.', 'ℹ️');
                 return;
             }
 
@@ -688,7 +932,7 @@
 
                 if (upsertError) throw upsertError;
 
-                showToast('Success!', 'Profile picture updated successfully.', '🎉');
+                showToast('Success!', currentLang === 'my' ? 'ပရိုဖိုင်ပုံ အောင်မြင်စွာ ပြောင်းလဲပြီးပါပြီ။' : 'Profile picture updated successfully.', '🎉');
                 await fetchCloudData();
             } catch (err) {
                 console.error(err);
@@ -705,12 +949,12 @@
             const tiktokInput = document.getElementById('profile-tiktok-input').value.trim();
 
             if (!showroomNameInput) {
-                showToast('Missing Info', 'Please enter a display name.', '⚠️');
+                showToast('Missing Info', currentLang === 'my' ? 'ပြသရန် အမည် (Name) ထည့်သွင်းပါ။' : 'Please enter a display name.', '⚠️');
                 return;
             }
 
             const btn = document.getElementById('save-showroom-btn');
-            btn.innerText = 'Saving...';
+            btn.innerText = currentLang === 'my' ? 'သိမ်းဆည်းနေသည်...' : 'Saving...';
             btn.disabled = true;
 
             try {
@@ -740,7 +984,7 @@
                     tiktok_link: tiktokInput
                 };
 
-                showToast('Saved!', 'Your profile settings have been updated.', '✨');
+                showToast(translations[currentLang].toastProfileUpdated, translations[currentLang].toastProfileMsg, '✨');
                 updateProfileDashboardData();
                 renderFilteredListings();
                 updateAuthUI();
@@ -748,7 +992,7 @@
                 console.error(err);
                 showToast('Error', 'Failed to save profile settings.', '⚠️');
             } finally {
-                btn.innerText = 'Save Profile Changes';
+                btn.innerText = translations[currentLang].saveProfileBtn;
                 btn.disabled = false;
             }
         }
@@ -825,7 +1069,7 @@
             if (files.length === 0) return;
 
             if (activeEditImages.length + files.length > 10) {
-                showToast('Limit Reached', 'Maximum limit is 10 photos total.', '⚠️');
+                showToast('Limit Reached', currentLang === 'my' ? 'ပုံအများဆုံး ၁၀ ပုံသာ တင်နိုင်ပါသည်။' : 'Maximum limit is 10 photos total.', '⚠️');
                 e.target.value = '';
                 return;
             }
@@ -848,7 +1092,7 @@
             triggerHaptic();
             
             if (!currentUser) {
-                showToast('Sign In Required', 'You must be logged in to post.', '🔒');
+                showToast(translations[currentLang].toastSignInReq, translations[currentLang].toastSignInMsg, '🔒');
                 return;
             }
             
@@ -857,7 +1101,7 @@
             const telegram = document.getElementById('car-telegram').value.trim();
 
             if (!phone && !viber && !telegram) {
-                showToast('Contact Info Required', 'Please provide at least one contact method (Phone, Viber, or Telegram).', '📱');
+                showToast('Contact Info Required', currentLang === 'my' ? 'ဖုန်းနံပါတ်၊ Viber သို့မဟုတ် Telegram အနည်းဆုံး တစ်ခုထည့်ပါ။' : 'Please provide at least one contact method (Phone, Viber, or Telegram).', '📱');
                 return;
             }
 
@@ -888,7 +1132,7 @@
             };
 
             const submitBtn = document.getElementById('form-submit-btn');
-            submitBtn.innerText = 'Publishing...';
+            submitBtn.innerText = currentLang === 'my' ? 'တင်နေသည်...' : 'Publishing...';
             submitBtn.disabled = true;
 
             try {
@@ -914,7 +1158,7 @@
                     if (error) throw error;
                 }
 
-                showToast('Successfully Posted!', 'Your car is now live on the marketplace for buyers to see.', '🎉');
+                showToast(translations[currentLang].toastSavedSuccess, translations[currentLang].toastSavedMsg, '🎉');
                 cancelEdit();
                 switchTab('profile');
                 await fetchCloudData();
@@ -922,7 +1166,7 @@
                 console.error(err);
                 showToast('Sync Failed', err.message, '⚠️');
             } finally {
-                submitBtn.innerText = 'Post Live Listing';
+                submitBtn.innerText = document.getElementById('edit-listing-id').value ? translations[currentLang].submitUpdate : translations[currentLang].submitPost;
                 submitBtn.disabled = false;
             }
         });
@@ -950,8 +1194,8 @@
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
             renderImagePreviews();
 
-            document.getElementById('form-heading').innerText = '✏️ Edit Listing';
-            document.getElementById('form-submit-btn').innerText = 'Update Live Listing';
+            document.getElementById('form-heading').innerText = translations[currentLang].editListingTitle;
+            document.getElementById('form-submit-btn').innerText = translations[currentLang].submitUpdate;
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
         }
 
@@ -963,7 +1207,7 @@
             countIndicator.innerText = `${activeEditImages.length} / 10`;
 
             if (activeEditImages.length === 0) {
-                container.innerHTML = '<div class="col-span-4 text-xs text-slate-500 py-1">No images added yet.</div>';
+                container.innerHTML = `<div class="col-span-4 text-xs text-slate-500 py-1">${currentLang === 'my' ? 'ပုံများ မထည့်ရသေးပါ။' : 'No images added yet.'}</div>`;
                 return;
             }
 
@@ -988,8 +1232,8 @@
             document.getElementById('edit-listing-id').value = '';
             activeEditImages = [];
             renderImagePreviews();
-            document.getElementById('form-heading').innerText = '🚗 Sell Your Car';
-            document.getElementById('form-submit-btn').innerText = 'Post Live Listing';
+            document.getElementById('form-heading').innerText = translations[currentLang].sellCarTitle;
+            document.getElementById('form-submit-btn').innerText = translations[currentLang].submitPost;
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
@@ -1008,11 +1252,11 @@
             const followActionContainer = document.getElementById('modal-follow-action-container');
 
             if (profileObj.type === 'account') {
-                badgeEl.innerText = 'Account';
-                typeLabelEl.innerText = 'Verified Account';
+                badgeEl.innerText = currentLang === 'my' ? 'အကောင့်' : 'Account';
+                typeLabelEl.innerText = translations[currentLang].verifiedAccount;
             } else {
-                badgeEl.innerText = 'Showroom';
-                typeLabelEl.innerText = 'Verified Showroom';
+                badgeEl.innerText = currentLang === 'my' ? 'ရှိုးရွမ်' : 'Showroom';
+                typeLabelEl.innerText = translations[currentLang].verifiedShowroom;
             }
 
             if (profileObj.avatar_url) {
@@ -1030,7 +1274,7 @@
                 const followingThisUser = isFollowing(userId);
                 followActionContainer.innerHTML = `
                     <button onclick="toggleFollow('${userId}')" class="w-full py-2.5 rounded-xl text-xs font-bold transition shadow-sm ${followingThisUser ? 'bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700' : 'bg-blue-600 hover:bg-blue-500 text-white'}">
-                        ${followingThisUser ? '✓ Following' : '+ Follow'}
+                        ${followingThisUser ? translations[currentLang].followingBtn : translations[currentLang].followBtn}
                     </button>
                 `;
                 followActionContainer.classList.remove('hidden');
@@ -1073,7 +1317,7 @@
             container.innerHTML = '';
 
             if (userListings.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">No listings found for this profile.</p>';
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">${currentLang === 'my' ? 'ဤပရိုဖိုင်တွင် ကားတင်ထားခြင်း မရှိသေးပါ။' : 'No listings found for this profile.'}</p>`;
             } else {
                 let favKey = currentUser ? `carFavorites_${currentUser.id}` : 'carFavorites';
                 let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
@@ -1084,12 +1328,12 @@
                     const isFav = favorites.includes(stringId);
                     const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                     
-                    let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop</span>` : '';
+                    let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
                     let contactsHtml = '<div class="space-y-2 pt-2">';
                     if (item.contacts) {
                         if (item.contacts.phone) {
-                            contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">📞 Call: ${item.contacts.phone}</a>`;
+                            contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${item.contacts.phone}</a>`;
                         }
                         if (item.contacts.viber) {
                             contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-600/10 border border-purple-500/20 text-purple-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-purple-600/20 transition">🟣 Viber: ${item.contacts.viber}</a>`;
@@ -1101,6 +1345,8 @@
                     }
                     contactsHtml += '</div>';
 
+                    let colorLabel = currentLang === 'my' ? 'အရောင်' : 'Color';
+                    let countryLabel = currentLang === 'my' ? 'ထုတ်လုပ်သည့်နိုင်ငံ' : 'Made in';
                     let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
                     
                     const card = document.createElement('div');
@@ -1126,7 +1372,7 @@
                     card.innerHTML = `
                         ${carouselHtml}
                         <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
-                        <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
+                        <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                         <div class="flex items-center flex-wrap gap-y-1">
                             <p class="text-blue-400 font-bold text-lg">${item.price}</p>
                             ${priceBadgeHtml}
@@ -1163,7 +1409,7 @@
                 listings = listings.filter(item => item.user_id === currentUser.id);
             } else if (currentTab === 'feed' && feedMode === 'following') {
                 if (!currentUser) {
-                    container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">Please sign in to view your Following feed.</p>`;
+                    container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${currentLang === 'my' ? 'Following ฟีดကိုကြည့်ရန် Google ဖြင့် အကောင့်ဝင်ပါ။' : 'Please sign in to view your Following feed.'}</p>`;
                     return;
                 }
                 const followedIds = followsList.filter(f => f.follower_id === currentUser.id).map(f => f.following_id);
@@ -1198,10 +1444,10 @@
             });
 
             if (filtered.length === 0) {
-                let emptyMsg = 'No cars found matching your search.';
-                if (currentTab === 'saved') emptyMsg = 'No saved cars in your wishlist.';
-                if (currentTab === 'profile') emptyMsg = 'You have not posted any car listings yet.';
-                if (currentTab === 'feed' && feedMode === 'following') emptyMsg = 'No posts from accounts you follow yet. Visit profiles to follow showrooms!';
+                let emptyMsg = currentLang === 'my' ? 'ရှာဖွေမှုနှင့် ကိုက်ညီသော ကားများ မရှိပါ။' : 'No cars found matching your search.';
+                if (currentTab === 'saved') emptyMsg = currentLang === 'my' ? 'သိမ်းဆည်းထားသော ကားများ မရှိပါ။' : 'No saved cars in your wishlist.';
+                if (currentTab === 'profile') emptyMsg = currentLang === 'my' ? 'သင် တင်ထားသော ကားများ မရှိသေးပါ။' : 'You have not posted any car listings yet.';
+                if (currentTab === 'feed' && feedMode === 'following') emptyMsg = currentLang === 'my' ? 'သင် Follow လုပ်ထားသူများထံမှ ပို့စ်များ မရှိသေးပါ။' : 'No posts from accounts you follow yet. Visit profiles to follow showrooms!';
                 container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${emptyMsg}</p>`;
                 return;
             }
@@ -1217,21 +1463,21 @@
                 let headerBadge = '';
                 if (profileObj && profileObj.name) {
                     if (profileObj.type === 'account') {
-                        headerBadge = `👤 Account: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
+                        headerBadge = `${currentLang === 'my' ? 'အကောင့်' : 'Account'}: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     } else {
-                        headerBadge = `🏢 Showroom: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
+                        headerBadge = `${currentLang === 'my' ? 'ရှိုးရွမ်' : 'Showroom'}: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     }
                 }
                 
                 let priceBadgeHtml = '';
                 if (item.price_dropped_from) {
-                    priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">📉 Price Drop (was ${item.price_dropped_from})</span>`;
+                    priceBadgeHtml = `<span class="bg-rose-600/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
                 }
 
                 let contactsHtml = '<div class="space-y-2 pt-2">';
                 if (item.contacts) {
                     if (item.contacts.phone) {
-                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">📞 Call: ${item.contacts.phone}</a>`;
+                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${item.contacts.phone}</a>`;
                     }
                     if (item.contacts.viber) {
                         contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-purple-600/10 border border-purple-500/20 text-purple-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-purple-600/20 transition">🟣 Viber: ${item.contacts.viber}</a>`;
@@ -1243,6 +1489,8 @@
                 }
                 contactsHtml += '</div>';
 
+                let colorLabel = currentLang === 'my' ? 'အရောင်' : 'Color';
+                let countryLabel = currentLang === 'my' ? 'ထုတ်လုပ်သည့်နိုင်ငံ' : 'Made in';
                 let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
                 const isOwner = currentUser && item.user_id === currentUser.id;
 
@@ -1250,8 +1498,8 @@
                 if (isOwner) {
                     ownerActionsHtml = `
                         <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800">
-                            <button onclick="editListing('${item.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded-xl transition">✏️ Edit</button>
-                            <button onclick="deleteListing('${item.id}')" class="bg-rose-600/10 border border-rose-500/20 hover:bg-rose-600/20 text-rose-400 text-xs font-bold py-2 rounded-xl transition">🗑️ Delete</button>
+                            <button onclick="editListing('${item.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded-xl transition">✏️ ${currentLang === 'my' ? 'ပြင်ဆင်မည်' : 'Edit'}</button>
+                            <button onclick="deleteListing('${item.id}')" class="bg-rose-600/10 border border-rose-500/20 hover:bg-rose-600/20 text-rose-400 text-xs font-bold py-2 rounded-xl transition">🗑️ ${currentLang === 'my' ? 'ဖျက်မည်' : 'Delete'}</button>
                         </div>
                     `;
                 }
@@ -1282,7 +1530,7 @@
                     ${carouselHtml}
                     ${headerBadge ? `<div class="text-xs pt-1">${headerBadge}</div>` : ''}
                     <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
-                    <p class="text-[11px] text-slate-400">🎨 Color: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | 🌐 Made in: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
+                    <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
                         <p class="text-blue-400 font-bold text-lg">${item.price}</p>
                         ${priceBadgeHtml}
@@ -1386,7 +1634,7 @@
         function toggleFavorite(id) {
             if (!currentUser) {
                 triggerHaptic();
-                showToast('Sign In Required', 'Please sign in with Google to save cars.', '🔒');
+                showToast(translations[currentLang].toastSignInReq, translations[currentLang].toastSignInMsg, '🔒');
                 loginWithGoogle();
                 return;
             }
@@ -1421,7 +1669,7 @@
         async function deleteListing(id) {
             triggerHaptic();
             if (!currentUser) return;
-            if (!confirm('Are you sure you want to delete this listing?')) return;
+            if (!confirm(currentLang === 'my' ? 'ဤကားကြော်ငြာကို ဖျက်ရန် သေချာပါသလား?' : 'Are you sure you want to delete this listing?')) return;
 
             try {
                 const { error } = await supabaseClient
@@ -1442,7 +1690,7 @@
                 if (currentTab === 'profile') updateProfileDashboardData();
                 renderFilteredListings();
                 updateWishlistCount();
-                showToast('Deleted', 'Listing removed successfully.', '🗑️');
+                showToast(translations[currentLang].toastDeleted, translations[currentLang].toastDeletedMsg, '🗑️');
             } catch (err) {
                 console.error(err);
                 showToast('Error', 'Failed to delete listing.', '⚠️');
