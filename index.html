@@ -520,7 +520,6 @@
             currentLang = lang;
             document.getElementById('lang-switcher').value = lang;
             
-            // Update static UI elements
             document.getElementById('txt-welcome-title').innerText = translations[lang].welcomeTitle;
             document.getElementById('txt-welcome-desc').innerText = translations[lang].welcomeDesc;
             document.getElementById('txt-edit-photo').innerText = translations[lang].editPhoto;
@@ -584,7 +583,6 @@
             document.getElementById('txt-modal-listings').innerText = translations[lang].statListings;
             document.getElementById('txt-modal-listings-title').innerText = translations[lang].modalListingsTitle;
 
-            // Refresh dynamic headers & listings
             updateHeaderSubtitle();
             updateFeedTitle();
             renderFilteredListings();
