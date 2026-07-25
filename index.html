@@ -520,6 +520,7 @@
             currentLang = lang;
             document.getElementById('lang-switcher').value = lang;
             
+            // Update static UI elements
             document.getElementById('txt-welcome-title').innerText = translations[lang].welcomeTitle;
             document.getElementById('txt-welcome-desc').innerText = translations[lang].welcomeDesc;
             document.getElementById('txt-edit-photo').innerText = translations[lang].editPhoto;
@@ -583,6 +584,7 @@
             document.getElementById('txt-modal-listings').innerText = translations[lang].statListings;
             document.getElementById('txt-modal-listings-title').innerText = translations[lang].modalListingsTitle;
 
+            // Refresh dynamic headers & listings
             updateHeaderSubtitle();
             updateFeedTitle();
             renderFilteredListings();
@@ -1253,7 +1255,7 @@
                 badgeEl.innerText = currentLang === 'my' ? 'အကောင့်' : 'Account';
                 typeLabelEl.innerText = translations[currentLang].verifiedAccount;
             } else {
-                badgeEl.innerText = currentLang === 'my' ? 'ရှိုးရွမ်' : 'Showroom';
+                badgeEl.innerText = "Showroom";
                 typeLabelEl.innerText = translations[currentLang].verifiedShowroom;
             }
 
@@ -1345,7 +1347,9 @@
 
                     let colorLabel = currentLang === 'my' ? 'အရောင်' : 'Color';
                     let countryLabel = currentLang === 'my' ? 'ထုတ်လုပ်သည့်နိုင်ငံ' : 'Made in';
-                    let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
+                    let mileageLabel = currentLang === 'my' ? 'မိုင်နှုန်း' : 'Mileage';
+                    let mileageHtml = item.mileage ? ` | 🛣️ ${mileageLabel}: ${item.mileage}` : '';
+                    let priceLabelText = currentLang === 'my' ? 'ဈေးနှုန်း:' : 'Price:';
                     
                     const card = document.createElement('div');
                     card.className = "bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3 relative";
@@ -1372,7 +1376,7 @@
                         <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
                         <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                         <div class="flex items-center flex-wrap gap-y-1">
-                            <p class="text-blue-400 font-bold text-lg">${item.price}</p>
+                            <p class="text-blue-400 font-bold text-lg">${priceLabelText} ${item.price}</p>
                             ${priceBadgeHtml}
                         </div>
                         <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
@@ -1463,7 +1467,7 @@
                     if (profileObj.type === 'account') {
                         headerBadge = `${currentLang === 'my' ? 'အကောင့်' : 'Account'}: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     } else {
-                        headerBadge = `${currentLang === 'my' ? 'ရှိုးရွမ်' : 'Showroom'}: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
+                        headerBadge = `Showroom: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-blue-400 underline cursor-pointer hover:text-blue-300 transition">${profileObj.name}</span>`;
                     }
                 }
                 
@@ -1489,7 +1493,9 @@
 
                 let colorLabel = currentLang === 'my' ? 'အရောင်' : 'Color';
                 let countryLabel = currentLang === 'my' ? 'ထုတ်လုပ်သည့်နိုင်ငံ' : 'Made in';
-                let mileageHtml = item.mileage ? ` | 🛣️ ${item.mileage}` : '';
+                let mileageLabel = currentLang === 'my' ? 'မိုင်နှုန်း' : 'Mileage';
+                let mileageHtml = item.mileage ? ` | 🛣️ ${mileageLabel}: ${item.mileage}` : '';
+                let priceLabelText = currentLang === 'my' ? 'ဈေးနှုန်း:' : 'Price:';
                 const isOwner = currentUser && item.user_id === currentUser.id;
 
                 let ownerActionsHtml = '';
@@ -1530,7 +1536,7 @@
                     <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
                     <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
-                        <p class="text-blue-400 font-bold text-lg">${item.price}</p>
+                        <p class="text-blue-400 font-bold text-lg">${priceLabelText} ${item.price}</p>
                         ${priceBadgeHtml}
                     </div>
                     <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
