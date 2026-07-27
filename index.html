@@ -358,7 +358,7 @@
         const SUPABASE_KEY = 'sb_publishable_I34WJ4psecMdoTTyaDxHfw_WFsLvk9w';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // List of specific User IDs authorized to have the verified pink badge
+        // List of specific User IDs authorized to have the verified pink badge (Fallback Only)
         const VERIFIED_USER_IDS = [
             // Add user UUID strings here, e.g.:
             // '123e4567-e89b-12d3-a456-426614174000'
@@ -366,6 +366,11 @@
 
         function hasVerifiedBadge(userId) {
             if (!userId) return false;
+            // First check if database entry marks them as true
+            if (profilesMap[userId] && profilesMap[userId].is_verified) {
+                return true;
+            }
+            // Fallback to local hardcoded array check
             return VERIFIED_USER_IDS.includes(String(userId));
         }
 
@@ -830,7 +835,8 @@
                             phone: p.phone || '',
                             facebook_link: p.facebook_link || '',
                             tiktok_link: p.tiktok_link || '',
-                            avatar_url: p.avatar_url || ''
+                            avatar_url: p.avatar_url || '',
+                            is_verified: p.is_verified || false  // Pulling verification dynamically from DB
                         };
                     });
                 }
