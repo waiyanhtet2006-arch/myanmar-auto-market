@@ -195,26 +195,6 @@
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
                 </div>
 
-                <!-- Contact Info Layout Modded as requested -->
-                <div class="space-y-3 pt-1">
-                    <label id="txt-form-contact-heading" class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📱 CONTACT INFO (FILL AT LEAST ONE)</label>
-                    
-                    <div>
-                        <label id="txt-form-phone" class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
-                        <input type="text" id="car-phone" placeholder="e.g., 09..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
-
-                    <div>
-                        <label id="txt-form-viber" class="block text-[11px] font-medium text-slate-400 mb-1">Viber Number</label>
-                        <input type="text" id="car-viber" placeholder="e.g., 09-912345678" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
-
-                    <div>
-                        <label id="txt-form-telegram" class="block text-[11px] font-medium text-slate-400 mb-1">Telegram Username / Number</label>
-                        <input type="text" id="car-telegram" placeholder="e.g., @username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
-                </div>
-
                 <div class="border-t border-slate-800 pt-4">
                     <div class="flex justify-between items-center mb-2">
                         <label id="txt-form-photos" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Photos (Up to 10)</label>
@@ -395,7 +375,6 @@
         let currentUser = null;
         let currentLang = 'my';
 
-        // Translation Dictionary (Updated with updated labels)
         const translations = {
             my: {
                 headerSubtitleLive: "LIVE SYNC",
@@ -432,10 +411,6 @@
                 formCountry: "Made in",
                 formMileage: "Mileage",
                 formPrice: "Price",
-                formContactHeading: "📱 CONTACT INFO (FILL AT LEAST ONE)",
-                formPhone: "Phone Number",
-                formViber: "Viber Number",
-                formTelegram: "Telegram Username / Number",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -506,10 +481,6 @@
                 formCountry: "Made in",
                 formMileage: "Mileage",
                 formPrice: "Price",
-                formContactHeading: "📱 CONTACT INFO (FILL AT LEAST ONE)",
-                formPhone: "Phone Number",
-                formViber: "Viber Number",
-                formTelegram: "Telegram Username / Number",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -582,12 +553,6 @@
             document.getElementById('txt-form-country').innerText = translations[lang].formCountry;
             document.getElementById('txt-form-mileage').innerText = translations[lang].formMileage;
             document.getElementById('txt-form-price').innerText = translations[lang].formPrice;
-            
-            // New UI translation targets
-            document.getElementById('txt-form-contact-heading').innerText = translations[lang].formContactHeading;
-            document.getElementById('txt-form-phone').innerText = translations[lang].formPhone;
-            document.getElementById('txt-form-viber').innerText = translations[lang].formViber;
-            document.getElementById('txt-form-telegram').innerText = translations[lang].formTelegram;
 
             document.getElementById('txt-form-photos').innerText = translations[lang].formPhotos;
             document.getElementById('txt-form-desc').innerText = translations[lang].formDesc;
@@ -845,7 +810,6 @@
                         let viber = '';
                         let telegram = '';
                         
-                        // Parse JSONB contact configuration safely
                         if (p.contacts) {
                             let c = p.contacts;
                             if (typeof c === 'string') {
@@ -1182,17 +1146,7 @@
             const country = document.getElementById('car-country').value;
             const mileage = document.getElementById('car-mileage').value.trim();
             const price = document.getElementById('car-price').value.trim();
-            
-            // New UI fields extraction logic
-            const phone = document.getElementById('car-phone').value.trim();
-            const viber = document.getElementById('car-viber').value.trim();
-            const telegram = document.getElementById('car-telegram').value.trim();
             const desc = document.getElementById('car-desc').value.trim();
-
-            if (!phone && !viber && !telegram) {
-                showToast('Contact Required', currentLang === 'my' ? 'ဆက်သွယ်ရန်အချက်အလက် အနည်းဆုံးတစ်ခု ဖြည့်သွင်းပေးပါ။' : 'Please complete at least one contact info option.', '⚠️');
-                return;
-            }
 
             const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
 
@@ -1205,9 +1159,6 @@
                 country,
                 mileage,
                 price,
-                phone,
-                viber,
-                telegram,
                 desc,
                 img_srcs: finalImages
             };
@@ -1267,12 +1218,6 @@
             document.getElementById('car-country').value = item.country || 'Japan';
             document.getElementById('car-mileage').value = item.mileage || '';
             document.getElementById('car-price').value = item.price || '';
-            
-            // Populate contact options when loaded into editor mode
-            document.getElementById('car-phone').value = item.phone || '';
-            document.getElementById('car-viber').value = item.viber || '';
-            document.getElementById('car-telegram').value = item.telegram || '';
-            
             document.getElementById('car-desc').value = item.desc || '';
 
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
@@ -1425,11 +1370,10 @@
                     
                     let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
-                    // Resolve contact configurations dynamically from listing properties first, fallback to user profiles profile card configurations
                     const sellerProfile = profilesMap[item.user_id] || {};
-                    let displayPhone = item.phone || sellerProfile.phone;
-                    let displayViber = item.viber || sellerProfile.viber;
-                    let displayTelegram = item.telegram || sellerProfile.telegram;
+                    let displayPhone = sellerProfile.phone;
+                    let displayViber = sellerProfile.viber;
+                    let displayTelegram = sellerProfile.telegram;
 
                     let contactsHtml = '<div class="space-y-2 pt-2">';
                     if (displayPhone) {
@@ -1581,11 +1525,10 @@
                     priceBadgeHtml = `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
                 }
 
-                // Dynamic entry mapping check from per-post configuration details first
                 const sellerProfile = profilesMap[item.user_id] || {};
-                let displayPhone = item.phone || sellerProfile.phone;
-                let displayViber = item.viber || sellerProfile.viber;
-                let displayTelegram = item.telegram || sellerProfile.telegram;
+                let displayPhone = sellerProfile.phone;
+                let displayViber = sellerProfile.viber;
+                let displayTelegram = sellerProfile.telegram;
 
                 let contactsHtml = '<div class="space-y-2 pt-2">';
                 if (displayPhone) {
