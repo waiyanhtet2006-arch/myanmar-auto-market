@@ -377,6 +377,7 @@
         let selectedDisplayType = 'showroom';
         let currentUser = null;
         let currentLang = 'my';
+        let lastOpenedProfileId = null;
 
         const translations = {
             my: {
@@ -1249,6 +1250,7 @@
 
         window.openProfileModal = function(userId) {
             triggerHaptic();
+            lastOpenedProfileId = userId;
             const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', facebook_link: '', tiktok_link: '', avatar_url: '' };
             
             document.getElementById('modal-header-username').innerText = profileObj.name;
@@ -1408,6 +1410,7 @@
         }
 
         function closeProfileModal() {
+            lastOpenedProfileId = null;
             document.getElementById('profile-modal').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
@@ -1681,6 +1684,11 @@
             if (currentTab === 'profile') updateProfileDashboardData();
             renderFilteredListings();
             updateWishlistCount();
+
+            // FIX: If the profile modal is currently open, refresh it so the heart changes color immediately
+            if (lastOpenedProfileId) {
+                openProfileModal(lastOpenedProfileId);
+            }
         }
 
         function updateWishlistCount() {
