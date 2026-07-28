@@ -104,6 +104,25 @@
                         <textarea id="profile-bio-input" rows="2" placeholder="Tell buyers a bit about yourself or your dealership..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
                     </div>
 
+                    <!-- Profile-level Contacts (stored in profiles.contacts jsonb column) -->
+                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-2">
+                        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">📞 Your Default Contact Info (Saved in Profile)</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-medium text-slate-400 mb-1">Phone</label>
+                                <input type="text" id="profile-phone-input" placeholder="09..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-medium text-slate-400 mb-1">Viber</label>
+                                <input type="text" id="profile-viber-input" placeholder="09..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-medium text-slate-400 mb-1">Telegram</label>
+                                <input type="text" id="profile-telegram-input" placeholder="@username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label id="txt-label-fb" class="block text-[11px] font-medium text-slate-400 mb-1">Facebook Link</label>
@@ -177,25 +196,6 @@
                 <div>
                     <label id="txt-form-price" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Price</label>
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                </div>
-
-                <!-- Per-Listing Contact Inputs -->
-                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-2.5">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📞 Contact Information For This Post</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Phone Call</label>
-                            <input type="text" id="car-phone" placeholder="09..." required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Viber</label>
-                            <input type="text" id="car-viber" placeholder="09..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Telegram</label>
-                            <input type="text" id="car-telegram" placeholder="@username" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                    </div>
                 </div>
 
                 <div class="border-t border-slate-800 pt-4">
@@ -814,7 +814,8 @@
                             facebook_link: p.facebook_link || '',
                             tiktok_link: p.tiktok_link || '',
                             avatar_url: p.avatar_url || '',
-                            is_verified: p.is_verified || false  
+                            is_verified: p.is_verified || false,
+                            contacts: p.contacts || {}
                         };
                     });
                 }
@@ -954,6 +955,11 @@
             const fbInput = document.getElementById('profile-fb-input').value.trim();
             const tiktokInput = document.getElementById('profile-tiktok-input').value.trim();
 
+            const profilePhone = document.getElementById('profile-phone-input').value.trim();
+            const profileViber = document.getElementById('profile-viber-input').value.trim();
+            const profileTelegram = document.getElementById('profile-telegram-input').value.trim();
+            const contactsObj = { phone: profilePhone, viber: profileViber, telegram: profileTelegram };
+
             if (!showroomNameInput) {
                 showToast('Missing Info', currentLang === 'my' ? 'ပြသရန် အမည် (Name) ထည့်သွင်းပါ။' : 'Please enter a display name.', '⚠️');
                 return;
@@ -974,7 +980,8 @@
                         bio: bioInput,
                         facebook_link: fbInput,
                         tiktok_link: tiktokInput,
-                        avatar_url: currentProfile.avatar_url || ''
+                        avatar_url: currentProfile.avatar_url || '',
+                        contacts: contactsObj
                     });
 
                 if (error) throw error;
@@ -985,7 +992,8 @@
                     type: selectedDisplayType,
                     bio: bioInput,
                     facebook_link: fbInput,
-                    tiktok_link: tiktokInput
+                    tiktok_link: tiktokInput,
+                    contacts: contactsObj
                 };
 
                 showToast(translations[currentLang].toastProfileUpdated, translations[currentLang].toastProfileMsg, '✨');
@@ -1036,6 +1044,11 @@
                 document.getElementById('profile-bio-input').value = p.bio || '';
                 document.getElementById('profile-fb-input').value = p.facebook_link || '';
                 document.getElementById('profile-tiktok-input').value = p.tiktok_link || '';
+                if (p.contacts) {
+                    document.getElementById('profile-phone-input').value = p.contacts.phone || '';
+                    document.getElementById('profile-viber-input').value = p.contacts.viber || '';
+                    document.getElementById('profile-telegram-input').value = p.contacts.telegram || '';
+                }
                 setDisplayType(p.type || 'showroom');
             }
 
@@ -1119,9 +1132,6 @@
             const mileage = document.getElementById('car-mileage').value.trim();
             const price = document.getElementById('car-price').value.trim();
             const desc = document.getElementById('car-desc').value.trim();
-            const phone = document.getElementById('car-phone').value.trim();
-            const viber = document.getElementById('car-viber').value.trim();
-            const telegram = document.getElementById('car-telegram').value.trim();
 
             const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
 
@@ -1135,9 +1145,6 @@
                 mileage,
                 price,
                 desc,
-                phone,
-                viber,
-                telegram,
                 img_srcs: finalImages
             };
 
@@ -1197,9 +1204,6 @@
             document.getElementById('car-mileage').value = item.mileage || '';
             document.getElementById('car-price').value = item.price || '';
             document.getElementById('car-desc').value = item.desc || '';
-            document.getElementById('car-phone').value = item.phone || '';
-            document.getElementById('car-viber').value = item.viber || '';
-            document.getElementById('car-telegram').value = item.telegram || '';
 
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
             renderImagePreviews();
@@ -1249,7 +1253,7 @@
 
         window.openProfileModal = function(userId) {
             triggerHaptic();
-            const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', facebook_link: '', tiktok_link: '', avatar_url: '' };
+            const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', facebook_link: '', tiktok_link: '', avatar_url: '', contacts: {} };
             
             document.getElementById('modal-header-username').innerText = profileObj.name;
             document.getElementById('modal-profile-name').innerText = profileObj.name;
@@ -1344,9 +1348,9 @@
                     
                     let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
-                    let displayPhone = item.phone;
-                    let displayViber = item.viber;
-                    let displayTelegram = item.telegram;
+                    let displayPhone = profileObj.contacts?.phone;
+                    let displayViber = profileObj.contacts?.viber;
+                    let displayTelegram = profileObj.contacts?.telegram;
 
                     let contactsHtml = '<div class="space-y-2 pt-2">';
                     if (displayPhone) {
@@ -1477,7 +1481,7 @@
                 const isFav = favorites.includes(stringId);
                 const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                 
-                const profileObj = profilesMap[item.user_id];
+                const profileObj = profilesMap[item.user_id] || {};
                 let headerBadge = '';
                 if (profileObj && profileObj.name) {
                     let badgeIconHtml = hasVerifiedBadge(item.user_id) ? `
@@ -1498,9 +1502,9 @@
                     priceBadgeHtml = `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
                 }
 
-                let displayPhone = item.phone;
-                let displayViber = item.viber;
-                let displayTelegram = item.telegram;
+                let displayPhone = profileObj.contacts?.phone;
+                let displayViber = profileObj.contacts?.viber;
+                let displayTelegram = profileObj.contacts?.telegram;
 
                 let contactsHtml = '<div class="space-y-2 pt-2">';
                 if (displayPhone) {
@@ -1688,8 +1692,7 @@
                 document.getElementById('nav-badge').innerText = '';
                 return;
             }
-            let favKey = `carFavorites_${currentUser.id}`;
-            let favorites = JSON.parse(localStorage.getItem(favKey)) || [];
+            let favKey = `carFavorites_${currentUser.id}`;\n            let favorites = JSON.parse(localStorage.getItem(favKey)) || [];
             const badge = document.getElementById('nav-badge');
             badge.innerText = favorites.length > 0 ? `(${favorites.length})` : '';
         }
@@ -1730,7 +1733,6 @@
         document.getElementById('filter-brand').addEventListener('input', () => renderFilteredListings());
         document.getElementById('filter-color').addEventListener('input', () => renderFilteredListings());
         document.getElementById('filter-country').addEventListener('change', () => renderFilteredListings());
-        document.getElementById('filter-year-from').addEventListener('input', () => renderFilteredListings());
         document.getElementById('filter-year-to').addEventListener('input', () => renderFilteredListings());
     </script>
 </body>
