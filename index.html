@@ -1427,7 +1427,7 @@
                 listings = listings.filter(item => item.user_id === currentUser.id);
             } else if (currentTab === 'feed' && feedMode === 'following') {
                 if (!currentUser) {
-                    container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${currentLang === 'my' ? 'Following ฟีดကိုကြည့်ရန် Google ဖြင့် အကောင့်ဝင်ပါ။' : 'Please sign in to view your Following feed.'}</p>`;
+                    container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${currentLang === 'my' ? 'Following ဖีดကိုကြည့်ရန် Google ဖြင့် အကောင့်ဝင်ပါ။' : 'Please sign in to view your Following feed.'}</p>`;
                     return;
                 }
                 const followedIds = followsList.filter(f => f.follower_id === currentUser.id).map(f => f.following_id);
