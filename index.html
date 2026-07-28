@@ -195,6 +195,11 @@
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
                 </div>
 
+                <div>
+                    <label id="txt-form-phone" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Contact Phone Number</label>
+                    <input type="text" id="car-phone" placeholder="e.g., 09..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                </div>
+
                 <div class="border-t border-slate-800 pt-4">
                     <div class="flex justify-between items-center mb-2">
                         <label id="txt-form-photos" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Photos (Up to 10)</label>
@@ -412,6 +417,7 @@
                 formCountry: "Made in",
                 formMileage: "Mileage",
                 formPrice: "Price",
+                formPhone: "ဆက်သွယ်ရန် ဖုန်းနံပါတ်",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -482,6 +488,7 @@
                 formCountry: "Made in",
                 formMileage: "Mileage",
                 formPrice: "Price",
+                formPhone: "Contact Phone Number",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -554,6 +561,7 @@
             document.getElementById('txt-form-country').innerText = translations[lang].formCountry;
             document.getElementById('txt-form-mileage').innerText = translations[lang].formMileage;
             document.getElementById('txt-form-price').innerText = translations[lang].formPrice;
+            document.getElementById('txt-form-phone').innerText = translations[lang].formPhone;
             document.getElementById('txt-form-photos').innerText = translations[lang].formPhotos;
             document.getElementById('txt-form-desc').innerText = translations[lang].formDesc;
             
@@ -1147,6 +1155,7 @@
             const country = document.getElementById('car-country').value;
             const mileage = document.getElementById('car-mileage').value.trim();
             const price = document.getElementById('car-price').value.trim();
+            const phone = document.getElementById('car-phone').value.trim();
             const desc = document.getElementById('car-desc').value.trim();
 
             const finalImages = activeEditImages.length > 0 ? activeEditImages : ['https://via.placeholder.com/400x200?text=No+Image'];
@@ -1160,6 +1169,7 @@
                 country,
                 mileage,
                 price,
+                phone,
                 desc,
                 img_srcs: finalImages
             };
@@ -1219,6 +1229,7 @@
             document.getElementById('car-country').value = item.country || 'Japan';
             document.getElementById('car-mileage').value = item.mileage || '';
             document.getElementById('car-price').value = item.price || '';
+            document.getElementById('car-phone').value = item.phone || '';
             document.getElementById('car-desc').value = item.desc || '';
 
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
@@ -1371,11 +1382,11 @@
                     
                     let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
-                    // Get contact dynamically from dynamic global profile mapping
+                    // Get contact details dynamically
                     const sellerProfile = profilesMap[item.user_id] || {};
                     let contactsHtml = '<div class="space-y-2 pt-2">';
-                    if (sellerProfile.phone) {
-                        contactsHtml += `<a href="tel:${sellerProfile.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${sellerProfile.phone}</a>`;
+                    if (item.phone) {
+                        contactsHtml += `<a href="tel:${item.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${item.phone}</a>`;
                     }
                     if (sellerProfile.viber) {
                         contactsHtml += `<a href="viber://chat?number=${sellerProfile.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${sellerProfile.viber}</a>`;
@@ -1523,11 +1534,11 @@
                     priceBadgeHtml = `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
                 }
 
-                // Fetch owner contacts directly from live client-side profile map lookup
+                // Fetch owner contacts directly from listing property configurations
                 const sellerProfile = profilesMap[item.user_id] || {};
                 let contactsHtml = '<div class="space-y-2 pt-2">';
-                if (sellerProfile.phone) {
-                    contactsHtml += `<a href="tel:${sellerProfile.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${sellerProfile.phone}</a>`;
+                if (item.phone) {
+                    contactsHtml += `<a href="tel:${item.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${item.phone}</a>`;
                 }
                 if (sellerProfile.viber) {
                     contactsHtml += `<a href="viber://chat?number=${sellerProfile.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${sellerProfile.viber}</a>`;
