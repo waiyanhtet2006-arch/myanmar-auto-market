@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoMM - ကားအရောင်းအဝယ်</title>
+    <title>wheelmm - ကားအရောင်းအဝယ်</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -24,11 +24,11 @@
         </div>
     </div>
 
-    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-3 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <div class="flex flex-col">
-                <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-indigo-400 to-blue-300 bg-clip-text text-transparent">🚗 AutoMM</h1>
-                <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE SYNC</span>
+            <div class="flex items-center gap-2.5">
+                <img src="image_21.png" alt="wheelmm logo" class="h-8 object-contain">
+                <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide border-l border-slate-700 pl-2.5">LIVE SYNC</span>
             </div>
             <div class="flex items-center gap-2">
                 <!-- Language Switcher Dropdown -->
@@ -1685,7 +1685,6 @@
             renderFilteredListings();
             updateWishlistCount();
 
-            // FIX: If the profile modal is currently open, refresh it so the heart changes color immediately
             if (lastOpenedProfileId) {
                 openProfileModal(lastOpenedProfileId);
             }
