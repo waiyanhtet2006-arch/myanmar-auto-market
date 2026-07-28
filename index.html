@@ -104,9 +104,20 @@
                         <textarea id="profile-bio-input" rows="2" placeholder="Tell buyers a bit about yourself or your dealership..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
                     </div>
 
-                    <div>
-                        <label id="txt-label-phone" class="block text-[11px] font-medium text-slate-400 mb-1">Contact Phone Number</label>
-                        <input type="text" id="profile-phone-input" placeholder="e.g., +95 9 123 456 789" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                    <!-- Synchronized Contact Hub -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Phone Call</label>
+                            <input type="text" id="profile-phone-input" placeholder="09..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Viber</label>
+                            <input type="text" id="profile-viber-input" placeholder="09..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Telegram</label>
+                            <input type="text" id="profile-telegram-input" placeholder="@username" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
@@ -182,22 +193,6 @@
                 <div>
                     <label id="txt-form-price" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Price</label>
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                </div>
-
-                <div class="border-t border-slate-800 pt-4 space-y-3">
-                    <label id="txt-form-contact-info" class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📱 Contact Info (Fill at least one)</label>
-                    <div>
-                        <label id="txt-form-phone" class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number</label>
-                        <input type="text" id="car-phone" placeholder="e.g., 09-912345678" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Viber Number</label>
-                        <input type="text" id="car-viber" placeholder="e.g., 09-912345678" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Telegram Username / Number</label>
-                        <input type="text" id="car-telegram" placeholder="e.g., @username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
                 </div>
 
                 <div class="border-t border-slate-800 pt-4">
@@ -358,19 +353,13 @@
         const SUPABASE_KEY = 'sb_publishable_I34WJ4psecMdoTTyaDxHfw_WFsLvk9w';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // List of specific User IDs authorized to have the verified pink badge (Fallback Only)
-        const VERIFIED_USER_IDS = [
-            // Add user UUID strings here, e.g.:
-            // '123e4567-e89b-12d3-a456-426614174000'
-        ];
+        const VERIFIED_USER_IDS = [];
 
         function hasVerifiedBadge(userId) {
             if (!userId) return false;
-            // First check if database entry marks them as true
             if (profilesMap[userId] && profilesMap[userId].is_verified) {
                 return true;
             }
-            // Fallback to local hardcoded array check
             return VERIFIED_USER_IDS.includes(String(userId));
         }
 
@@ -423,8 +412,6 @@
                 formCountry: "Made in",
                 formMileage: "Mileage",
                 formPrice: "Price",
-                formContactInfo: "📱 Contact Info (Fill at least one)",
-                formPhone: "Phone Number",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -495,8 +482,6 @@
                 formCountry: "Made in",
                 formMileage: "Mileage",
                 formPrice: "Price",
-                formContactInfo: "📱 Contact Info (Fill at least one)",
-                formPhone: "Phone Number",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -534,26 +519,6 @@
             }
         };
 
-        // Helper function to robustly extract contact info from different database formats
-        function parseContacts(item) {
-            let phone = item.phone || '';
-            let viber = item.viber || '';
-            let telegram = item.telegram || '';
-            
-            if (item.contacts) {
-                let c = item.contacts;
-                if (typeof c === 'string') {
-                    try { c = JSON.parse(c); } catch(e) {}
-                }
-                if (c && typeof c === 'object') {
-                    if (c.phone) phone = c.phone;
-                    if (c.viber) viber = c.viber;
-                    if (c.telegram) telegram = c.telegram;
-                }
-            }
-            return { phone, viber, telegram };
-        }
-
         function switchLanguage(lang) {
             currentLang = lang;
             document.getElementById('lang-switcher').value = lang;
@@ -572,7 +537,6 @@
 
             document.getElementById('txt-label-showroom').innerText = translations[lang].labelShowroom;
             document.getElementById('txt-label-bio').innerText = translations[lang].labelBio;
-            document.getElementById('txt-label-phone').innerText = translations[lang].labelPhone;
             document.getElementById('txt-label-fb').innerText = translations[lang].labelFb;
             document.getElementById('txt-label-tiktok').innerText = translations[lang].labelTiktok;
             document.getElementById('save-showroom-btn').innerText = translations[lang].saveProfileBtn;
@@ -590,8 +554,6 @@
             document.getElementById('txt-form-country').innerText = translations[lang].formCountry;
             document.getElementById('txt-form-mileage').innerText = translations[lang].formMileage;
             document.getElementById('txt-form-price').innerText = translations[lang].formPrice;
-            document.getElementById('txt-form-contact-info').innerText = translations[lang].formContactInfo;
-            document.getElementById('txt-form-phone').innerText = translations[lang].formPhone;
             document.getElementById('txt-form-photos').innerText = translations[lang].formPhotos;
             document.getElementById('txt-form-desc').innerText = translations[lang].formDesc;
             
@@ -844,11 +806,30 @@
                 if (!profilesError && profilesData) {
                     profilesMap = {};
                     profilesData.forEach(p => {
+                        let phone = '';
+                        let viber = '';
+                        let telegram = '';
+                        
+                        // Parse JSONB contact configuration safely
+                        if (p.contacts) {
+                            let c = p.contacts;
+                            if (typeof c === 'string') {
+                                try { c = JSON.parse(c); } catch(e) {}
+                            }
+                            if (c && typeof c === 'object') {
+                                phone = c.phone || '';
+                                viber = c.viber || '';
+                                telegram = c.telegram || '';
+                            }
+                        }
+
                         profilesMap[p.user_id] = {
                             name: p.showroom_name,
                             type: p.display_type || 'showroom',
                             bio: p.bio || '',
-                            phone: p.phone || '',
+                            phone: phone,
+                            viber: viber,
+                            telegram: telegram,
                             facebook_link: p.facebook_link || '',
                             tiktok_link: p.tiktok_link || '',
                             avatar_url: p.avatar_url || '',
@@ -990,6 +971,8 @@
             const showroomNameInput = document.getElementById('showroom-name-input').value.trim();
             const bioInput = document.getElementById('profile-bio-input').value.trim();
             const phoneInput = document.getElementById('profile-phone-input').value.trim();
+            const viberInput = document.getElementById('profile-viber-input').value.trim();
+            const telegramInput = document.getElementById('profile-telegram-input').value.trim();
             const fbInput = document.getElementById('profile-fb-input').value.trim();
             const tiktokInput = document.getElementById('profile-tiktok-input').value.trim();
 
@@ -1011,7 +994,7 @@
                         showroom_name: showroomNameInput,
                         display_type: selectedDisplayType,
                         bio: bioInput,
-                        phone: phoneInput,
+                        contacts: { phone: phoneInput, viber: viberInput, telegram: telegramInput },
                         facebook_link: fbInput,
                         tiktok_link: tiktokInput,
                         avatar_url: currentProfile.avatar_url || ''
@@ -1025,6 +1008,8 @@
                     type: selectedDisplayType,
                     bio: bioInput,
                     phone: phoneInput,
+                    viber: viberInput,
+                    telegram: telegramInput,
                     facebook_link: fbInput,
                     tiktok_link: tiktokInput
                 };
@@ -1076,6 +1061,8 @@
                 document.getElementById('showroom-name-input').value = p.name || '';
                 document.getElementById('profile-bio-input').value = p.bio || '';
                 document.getElementById('profile-phone-input').value = p.phone || '';
+                document.getElementById('profile-viber-input').value = p.viber || '';
+                document.getElementById('profile-telegram-input').value = p.telegram || '';
                 document.getElementById('profile-fb-input').value = p.facebook_link || '';
                 document.getElementById('profile-tiktok-input').value = p.tiktok_link || '';
                 setDisplayType(p.type || 'showroom');
@@ -1152,15 +1139,6 @@
                 return;
             }
             
-            const phone = document.getElementById('car-phone').value.trim();
-            const viber = document.getElementById('car-viber').value.trim();
-            const telegram = document.getElementById('car-telegram').value.trim();
-
-            if (!phone && !viber && !telegram) {
-                showToast('Contact Info Required', currentLang === 'my' ? 'ဖုန်းနံပါတ်၊ Viber သို့မဟုတ် Telegram အနည်းဆုံး တစ်ခုထည့်ပါ။' : 'Please provide at least one contact method (Phone, Viber, or Telegram).', '📱');
-                return;
-            }
-
             const editId = document.getElementById('edit-listing-id').value;
             const brand = document.getElementById('car-brand').value.trim();
             const title = document.getElementById('car-title').value.trim();
@@ -1182,10 +1160,6 @@
                 country,
                 mileage,
                 price,
-                phone,        // Flat fallback column
-                viber,        // Flat fallback column
-                telegram,     // Flat fallback column
-                contacts: { phone, viber, telegram }, // Nested JSON object column
                 desc,
                 img_srcs: finalImages
             };
@@ -1237,8 +1211,6 @@
 
             switchTab('sell');
 
-            const contacts = parseContacts(item);
-
             document.getElementById('edit-listing-id').value = item.id;
             document.getElementById('car-brand').value = item.brand || '';
             document.getElementById('car-title').value = item.title || '';
@@ -1247,9 +1219,6 @@
             document.getElementById('car-country').value = item.country || 'Japan';
             document.getElementById('car-mileage').value = item.mileage || '';
             document.getElementById('car-price').value = item.price || '';
-            document.getElementById('car-phone').value = contacts.phone;
-            document.getElementById('car-viber').value = contacts.viber;
-            document.getElementById('car-telegram').value = contacts.telegram;
             document.getElementById('car-desc').value = item.desc || '';
 
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
@@ -1300,7 +1269,7 @@
 
         window.openProfileModal = function(userId) {
             triggerHaptic();
-            const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', phone: '', facebook_link: '', tiktok_link: '', avatar_url: '' };
+            const profileObj = profilesMap[userId] || { name: 'User Profile', type: 'showroom', bio: '', phone: '', viber: '', telegram: '', facebook_link: '', tiktok_link: '', avatar_url: '' };
             
             document.getElementById('modal-header-username').innerText = profileObj.name;
             document.getElementById('modal-profile-name').innerText = profileObj.name;
@@ -1402,17 +1371,18 @@
                     
                     let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
-                    const contacts = parseContacts(item);
+                    // Get contact dynamically from dynamic global profile mapping
+                    const sellerProfile = profilesMap[item.user_id] || {};
                     let contactsHtml = '<div class="space-y-2 pt-2">';
-                    if (contacts.phone) {
-                        contactsHtml += `<a href="tel:${contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${contacts.phone}</a>`;
+                    if (sellerProfile.phone) {
+                        contactsHtml += `<a href="tel:${sellerProfile.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${sellerProfile.phone}</a>`;
                     }
-                    if (contacts.viber) {
-                        contactsHtml += `<a href="viber://chat?number=${contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${contacts.viber}</a>`;
+                    if (sellerProfile.viber) {
+                        contactsHtml += `<a href="viber://chat?number=${sellerProfile.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${sellerProfile.viber}</a>`;
                     }
-                    if (contacts.telegram) {
-                        let tgLink = contacts.telegram.startsWith('@') ? `https://t.me/${contacts.telegram.substring(1)}` : `https://t.me/${contacts.telegram}`;
-                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${contacts.telegram}</a>`;
+                    if (sellerProfile.telegram) {
+                        let tgLink = sellerProfile.telegram.startsWith('@') ? `https://t.me/${sellerProfile.telegram.substring(1)}` : `https://t.me/${sellerProfile.telegram}`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${sellerProfile.telegram}</a>`;
                     }
                     contactsHtml += '</div>';
 
@@ -1553,17 +1523,18 @@
                     priceBadgeHtml = `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
                 }
 
-                const contacts = parseContacts(item);
+                // Fetch owner contacts directly from live client-side profile map lookup
+                const sellerProfile = profilesMap[item.user_id] || {};
                 let contactsHtml = '<div class="space-y-2 pt-2">';
-                if (contacts.phone) {
-                    contactsHtml += `<a href="tel:${contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${contacts.phone}</a>`;
+                if (sellerProfile.phone) {
+                    contactsHtml += `<a href="tel:${sellerProfile.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${sellerProfile.phone}</a>`;
                 }
-                if (contacts.viber) {
-                    contactsHtml += `<a href="viber://chat?number=${contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${contacts.viber}</a>`;
+                if (sellerProfile.viber) {
+                    contactsHtml += `<a href="viber://chat?number=${sellerProfile.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${sellerProfile.viber}</a>`;
                 }
-                if (contacts.telegram) {
-                    let tgLink = contacts.telegram.startsWith('@') ? `https://t.me/${contacts.telegram.substring(1)}` : `https://t.me/${contacts.telegram}`;
-                    contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${contacts.telegram}</a>`;
+                if (sellerProfile.telegram) {
+                    let tgLink = sellerProfile.telegram.startsWith('@') ? `https://t.me/${sellerProfile.telegram.substring(1)}` : `https://t.me/${sellerProfile.telegram}`;
+                    contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${sellerProfile.telegram}</a>`;
                 }
                 contactsHtml += '</div>';
 
