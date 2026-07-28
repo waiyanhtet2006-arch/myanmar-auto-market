@@ -425,8 +425,6 @@
                 formPrice: "Price",
                 formContactInfo: "📱 Contact Info (Fill at least one)",
                 formPhone: "Phone Number",
-                formViber: "Viber Number",
-                formTelegram: "Telegram Username / Number",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -499,8 +497,6 @@
                 formPrice: "Price",
                 formContactInfo: "📱 Contact Info (Fill at least one)",
                 formPhone: "Phone Number",
-                formViber: "Viber Number",
-                formTelegram: "Telegram Username / Number",
                 formPhotos: "Photos (Up to 10)",
                 formDesc: "Description",
                 submitPost: "Post Live Listing",
@@ -537,6 +533,26 @@
                 toastDeletedMsg: "Listing removed successfully."
             }
         };
+
+        // Helper function to robustly extract contact info from different database formats
+        function parseContacts(item) {
+            let phone = item.phone || '';
+            let viber = item.viber || '';
+            let telegram = item.telegram || '';
+            
+            if (item.contacts) {
+                let c = item.contacts;
+                if (typeof c === 'string') {
+                    try { c = JSON.parse(c); } catch(e) {}
+                }
+                if (c && typeof c === 'object') {
+                    if (c.phone) phone = c.phone;
+                    if (c.viber) viber = c.viber;
+                    if (c.telegram) telegram = c.telegram;
+                }
+            }
+            return { phone, viber, telegram };
+        }
 
         function switchLanguage(lang) {
             currentLang = lang;
@@ -836,7 +852,7 @@
                             facebook_link: p.facebook_link || '',
                             tiktok_link: p.tiktok_link || '',
                             avatar_url: p.avatar_url || '',
-                            is_verified: p.is_verified || false  // Pulling verification dynamically from DB
+                            is_verified: p.is_verified || false  
                         };
                     });
                 }
@@ -1166,7 +1182,10 @@
                 country,
                 mileage,
                 price,
-                contacts: { phone, viber, telegram },
+                phone,        // Flat fallback column
+                viber,        // Flat fallback column
+                telegram,     // Flat fallback column
+                contacts: { phone, viber, telegram }, // Nested JSON object column
                 desc,
                 img_srcs: finalImages
             };
@@ -1218,6 +1237,8 @@
 
             switchTab('sell');
 
+            const contacts = parseContacts(item);
+
             document.getElementById('edit-listing-id').value = item.id;
             document.getElementById('car-brand').value = item.brand || '';
             document.getElementById('car-title').value = item.title || '';
@@ -1226,9 +1247,9 @@
             document.getElementById('car-country').value = item.country || 'Japan';
             document.getElementById('car-mileage').value = item.mileage || '';
             document.getElementById('car-price').value = item.price || '';
-            document.getElementById('car-phone').value = item.contacts ? (item.contacts.phone || '') : '';
-            document.getElementById('car-viber').value = item.contacts ? (item.contacts.viber || '') : '';
-            document.getElementById('car-telegram').value = item.contacts ? (item.contacts.telegram || '') : '';
+            document.getElementById('car-phone').value = contacts.phone;
+            document.getElementById('car-viber').value = contacts.viber;
+            document.getElementById('car-telegram').value = contacts.telegram;
             document.getElementById('car-desc').value = item.desc || '';
 
             activeEditImages = item.img_srcs ? [...item.img_srcs] : [];
@@ -1381,18 +1402,17 @@
                     
                     let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
+                    const contacts = parseContacts(item);
                     let contactsHtml = '<div class="space-y-2 pt-2">';
-                    if (item.contacts) {
-                        if (item.contacts.phone) {
-                            contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${item.contacts.phone}</a>`;
-                        }
-                        if (item.contacts.viber) {
-                            contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${item.contacts.viber}</a>`;
-                        }
-                        if (item.contacts.telegram) {
-                            let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
-                            contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${item.contacts.telegram}</a>`;
-                        }
+                    if (contacts.phone) {
+                        contactsHtml += `<a href="tel:${contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${contacts.phone}</a>`;
+                    }
+                    if (contacts.viber) {
+                        contactsHtml += `<a href="viber://chat?number=${contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${contacts.viber}</a>`;
+                    }
+                    if (contacts.telegram) {
+                        let tgLink = contacts.telegram.startsWith('@') ? `https://t.me/${contacts.telegram.substring(1)}` : `https://t.me/${contacts.telegram}`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${contacts.telegram}</a>`;
                     }
                     contactsHtml += '</div>';
 
@@ -1533,18 +1553,17 @@
                     priceBadgeHtml = `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
                 }
 
+                const contacts = parseContacts(item);
                 let contactsHtml = '<div class="space-y-2 pt-2">';
-                if (item.contacts) {
-                    if (item.contacts.phone) {
-                        contactsHtml += `<a href="tel:${item.contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${item.contacts.phone}</a>`;
-                    }
-                    if (item.contacts.viber) {
-                        contactsHtml += `<a href="viber://chat?number=${item.contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${item.contacts.viber}</a>`;
-                    }
-                    if (item.contacts.telegram) {
-                        let tgLink = item.contacts.telegram.startsWith('@') ? `https://t.me/${item.contacts.telegram.substring(1)}` : `https://t.me/${item.contacts.telegram}`;
-                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${item.contacts.telegram}</a>`;
-                    }
+                if (contacts.phone) {
+                    contactsHtml += `<a href="tel:${contacts.phone}" onclick="triggerHaptic()" class="block w-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-indigo-600/20 transition">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${contacts.phone}</a>`;
+                }
+                if (contacts.viber) {
+                    contactsHtml += `<a href="viber://chat?number=${contacts.viber}" onclick="triggerHaptic()" class="block w-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600/20 transition">🟣 Viber: ${contacts.viber}</a>`;
+                }
+                if (contacts.telegram) {
+                    let tgLink = contacts.telegram.startsWith('@') ? `https://t.me/${contacts.telegram.substring(1)}` : `https://t.me/${contacts.telegram}`;
+                    contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-600/10 border border-sky-500/20 text-sky-400 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-600/20 transition">✈️ Telegram: ${contacts.telegram}</a>`;
                 }
                 contactsHtml += '</div>';
 
