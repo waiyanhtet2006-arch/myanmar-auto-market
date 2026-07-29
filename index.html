@@ -1148,11 +1148,6 @@
 
             try {
                 if (editId) {
-                    let oldItem = cloudListings.find(l => String(l.id) === String(editId));
-                    if (oldItem && oldItem.price !== price) {
-                        listingData.price_dropped_from = oldItem.price;
-                    }
-
                     const { error } = await supabaseClient
                         .from('cars')
                         .update(listingData)
@@ -1343,8 +1338,6 @@
                     const stringId = String(item.id);
                     const isFav = favorites.includes(stringId);
                     const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
-                    
-                    let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-sky-600/10 border border-sky-500/20 text-sky-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
                     let displayPhone = item.phone;
                     let displayViber = item.viber;
@@ -1395,7 +1388,6 @@
                         <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                         <div class="flex items-center flex-wrap gap-y-1">
                             <p class="text-cyan-400 font-bold text-lg">${priceLabelText} ${item.price}</p>
-                            ${priceBadgeHtml}
                         </div>
                         <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
                         ${contactsHtml}
@@ -1495,11 +1487,6 @@
                         headerBadge = `Showroom: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-cyan-400 underline cursor-pointer hover:text-cyan-300 transition">${profileObj.name}</span> ${badgeIconHtml}`;
                     }
                 }
-                
-                let priceBadgeHtml = '';
-                if (item.price_dropped_from) {
-                    priceBadgeHtml = `<span class="bg-sky-600/10 border border-sky-500/20 text-sky-400 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
-                }
 
                 let displayPhone = item.phone;
                 let displayViber = item.viber;
@@ -1564,7 +1551,6 @@
                     <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
                         <p class="text-cyan-400 font-bold text-lg">${priceLabelText} ${item.price}</p>
-                        ${priceBadgeHtml}
                     </div>
                     <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
                     ${contactsHtml}
