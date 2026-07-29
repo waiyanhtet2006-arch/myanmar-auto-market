@@ -11,30 +11,30 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans pb-24 selection:bg-cyan-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 font-sans pb-24 selection:bg-slate-800 selection:text-white">
     <!-- Custom Friendly Toast Notification Modal -->
-    <div id="custom-toast" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4 text-center transform transition-all scale-95 opacity-0" id="toast-box">
-            <div id="toast-icon" class="w-12 h-12 rounded-full bg-cyan-50 border border-cyan-100 text-cyan-600 flex items-center justify-center text-xl mx-auto shadow-sm">✨</div>
+    <div id="custom-toast" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center transform transition-all scale-95 opacity-0" id="toast-box">
+            <div id="toast-icon" class="w-14 h-14 rounded-full bg-slate-800 border border-slate-700 text-slate-200 flex items-center justify-center text-xl mx-auto shadow-sm">✨</div>
             <div class="space-y-1">
-                <h3 id="toast-title" class="text-base font-bold text-slate-900 tracking-tight">Notification</h3>
-                <p id="toast-message" class="text-xs text-slate-500 leading-relaxed"></p>
+                <h3 id="toast-title" class="text-base font-bold text-white tracking-tight">Notification</h3>
+                <p id="toast-message" class="text-xs text-slate-400 leading-relaxed"></p>
             </div>
-            <button onclick="closeToast()" id="toast-btn" class="w-full bg-cyan-600 hover:bg-cyan-700 active:scale-[0.98] text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm shadow-cyan-600/20 cursor-pointer">Got it, thanks!</button>
+            <button onclick="closeToast()" id="toast-btn" class="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-white py-3 rounded-full text-xs font-bold transition-all shadow-sm cursor-pointer border border-slate-700">Got it, thanks!</button>
         </div>
     </div>
 
-    <header class="bg-white/85 backdrop-blur-md border-b border-slate-200/80 text-slate-900 p-4 sticky top-0 z-30 shadow-xs">
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-lg">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex flex-col">
-                <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-cyan-600 to-sky-500 bg-clip-text text-transparent">wheelmm</h1>
+                <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">wheelmm</h1>
                 <span id="header-subtitle" class="text-[10px] text-slate-400 font-semibold tracking-wide mt-0.5">LIVE SYNC</span>
             </div>
             <div class="flex items-center gap-2">
                 <!-- Language Switcher Dropdown -->
-                <select id="lang-switcher" onchange="switchLanguage(this.value)" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold px-2.5 py-1.5 rounded-full focus:outline-none focus:border-cyan-500 transition cursor-pointer shadow-2xs">
-                    <option value="my">မြန်မာ</option>
-                    <option value="en">English</option>
+                <select id="lang-switcher" onchange="switchLanguage(this.value)" class="bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full focus:outline-none focus:border-slate-600 transition cursor-pointer shadow-sm">
+                    <option value="my" class="bg-slate-900">မြန်မာ</option>
+                    <option value="en" class="bg-slate-900">English</option>
                 </select>
                 <div id="auth-container" class="flex items-center gap-2"></div>
             </div>
@@ -42,18 +42,18 @@
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
-        <div id="welcome-banner" class="bg-gradient-to-br from-white to-slate-50 border border-slate-200/80 p-5 rounded-2xl shadow-xs">
-            <h2 id="txt-welcome-title" class="text-base font-bold text-slate-900 tracking-tight">Welcome!ကြိုဆိုပါတယ်</h2>
-            <p id="txt-welcome-desc" class="text-xs text-slate-500 mt-1 leading-relaxed">First car marketplace in Myanmar.</p>
+        <div id="welcome-banner" class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-lg">
+            <h2 id="txt-welcome-title" class="text-base font-bold text-white tracking-tight">Welcome!ကြိုဆိုပါတယ်</h2>
+            <p id="txt-welcome-desc" class="text-xs text-slate-400 mt-1 leading-relaxed">First car marketplace in Myanmar.</p>
         </div>
 
-        <section id="dashboard-section" class="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-xs hidden space-y-4">
-            <div class="flex items-center gap-4 pb-4 border-b border-slate-100">
+        <section id="dashboard-section" class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-lg hidden space-y-4">
+            <div class="flex items-center gap-4 pb-4 border-b border-slate-800">
                 <div class="relative group cursor-pointer" onclick="document.getElementById('avatar-file-input').click()">
-                    <div id="profile-avatar-container" class="w-16 h-16 rounded-full bg-gradient-to-tr from-cyan-600 to-sky-500 flex items-center justify-center text-xl font-bold text-white shadow-md overflow-hidden border-2 border-white">
+                    <div id="profile-avatar-container" class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-xl font-bold text-white shadow-md overflow-hidden border-2 border-slate-700">
                         👤
                     </div>
-                    <div class="absolute inset-0 bg-slate-900/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-white" id="txt-edit-photo">
+                    <div class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-white" id="txt-edit-photo">
                         📷 Edit
                     </div>
                 </div>
@@ -61,264 +61,264 @@
 
                 <div>
                     <div class="flex items-center gap-1.5">
-                        <h2 id="profile-name" class="text-base font-bold text-slate-900">Guest User</h2>
+                        <h2 id="profile-name" class="text-base font-bold text-white">Guest User</h2>
                         <span id="profile-verified-badge-container"></span>
                     </div>
-                    <p id="profile-email" class="text-xs text-slate-500">Not signed in</p>
-                    <span id="txt-verified-badge" class="inline-block mt-1 text-[10px] bg-cyan-50 text-cyan-700 border border-cyan-100 px-2 py-0.5 rounded-full font-semibold">Verified Seller</span>
+                    <p id="profile-email" class="text-xs text-slate-400">Not signed in</p>
+                    <span id="txt-verified-badge" class="inline-block mt-1 text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-0.5 rounded-full font-semibold">Verified Seller</span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 border border-slate-200/80 p-3 rounded-xl shadow-2xs">
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950 border border-slate-800 p-3 rounded-2xl shadow-inner">
                 <div>
-                    <span id="dashboard-stat-following" class="text-base font-bold text-slate-900">0</span>
+                    <span id="dashboard-stat-following" class="text-base font-bold text-white">0</span>
                     <p id="txt-stat-following" class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Following</p>
                 </div>
                 <div>
-                    <span id="dashboard-stat-followers" class="text-base font-bold text-cyan-600">0</span>
+                    <span id="dashboard-stat-followers" class="text-base font-bold text-slate-200">0</span>
                     <p id="txt-stat-followers" class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Followers</p>
                 </div>
                 <div>
-                    <span id="dashboard-stat-likes" class="text-base font-bold text-sky-600">0</span>
+                    <span id="dashboard-stat-likes" class="text-base font-bold text-slate-300">0</span>
                     <p id="txt-stat-listings" class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Listings</p>
                 </div>
             </div>
 
-            <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-xl space-y-3 shadow-2xs">
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
                 <div class="flex justify-between items-center">
-                    <label id="txt-profile-settings" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">🏢 Profile & Display Settings</label>
-                    <div class="flex bg-white p-0.5 rounded-lg border border-slate-200 shadow-2xs">
-                        <button type="button" onclick="triggerHaptic(); setDisplayType('showroom')" id="type-btn-showroom" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition-all active:scale-95 bg-cyan-600 text-white shadow-2xs cursor-pointer">Showroom</button>
-                        <button type="button" onclick="triggerHaptic(); setDisplayType('account')" id="type-btn-account" class="px-2.5 py-1 text-[10px] font-bold rounded-md transition-all active:scale-95 text-slate-500 hover:text-slate-800 cursor-pointer">Account</button>
+                    <label id="txt-profile-settings" class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Profile & Display Settings</label>
+                    <div class="flex bg-slate-900 p-1 rounded-full border border-slate-800">
+                        <button type="button" onclick="triggerHaptic(); setDisplayType('showroom')" id="type-btn-showroom" class="px-3 py-1 text-[10px] font-bold rounded-full transition-all active:scale-95 bg-slate-800 text-white shadow-sm cursor-pointer">Showroom</button>
+                        <button type="button" onclick="triggerHaptic(); setDisplayType('account')" id="type-btn-account" class="px-3 py-1 text-[10px] font-bold rounded-full transition-all active:scale-95 text-slate-400 hover:text-white cursor-pointer">Account</button>
                     </div>
                 </div>
 
-                <div class="space-y-2.5">
+                <div class="space-y-3">
                     <div>
-                        <label id="txt-label-showroom" class="block text-[11px] font-medium text-slate-500 mb-1">Showroom / Display Name</label>
-                        <input type="text" id="showroom-name-input" placeholder="e.g., Royal Auto Showroom" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                        <label id="txt-label-showroom" class="block text-[11px] font-medium text-slate-400 mb-1">Showroom / Display Name</label>
+                        <input type="text" id="showroom-name-input" placeholder="e.g., Royal Auto Showroom" class="w-full bg-slate-900 border border-slate-800 rounded-full px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                     </div>
 
                     <div>
-                        <label id="txt-label-bio" class="block text-[11px] font-medium text-slate-500 mb-1">Bio / About</label>
-                        <textarea id="profile-bio-input" rows="2" placeholder="Tell buyers a bit about yourself or your dealership..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs"></textarea>
+                        <label id="txt-label-bio" class="block text-[11px] font-medium text-slate-400 mb-1">Bio / About</label>
+                        <textarea id="profile-bio-input" rows="2" placeholder="Tell buyers a bit about yourself or your dealership..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition"></textarea>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label id="txt-label-fb" class="block text-[11px] font-medium text-slate-500 mb-1">Facebook Link</label>
-                            <input type="url" id="profile-fb-input" placeholder="https://facebook.com/..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                            <label id="txt-label-fb" class="block text-[11px] font-medium text-slate-400 mb-1">Facebook Link</label>
+                            <input type="url" id="profile-fb-input" placeholder="https://facebook.com/..." class="w-full bg-slate-900 border border-slate-800 rounded-full px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                         </div>
                         <div>
-                            <label id="txt-label-tiktok" class="block text-[11px] font-medium text-slate-500 mb-1">TikTok Link</label>
-                            <input type="url" id="profile-tiktok-input" placeholder="https://tiktok.com/@..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                            <label id="txt-label-tiktok" class="block text-[11px] font-medium text-slate-400 mb-1">TikTok Link</label>
+                            <input type="url" id="profile-tiktok-input" placeholder="https://tiktok.com/@..." class="w-full bg-slate-900 border border-slate-800 rounded-full px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                         </div>
                     </div>
 
-                    <button onclick="triggerHaptic(); saveShowroomName()" id="save-showroom-btn" class="w-full bg-cyan-600 hover:bg-cyan-700 active:scale-[0.99] text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm shadow-cyan-600/20 mt-1 cursor-pointer">Save Profile Changes</button>
+                    <button onclick="triggerHaptic(); saveShowroomName()" id="save-showroom-btn" class="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.99] text-white py-3 rounded-full text-xs font-bold transition-all shadow-md mt-1 cursor-pointer border border-slate-700">Save Profile Changes</button>
                 </div>
             </div>
 
             <div class="pt-2 flex gap-2">
-                <button onclick="triggerHaptic(); switchTab('sell')" id="txt-btn-post-new" class="flex-1 bg-cyan-600 hover:bg-cyan-700 active:scale-[0.99] text-white py-2.5 rounded-xl font-bold text-xs shadow-sm shadow-cyan-600/20 transition-all cursor-pointer">➕ Post New Car</button>
-                <button onclick="triggerHaptic(); logout()" id="txt-btn-logout" class="bg-white hover:bg-slate-100 active:scale-[0.99] text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs transition-all border border-slate-200 shadow-2xs cursor-pointer">Log Out</button>
+                <button onclick="triggerHaptic(); switchTab('sell')" id="txt-btn-post-new" class="flex-1 bg-slate-800 hover:bg-slate-700 active:scale-[0.99] text-white py-3 rounded-full font-bold text-xs shadow-md transition-all cursor-pointer border border-slate-700">➕ Post New Car</button>
+                <button onclick="triggerHaptic(); logout()" id="txt-btn-logout" class="bg-slate-950 hover:bg-slate-800 active:scale-[0.99] text-slate-300 px-5 py-3 rounded-full font-bold text-xs transition-all border border-slate-800 cursor-pointer">Log Out</button>
             </div>
         </section>
 
-        <section id="form-section" class="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs hidden space-y-4">
-            <div class="flex justify-between items-center pb-2 border-b border-slate-100">
-                <h2 id="form-heading" class="text-lg font-bold text-slate-900">🚗 Sell Your Car</h2>
-                <button type="button" id="cancel-edit-btn" onclick="triggerHaptic(); switchTab('feed')" class="hidden text-xs bg-slate-100 text-slate-600 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 font-semibold transition active:scale-95 cursor-pointer">Cancel</button>
+        <section id="form-section" class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-lg hidden space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+                <h2 id="form-heading" class="text-lg font-bold text-white">🚗 Sell Your Car</h2>
+                <button type="button" id="cancel-edit-btn" onclick="triggerHaptic(); switchTab('feed')" class="hidden text-xs bg-slate-800 text-slate-300 px-3.5 py-1.5 rounded-full hover:bg-slate-700 font-semibold transition active:scale-95 cursor-pointer border border-slate-700">Cancel</button>
             </div>
             
             <form id="car-form" class="space-y-4">
                 <input type="hidden" id="edit-listing-id" value="">
                 
                 <div>
-                    <label id="txt-form-brand" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Brand (Type)</label>
-                    <input type="text" id="car-brand" placeholder="e.g., Toyota, Honda..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                    <label id="txt-form-brand" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Brand (Type)</label>
+                    <input type="text" id="car-brand" placeholder="e.g., Toyota, Honda..." required class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                 </div>
 
                 <div>
-                    <label id="txt-form-title" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Car Name / Model (Type)</label>
-                    <input type="text" id="car-title" placeholder="e.g., Crown Athlete, Probox..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                    <label id="txt-form-title" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Car Name / Model (Type)</label>
+                    <input type="text" id="car-title" placeholder="e.g., Crown Athlete, Probox..." required class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label id="txt-form-year" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Model Year</label>
-                        <input type="text" id="car-year" placeholder="e.g., 2004" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                        <label id="txt-form-year" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Model Year</label>
+                        <input type="text" id="car-year" placeholder="e.g., 2004" required class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                     </div>
                     <div>
-                        <label id="txt-form-color" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Color</label>
-                        <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                        <label id="txt-form-color" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Color</label>
+                        <input type="text" id="car-color" placeholder="e.g., Pearl White" required class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label id="txt-form-country" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Made in</label>
-                        <select id="car-country" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs cursor-pointer">
-                            <option value="Japan">Japan</option>
-                            <option value="Thailand">Thailand</option>
-                            <option value="China">China</option>
-                            <option value="USA">USA</option>
-                            <option value="Germany">Germany</option>
-                            <option value="South Korea">South Korea</option>
-                            <option value="Other">Other</option>
+                        <label id="txt-form-country" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Made in</label>
+                        <select id="car-country" class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white focus:outline-none focus:border-slate-600 transition cursor-pointer">
+                            <option value="Japan" class="bg-slate-900">Japan</option>
+                            <option value="Thailand" class="bg-slate-900">Thailand</option>
+                            <option value="China" class="bg-slate-900">China</option>
+                            <option value="USA" class="bg-slate-900">USA</option>
+                            <option value="Germany" class="bg-slate-900">Germany</option>
+                            <option value="South Korea" class="bg-slate-900">South Korea</option>
+                            <option value="Other" class="bg-slate-900">Other</option>
                         </select>
                     </div>
                     <div>
-                        <label id="txt-form-mileage" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Mileage</label>
-                        <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                        <label id="txt-form-mileage" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Mileage</label>
+                        <input type="text" id="car-mileage" placeholder="e.g., 85,000 km" class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                     </div>
                 </div>
 
                 <div>
-                    <label id="txt-form-price" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Price</label>
-                    <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                    <label id="txt-form-price" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Price</label>
+                    <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                 </div>
 
                 <!-- Per-Listing Contact Inputs -->
-                <div class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-xl space-y-2.5 shadow-2xs">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">📞 Contact Information For This Post</label>
+                <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📞 Contact Information For This Post</label>
                     <div class="grid grid-cols-3 gap-2">
                         <div>
-                            <label class="block text-[10px] font-medium text-slate-500 mb-1">Phone Call</label>
-                            <input type="text" id="car-phone" placeholder="09..." required class="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Phone Call</label>
+                            <input type="text" id="car-phone" placeholder="09..." required class="w-full bg-slate-900 border border-slate-800 rounded-full px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-medium text-slate-500 mb-1">Viber</label>
-                            <input type="text" id="car-viber" placeholder="09..." class="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Viber</label>
+                            <input type="text" id="car-viber" placeholder="09..." class="w-full bg-slate-900 border border-slate-800 rounded-full px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-medium text-slate-500 mb-1">Telegram</label>
-                            <input type="text" id="car-telegram" placeholder="@username" class="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Telegram</label>
+                            <input type="text" id="car-telegram" placeholder="@username" class="w-full bg-slate-900 border border-slate-800 rounded-full px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
                         </div>
                     </div>
                 </div>
 
-                <div class="border-t border-slate-100 pt-4">
+                <div class="border-t border-slate-800 pt-4">
                     <div class="flex justify-between items-center mb-2">
-                        <label id="txt-form-photos" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">Photos (Up to 10)</label>
-                        <span id="photo-count-indicator" class="text-xs text-slate-500 font-semibold">0 / 10</span>
+                        <label id="txt-form-photos" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Photos (Up to 10)</label>
+                        <span id="photo-count-indicator" class="text-xs text-slate-400 font-semibold">0 / 10</span>
                     </div>
                     
                     <div id="current-images-preview" class="grid grid-cols-4 gap-2 mb-3"></div>
 
-                    <input type="file" id="car-images" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100 transition cursor-pointer">
+                    <input type="file" id="car-images" accept="image/*" multiple class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-full file:border file:border-slate-700 file:text-xs file:font-semibold file:bg-slate-800 file:text-white hover:file:bg-slate-700 transition cursor-pointer">
                 </div>
 
                 <div>
-                    <label id="txt-form-desc" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Description</label>
-                    <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs"></textarea>
+                    <label id="txt-form-desc" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Description</label>
+                    <textarea id="car-desc" rows="3" placeholder="Condition, license details..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition"></textarea>
                 </div>
 
-                <button type="submit" id="form-submit-btn" onclick="triggerHaptic()" class="w-full bg-gradient-to-r from-cyan-600 to-sky-500 hover:from-cyan-700 hover:to-sky-600 active:scale-[0.99] text-white py-3 rounded-xl font-bold text-sm shadow-md shadow-cyan-600/20 transition-all cursor-pointer">Post Live Listing</button>
+                <button type="submit" id="form-submit-btn" onclick="triggerHaptic()" class="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.99] text-white py-3.5 rounded-full font-bold text-sm shadow-md transition-all cursor-pointer border border-slate-700">Post Live Listing</button>
             </form>
         </section>
 
-        <section id="search-section" class="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs space-y-2.5">
-            <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60 mb-1">
-                <button type="button" onclick="triggerHaptic(); setFeedMode('fyp')" id="feed-mode-fyp" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all active:scale-95 bg-cyan-600 text-white shadow-2xs cursor-pointer">🔥 For You (FYP)</button>
-                <button type="button" onclick="triggerHaptic(); setFeedMode('following')" id="feed-mode-following" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all active:scale-95 text-slate-500 hover:text-slate-800 cursor-pointer">👥 Following</button>
+        <section id="search-section" class="bg-slate-900 border border-slate-800 p-4 rounded-3xl shadow-lg space-y-3">
+            <div class="flex bg-slate-950 p-1 rounded-full border border-slate-800 mb-1">
+                <button type="button" onclick="triggerHaptic(); setFeedMode('fyp')" id="feed-mode-fyp" class="flex-1 py-2 text-xs font-bold rounded-full transition-all active:scale-95 bg-slate-800 text-white shadow-sm cursor-pointer border border-slate-700">🔥 For You (FYP)</button>
+                <button type="button" onclick="triggerHaptic(); setFeedMode('following')" id="feed-mode-following" class="flex-1 py-2 text-xs font-bold rounded-full transition-all active:scale-95 text-slate-400 hover:text-white cursor-pointer">👥 Following</button>
             </div>
 
             <div class="relative">
-                <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
             </div>
             <div class="relative">
-                <input type="text" id="search-showroom-input" placeholder="🏢 Search Accounts & Showrooms..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                <input type="text" id="search-showroom-input" placeholder="🏢 Search Accounts & Showrooms..." class="w-full bg-slate-950 border border-slate-800 rounded-full px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
             </div>
             
             <div class="grid grid-cols-2 gap-2 pt-1">
-                <input type="text" id="filter-brand" placeholder="Optional: Brand..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
-                <input type="text" id="filter-color" placeholder="Optional: Color..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs">
+                <input type="text" id="filter-brand" placeholder="Optional: Brand..." class="bg-slate-950 border border-slate-800 rounded-full px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
+                <input type="text" id="filter-color" placeholder="Optional: Color..." class="bg-slate-950 border border-slate-800 rounded-full px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
             </div>
 
             <div class="grid grid-cols-2 gap-2">
-                <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-2xs cursor-pointer">
-                    <option value="" id="txt-opt-all-countries">All Countries (Optional)</option>
-                    <option value="Japan">Japan</option>
-                    <option value="Thailand">Thailand</option>
-                    <option value="China">China</option>
-                    <option value="USA">USA</option>
-                    <option value="Germany">Germany</option>
-                    <option value="South Korea">South Korea</option>
-                    <option value="Other">Other</option>
+                <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-950 border border-slate-800 rounded-full px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-600 transition cursor-pointer">
+                    <option value="" id="txt-opt-all-countries" class="bg-slate-900">All Countries (Optional)</option>
+                    <option value="Japan" class="bg-slate-900">Japan</option>
+                    <option value="Thailand" class="bg-slate-900">Thailand</option>
+                    <option value="China" class="bg-slate-900">China</option>
+                    <option value="USA" class="bg-slate-900">USA</option>
+                    <option value="Germany" class="bg-slate-900">Germany</option>
+                    <option value="South Korea" class="bg-slate-900">South Korea</option>
+                    <option value="Other" class="bg-slate-900">Other</option>
                 </select>
-                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 text-xs shadow-2xs">
-                    <input type="number" id="filter-year-from" placeholder="From Yr" class="w-full bg-transparent text-slate-900 placeholder-slate-400 focus:outline-none text-center">
-                    <span class="text-slate-400">-</span>
-                    <input type="number" id="filter-year-to" placeholder="To Yr" class="w-full bg-transparent text-slate-900 placeholder-slate-400 focus:outline-none text-center">
+                <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-full px-3 py-1.5 text-xs">
+                    <input type="number" id="filter-year-from" placeholder="From Yr" class="w-full bg-transparent text-white placeholder-slate-500 focus:outline-none text-center">
+                    <span class="text-slate-600">-</span>
+                    <input type="number" id="filter-year-to" placeholder="To Yr" class="w-full bg-transparent text-white placeholder-slate-500 focus:outline-none text-center">
                 </div>
             </div>
         </section>
 
         <section class="space-y-4">
             <div class="flex justify-between items-center px-1">
-                <h2 id="feed-title" class="text-lg font-bold text-slate-900">📋 Available Cars (FYP)</h2>
-                <button onclick="triggerHaptic(); fetchCloudData()" id="txt-btn-refresh" class="text-xs bg-white border border-slate-200 text-cyan-600 px-3 py-1.5 rounded-xl font-semibold hover:bg-slate-50 active:scale-95 transition shadow-2xs cursor-pointer">🔄 Refresh</button>
+                <h2 id="feed-title" class="text-lg font-bold text-white">📋 Available Cars (FYP)</h2>
+                <button onclick="triggerHaptic(); fetchCloudData()" id="txt-btn-refresh" class="text-xs bg-slate-900 border border-slate-800 text-slate-300 px-3.5 py-2 rounded-full font-semibold hover:bg-slate-800 active:scale-95 transition shadow-sm cursor-pointer">🔄 Refresh</button>
             </div>
             <div id="listings-container" class="space-y-4"></div>
         </section>
     </main>
 
-    <div id="profile-modal" class="fixed inset-0 bg-slate-50 z-50 hidden flex flex-col overflow-y-auto">
-        <div class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-20 px-4 py-3.5 flex justify-between items-center shadow-2xs">
+    <div id="profile-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex flex-col overflow-y-auto">
+        <div class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-20 px-4 py-3.5 flex justify-between items-center shadow-lg">
             <div class="flex items-center gap-3">
-                <button onclick="triggerHaptic(); closeProfileModal()" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 active:scale-95 rounded-full flex items-center justify-center text-slate-700 font-bold transition cursor-pointer">←</button>
-                <span id="modal-header-username" class="text-sm font-bold text-slate-900">Profile</span>
+                <button onclick="triggerHaptic(); closeProfileModal()" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-full flex items-center justify-center text-white font-bold transition cursor-pointer border border-slate-700">←</button>
+                <span id="modal-header-username" class="text-sm font-bold text-white">Profile</span>
             </div>
-            <span id="modal-header-badge" class="text-[10px] bg-cyan-50 text-cyan-700 border border-cyan-100 px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider">Showroom</span>
+            <span id="modal-header-badge" class="text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-3 py-1 rounded-full font-semibold uppercase tracking-wider">Showroom</span>
         </div>
 
         <div class="max-w-md w-full mx-auto p-4 space-y-4">
-            <div class="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs flex flex-col items-center text-center space-y-3">
-                <div id="modal-profile-avatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-cyan-600 to-sky-500 flex items-center justify-center text-2xl font-bold text-white shadow-md border-2 border-white overflow-hidden">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-lg flex flex-col items-center text-center space-y-3">
+                <div id="modal-profile-avatar" class="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center text-2xl font-bold text-white shadow-md border-2 border-slate-700 overflow-hidden">
                     👤
                 </div>
                 <div>
                     <div class="flex items-center justify-center gap-1.5">
-                        <h2 id="modal-profile-name" class="text-lg font-bold text-slate-900 tracking-tight">Showroom Name</h2>
+                        <h2 id="modal-profile-name" class="text-lg font-bold text-white tracking-tight">Showroom Name</h2>
                         <span id="modal-verified-badge-container"></span>
                     </div>
-                    <p id="modal-profile-type-label" class="text-xs text-cyan-600 font-semibold mt-0.5">Verified Showroom</p>
+                    <p id="modal-profile-type-label" class="text-xs text-slate-400 font-semibold mt-0.5">Verified Showroom</p>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3 w-full py-2 bg-slate-50 border border-slate-200/80 rounded-xl px-2 shadow-2xs">
+                <div class="grid grid-cols-3 gap-3 w-full py-2.5 bg-slate-950 border border-slate-800 rounded-2xl px-2">
                     <div>
-                        <span id="modal-stat-following" class="text-sm font-bold text-slate-900">0</span>
+                        <span id="modal-stat-following" class="text-sm font-bold text-white">0</span>
                         <p id="txt-modal-following" class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Following</p>
                     </div>
                     <div>
-                        <span id="modal-stat-followers" class="text-sm font-bold text-cyan-600">0</span>
+                        <span id="modal-stat-followers" class="text-sm font-bold text-slate-200">0</span>
                         <p id="txt-modal-followers" class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Followers</p>
                     </div>
                     <div>
-                        <span id="modal-stat-listings" class="text-sm font-bold text-sky-600">0</span>
+                        <span id="modal-stat-listings" class="text-sm font-bold text-slate-300">0</span>
                         <p id="txt-modal-listings" class="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">Listings</p>
                     </div>
                 </div>
 
                 <div id="modal-follow-action-container" class="w-full pt-1"></div>
 
-                <p id="modal-profile-bio" class="text-xs text-slate-600 leading-relaxed px-2 hidden"></p>
+                <p id="modal-profile-bio" class="text-xs text-slate-300 leading-relaxed px-2 hidden"></p>
 
                 <div id="modal-profile-links" class="flex flex-wrap items-center justify-center gap-2 pt-1"></div>
             </div>
 
             <div class="space-y-3">
-                <h3 id="txt-modal-listings-title" class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Listings by this profile</h3>
+                <h3 id="txt-modal-listings-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Listings by this profile</h3>
                 <div id="modal-listings-container" class="space-y-4"></div>
             </div>
         </div>
     </div>
 
-    <div id="fb-photo-modal" class="fixed inset-0 bg-slate-900/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
+    <div id="fb-photo-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
         <div class="flex justify-between items-center p-4 bg-slate-900/60 border-b border-slate-800 text-white z-10">
-            <span id="fb-modal-counter" class="text-xs font-semibold text-slate-300 tracking-wider">1 / 1</span>
-            <button onclick="triggerHaptic(); closeFbPhotoModal()" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-full flex items-center justify-center text-sm font-bold text-slate-200 transition cursor-pointer">✕</button>
+            <span id="fb-modal-counter" class="text-xs font-semibold text-slate-400 tracking-wider">1 / 1</span>
+            <button onclick="triggerHaptic(); closeFbPhotoModal()" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-full flex items-center justify-center text-sm font-bold text-white transition cursor-pointer border border-slate-700">✕</button>
         </div>
 
         <div class="relative flex-1 flex items-center justify-center overflow-hidden px-2">
@@ -330,23 +330,23 @@
         <div id="fb-modal-thumbs" class="p-3 bg-slate-900/80 border-t border-slate-800 flex items-center justify-center space-x-2 overflow-x-auto min-h-[72px]"></div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200/80 shadow-lg z-40">
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-xl border-t border-slate-800 shadow-2xl z-40">
         <div class="max-w-md mx-auto grid grid-cols-4 h-16">
-            <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-cyan-600 font-bold transition active:scale-95 cursor-pointer">
+            <button onclick="triggerHaptic(); switchTab('feed')" id="nav-btn-feed" class="flex flex-col items-center justify-center text-white font-bold transition active:scale-95 cursor-pointer">
                 <span class="text-xl">🏠</span>
                 <span id="txt-nav-feed" class="text-[10px] mt-1 font-semibold tracking-wider">Feed</span>
             </button>
-            <button onclick="triggerHaptic(); switchTab('profile')" id="nav-btn-profile" class="flex flex-col items-center justify-center text-slate-400 font-medium hover:text-slate-600 transition active:scale-95 cursor-pointer">
+            <button onclick="triggerHaptic(); switchTab('profile')" id="nav-btn-profile" class="flex flex-col items-center justify-center text-slate-400 font-medium hover:text-slate-200 transition active:scale-95 cursor-pointer">
                 <span class="text-xl">👤</span>
                 <span id="txt-nav-dashboard" class="text-[10px] mt-1 font-semibold tracking-wider">Dashboard</span>
             </button>
-            <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-slate-400 font-medium hover:text-slate-600 transition active:scale-95 cursor-pointer">
+            <button onclick="triggerHaptic(); switchTab('sell')" id="nav-btn-sell" class="flex flex-col items-center justify-center text-slate-400 font-medium hover:text-slate-200 transition active:scale-95 cursor-pointer">
                 <span class="text-xl">➕</span>
                 <span id="txt-nav-sell" class="text-[10px] mt-1 font-semibold tracking-wider">Sell Car</span>
             </button>
-            <button onclick="triggerHaptic(); switchTab('saved')" id="nav-btn-saved" class="flex flex-col items-center justify-center text-slate-400 font-medium hover:text-slate-600 transition relative active:scale-95 cursor-pointer">
+            <button onclick="triggerHaptic(); switchTab('saved')" id="nav-btn-saved" class="flex flex-col items-center justify-center text-slate-400 font-medium hover:text-slate-200 transition relative active:scale-95 cursor-pointer">
                 <span class="text-xl">❤️</span>
-                <span class="text-[10px] mt-1 font-semibold tracking-wider"><span id="txt-nav-saved">Saved</span> <span id="nav-badge" class="text-[9px] text-cyan-600"></span></span>
+                <span class="text-[10px] mt-1 font-semibold tracking-wider"><span id="txt-nav-saved">Saved</span> <span id="nav-badge" class="text-[9px] text-slate-300"></span></span>
             </button>
         </div>
     </nav>
@@ -674,28 +674,28 @@
                 const profileObj = profilesMap[currentUser.id] || {};
                 const meta = currentUser.user_metadata || {};
                 const avatar = profileObj.avatar_url || meta.avatar_url || meta.picture;
-                let avatarHtml = avatar ? `<img src="${avatar}" class="w-7 h-7 rounded-full border border-slate-200 object-cover">` : `<div class="w-7 h-7 rounded-full bg-cyan-600 flex items-center justify-center text-xs font-bold text-white">👤</div>`;
+                let avatarHtml = avatar ? `<img src="${avatar}" class="w-7 h-7 rounded-full border border-slate-700 object-cover">` : `<div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-white">👤</div>`;
                 
                 const userHasBadge = hasVerifiedBadge(currentUser.id);
                 let badgeHtml = userHasBadge ? `
-                    <span class="inline-flex items-center justify-center w-3.5 h-3.5 bg-pink-500 text-white rounded-full text-[8px] shadow-xs">
+                    <span class="inline-flex items-center justify-center w-3.5 h-3.5 bg-slate-700 text-white rounded-full text-[8px] shadow-xs">
                         <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                     </span>
                 ` : '';
 
                 authContainer.innerHTML = `
-                    <button onclick="switchTab('profile')" class="flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full text-xs font-semibold text-slate-700 hover:bg-slate-200 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                    <button onclick="switchTab('profile')" class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-200 hover:bg-slate-800 active:scale-95 transition-all shadow-sm cursor-pointer">
                         ${avatarHtml}
                         <span class="max-w-[80px] truncate">${profileObj.name || meta.full_name || meta.name || 'My Profile'}</span>
                         ${badgeHtml}
                     </button>
-                    <button onclick="logout()" class="text-[11px] bg-white text-slate-500 border border-slate-200 px-2.5 py-1.5 rounded-full font-semibold hover:text-slate-800 active:scale-95 transition-all cursor-pointer shadow-2xs">
+                    <button onclick="logout()" class="text-[11px] bg-slate-900 text-slate-400 border border-slate-800 px-3 py-1.5 rounded-full font-semibold hover:text-white active:scale-95 transition-all cursor-pointer shadow-sm">
                         ✕
                     </button>
                 `;
             } else {
                 authContainer.innerHTML = `
-                    <button onclick="loginWithGoogle()" class="text-[11px] bg-white text-slate-800 border border-slate-200 px-3.5 py-1.5 rounded-full font-bold shadow-2xs hover:bg-slate-50 active:scale-95 flex items-center gap-1.5 transition-all cursor-pointer">
+                    <button onclick="loginWithGoogle()" class="text-[11px] bg-slate-900 text-white border border-slate-800 px-4 py-2 rounded-full font-bold shadow-sm hover:bg-slate-800 active:scale-95 flex items-center gap-1.5 transition-all cursor-pointer">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
                         Sign in
                     </button>
@@ -720,8 +720,8 @@
             const btnFollowing = document.getElementById('feed-mode-following');
 
             if (mode === 'fyp') {
-                btnFyp.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-all active:scale-95 bg-cyan-600 text-white shadow-2xs cursor-pointer";
-                btnFollowing.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-all active:scale-95 text-slate-500 hover:text-slate-800 cursor-pointer";
+                btnFyp.className = "flex-1 py-2 text-xs font-bold rounded-full transition-all active:scale-95 bg-slate-800 text-white shadow-sm cursor-pointer border border-slate-700";
+                btnFollowing.className = "flex-1 py-2 text-xs font-bold rounded-full transition-all active:scale-95 text-slate-400 hover:text-white cursor-pointer";
             } else {
                 if (!currentUser) {
                     showToast(translations[currentLang].toastSignInReq, translations[currentLang].toastSignInMsg, '🔒');
@@ -729,8 +729,8 @@
                     feedMode = 'fyp';
                     return;
                 }
-                btnFollowing.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-all active:scale-95 bg-cyan-600 text-white shadow-2xs cursor-pointer";
-                btnFyp.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-all active:scale-95 text-slate-500 hover:text-slate-800 cursor-pointer";
+                btnFollowing.className = "flex-1 py-2 text-xs font-bold rounded-full transition-all active:scale-95 bg-slate-800 text-white shadow-sm cursor-pointer border border-slate-700";
+                btnFyp.className = "flex-1 py-2 text-xs font-bold rounded-full transition-all active:scale-95 text-slate-400 hover:text-white cursor-pointer";
             }
             updateFeedTitle();
             renderFilteredListings();
@@ -757,14 +757,14 @@
             document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-slate-400 font-medium transition active:scale-95 cursor-pointer";
 
             if (tab === 'feed') {
-                document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-cyan-600 font-bold transition active:scale-95 cursor-pointer";
+                document.getElementById('nav-btn-feed').className = "flex flex-col items-center justify-center text-white font-bold transition active:scale-95 cursor-pointer";
                 formSection.classList.add('hidden');
                 dashboardSection.classList.add('hidden');
                 searchSection.classList.remove('hidden');
                 welcomeBanner.classList.remove('hidden');
                 renderFilteredListings();
             } else if (tab === 'profile') {
-                document.getElementById('nav-btn-profile').className = "flex flex-col items-center justify-center text-cyan-600 font-bold transition active:scale-95 cursor-pointer";
+                document.getElementById('nav-btn-profile').className = "flex flex-col items-center justify-center text-white font-bold transition active:scale-95 cursor-pointer";
                 formSection.classList.add('hidden');
                 dashboardSection.classList.remove('hidden');
                 searchSection.classList.add('hidden');
@@ -772,14 +772,14 @@
                 updateProfileDashboardData();
                 renderFilteredListings();
             } else if (tab === 'sell') {
-                document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-cyan-600 font-bold transition active:scale-95 cursor-pointer";
+                document.getElementById('nav-btn-sell').className = "flex flex-col items-center justify-center text-white font-bold transition active:scale-95 cursor-pointer";
                 formSection.classList.remove('hidden');
                 dashboardSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
                 welcomeBanner.classList.add('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (tab === 'saved') {
-                document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-cyan-600 font-bold transition active:scale-95 cursor-pointer";
+                document.getElementById('nav-btn-saved').className = "flex flex-col items-center justify-center text-white font-bold transition active:scale-95 cursor-pointer";
                 formSection.classList.add('hidden');
                 dashboardSection.classList.add('hidden');
                 searchSection.classList.add('hidden');
@@ -897,11 +897,11 @@
             const btnAccount = document.getElementById('type-btn-account');
 
             if (type === 'showroom') {
-                btnShowroom.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition-all active:scale-95 bg-cyan-600 text-white shadow-2xs cursor-pointer";
-                btnAccount.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition-all active:scale-95 text-slate-500 hover:text-slate-800 cursor-pointer";
+                btnShowroom.className = "px-3 py-1 text-[10px] font-bold rounded-full transition-all active:scale-95 bg-slate-800 text-white shadow-sm cursor-pointer";
+                btnAccount.className = "px-3 py-1 text-[10px] font-bold rounded-full transition-all active:scale-95 text-slate-400 hover:text-white cursor-pointer";
             } else {
-                btnAccount.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition-all active:scale-95 bg-cyan-600 text-white shadow-2xs cursor-pointer";
-                btnShowroom.className = "px-2.5 py-1 text-[10px] font-bold rounded-md transition-all active:scale-95 text-slate-500 hover:text-slate-800 cursor-pointer";
+                btnAccount.className = "px-3 py-1 text-[10px] font-bold rounded-full transition-all active:scale-95 bg-slate-800 text-white shadow-sm cursor-pointer";
+                btnShowroom.className = "px-3 py-1 text-[10px] font-bold rounded-full transition-all active:scale-95 text-slate-400 hover:text-white cursor-pointer";
             }
         }
 
@@ -1016,7 +1016,7 @@
             const badgeContainer = document.getElementById('profile-verified-badge-container');
             if (hasVerifiedBadge(currentUser.id)) {
                 badgeContainer.innerHTML = `
-                    <span class="inline-flex items-center justify-center w-5 h-5 bg-pink-500 text-white rounded-full text-[10px] shadow-xs" title="Verified">
+                    <span class="inline-flex items-center justify-center w-5 h-5 bg-slate-700 text-white rounded-full text-[10px] shadow-xs" title="Verified">
                         <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                     </span>
                 `;
@@ -1218,16 +1218,16 @@
             countIndicator.innerText = `${activeEditImages.length} / 10`;
 
             if (activeEditImages.length === 0) {
-                container.innerHTML = `<div class="col-span-4 text-xs text-slate-400 py-1">${currentLang === 'my' ? 'ပုံများ မထည့်ရသေးပါ။' : 'No images added yet.'}</div>`;
+                container.innerHTML = `<div class="col-span-4 text-xs text-slate-500 py-1">${currentLang === 'my' ? 'ပုံများ မထည့်ရသေးပါ။' : 'No images added yet.'}</div>`;
                 return;
             }
 
             activeEditImages.forEach((src, idx) => {
                 const wrapper = document.createElement('div');
-                wrapper.className = "relative bg-slate-50 border border-slate-200 rounded-xl p-1 flex items-center justify-center shadow-2xs";
+                wrapper.className = "relative bg-slate-950 border border-slate-800 rounded-2xl p-1 flex items-center justify-center";
                 wrapper.innerHTML = `
-                    <img src="${src}" class="w-full h-16 object-cover rounded-lg" loading="lazy">
-                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-1.5 -right-1.5 bg-sky-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-sm hover:bg-sky-500 active:scale-95 cursor-pointer">✕</button>
+                    <img src="${src}" class="w-full h-16 object-cover rounded-xl" loading="lazy">
+                    <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-1.5 -right-1.5 bg-slate-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-sm hover:bg-slate-600 active:scale-95 cursor-pointer">✕</button>
                 `;
                 container.appendChild(wrapper);
             });
@@ -1266,7 +1266,7 @@
 
             if (hasVerifiedBadge(userId)) {
                 modalVerifiedBadgeContainer.innerHTML = `
-                    <span class="inline-flex items-center justify-center w-5 h-5 bg-pink-500 text-white rounded-full text-[10px] shadow-xs" title="Verified">
+                    <span class="inline-flex items-center justify-center w-5 h-5 bg-slate-700 text-white rounded-full text-[10px] shadow-xs" title="Verified">
                         <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                     </span>
                 `;
@@ -1296,7 +1296,7 @@
             if (!currentUser || currentUser.id !== userId) {
                 const followingThisUser = isFollowing(userId);
                 followActionContainer.innerHTML = `
-                    <button onclick="toggleFollow('${userId}')" class="w-full py-2.5 rounded-xl text-xs font-bold transition-all active:scale-[0.99] shadow-sm cursor-pointer ${followingThisUser ? 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200' : 'bg-cyan-600 hover:bg-cyan-700 text-white shadow-cyan-600/20'}">
+                    <button onclick="toggleFollow('${userId}')" class="w-full py-3 rounded-full text-xs font-bold transition-all active:scale-[0.99] shadow-sm cursor-pointer border ${followingThisUser ? 'bg-slate-950 text-slate-300 border-slate-800 hover:bg-slate-800' : 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700'}">
                         ${followingThisUser ? translations[currentLang].followingBtn : translations[currentLang].followBtn}
                     </button>
                 `;
@@ -1316,14 +1316,14 @@
             linksContainer.innerHTML = '';
             if (profileObj.facebook_link && profileObj.facebook_link.trim() !== '') {
                 linksContainer.innerHTML += `
-                    <a href="${profileObj.facebook_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-cyan-600 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all shadow-2xs">
+                    <a href="${profileObj.facebook_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold px-4 py-2 rounded-full hover:bg-slate-800 active:scale-95 transition-all shadow-sm">
                         📘 Facebook
                     </a>
                 `;
             }
             if (profileObj.tiktok_link && profileObj.tiktok_link.trim() !== '') {
                 linksContainer.innerHTML += `
-                    <a href="${profileObj.tiktok_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-sky-600 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all shadow-2xs">
+                    <a href="${profileObj.tiktok_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold px-4 py-2 rounded-full hover:bg-slate-800 active:scale-95 transition-all shadow-sm">
                         🎵 TikTok
                     </a>
                 `;
@@ -1333,7 +1333,7 @@
             container.innerHTML = '';
 
             if (userListings.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">${currentLang === 'my' ? 'ဤပရိုဖိုင်တွင် ကားတင်ထားခြင်း မရှိသေးပါ။' : 'No listings found for this profile.'}</p>`;
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">${currentLang === 'my' ? 'ဤပရိုဖိုင်တွင် ကားတင်ထားခြင်း မရှိသေးပါ။' : 'No listings found for this profile.'}</p>`;
             } else {
                 let favKey = currentUser ? `carFavorites_${currentUser.id}` : 'carFavorites';
                 let favorites = (JSON.parse(localStorage.getItem(favKey)) || []).map(String);
@@ -1344,7 +1344,7 @@
                     const isFav = favorites.includes(stringId);
                     const images = item.img_srcs || ['https://via.placeholder.com/400x200?text=No+Image'];
                     
-                    let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-sky-50 border border-sky-100 text-sky-600 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
+                    let priceBadgeHtml = item.price_dropped_from ? `<span class="bg-slate-950 border border-slate-800 text-slate-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-2">${currentLang === 'my' ? '📉 ဈေးကျဆင်းသည်' : '📉 Price Drop'}</span>` : '';
 
                     let displayPhone = item.phone;
                     let displayViber = item.viber;
@@ -1352,14 +1352,14 @@
 
                     let contactsHtml = '<div class="space-y-2 pt-2">';
                     if (displayPhone) {
-                        contactsHtml += `<a href="tel:${displayPhone}" onclick="triggerHaptic()" class="block w-full bg-cyan-50 border border-cyan-100 text-cyan-700 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-cyan-100 active:scale-[0.99] transition-all shadow-2xs">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${displayPhone}</a>`;
+                        contactsHtml += `<a href="tel:${displayPhone}" onclick="triggerHaptic()" class="block w-full bg-slate-950 border border-slate-800 text-slate-200 text-center text-xs font-bold py-3 rounded-full hover:bg-slate-800 active:scale-[0.99] transition-all shadow-sm">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${displayPhone}</a>`;
                     }
                     if (displayViber) {
-                        contactsHtml += `<a href="viber://chat?number=${displayViber}" onclick="triggerHaptic()" class="block w-full bg-sky-50 border border-sky-100 text-sky-700 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-100 active:scale-[0.99] transition-all shadow-2xs">🟣 Viber: ${displayViber}</a>`;
+                        contactsHtml += `<a href="viber://chat?number=${displayViber}" onclick="triggerHaptic()" class="block w-full bg-slate-950 border border-slate-800 text-slate-200 text-center text-xs font-bold py-3 rounded-full hover:bg-slate-800 active:scale-[0.99] transition-all shadow-sm">🟣 Viber: ${displayViber}</a>`;
                     }
                     if (displayTelegram) {
                         let tgLink = displayTelegram.startsWith('@') ? `https://t.me/${displayTelegram.substring(1)}` : `https://t.me/${displayTelegram}`;
-                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 border border-sky-100 text-sky-700 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-100 active:scale-[0.99] transition-all shadow-2xs">✈️ Telegram: ${displayTelegram}</a>`;
+                        contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-slate-950 border border-slate-800 text-slate-200 text-center text-xs font-bold py-3 rounded-full hover:bg-slate-800 active:scale-[0.99] transition-all shadow-sm">✈️ Telegram: ${displayTelegram}</a>`;
                     }
                     contactsHtml += '</div>';
 
@@ -1370,19 +1370,19 @@
                     let priceLabelText = currentLang === 'my' ? 'ဈေးနှုန်း:' : 'Price:';
                     
                     const card = document.createElement('div');
-                    card.className = "bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs space-y-3 relative";
+                    card.className = "bg-slate-900 border border-slate-800 p-4 rounded-3xl shadow-lg space-y-3 relative";
                     
                     let carouselHtml = `
-                        <div class="relative overflow-hidden rounded-xl bg-slate-100 border border-slate-200/60">
+                        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800">
                             <img src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
-                            <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2.5 right-2.5 bg-white/80 backdrop-blur-md border border-slate-200 p-2 rounded-full shadow-md text-base hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer">
+                            <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-2.5 rounded-full shadow-md text-base hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer">
                                 ${isFav ? '❤️' : '🤍'}
                             </button>
                     `;
 
                     if (images.length > 1) {
                         carouselHtml += `
-                            <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md border border-slate-200 text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer shadow-2xs">
+                            <div class="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 text-slate-200 text-[11px] font-semibold px-3 py-1 rounded-full cursor-pointer shadow-sm">
                                 1 / ${images.length}
                             </div>
                         `;
@@ -1391,13 +1391,13 @@
 
                     card.innerHTML = `
                         ${carouselHtml}
-                        <h3 class="text-base font-bold text-slate-900 tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
-                        <p class="text-[11px] text-slate-500">${colorLabel}: <span class="font-semibold text-slate-800">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-800">${item.country || 'Japan'}</span></p>
+                        <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
+                        <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                         <div class="flex items-center flex-wrap gap-y-1">
-                            <p class="text-cyan-600 font-bold text-lg">${priceLabelText} ${item.price}</p>
+                            <p class="text-white font-bold text-lg">${priceLabelText} ${item.price}</p>
                             ${priceBadgeHtml}
                         </div>
-                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                        <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
                         ${contactsHtml}
                     `;
                     fragment.appendChild(card);
@@ -1430,7 +1430,7 @@
                 listings = listings.filter(item => item.user_id === currentUser.id);
             } else if (currentTab === 'feed' && feedMode === 'following') {
                 if (!currentUser) {
-                    container.innerHTML = `<p class="text-sm text-slate-400 text-center py-8">${currentLang === 'my' ? 'Following ဖีดကိုကြည့်ရန် Google ဖြင့် အကောင့်ဝင်ပါ။' : 'Please sign in to view your Following feed.'}</p>`;
+                    container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${currentLang === 'my' ? 'Following ဖีดကိုကြည့်ရန် Google ဖြင့် အကောင့်ဝင်ပါ။' : 'Please sign in to view your Following feed.'}</p>`;
                     return;
                 }
                 const followedIds = followsList.filter(f => f.follower_id === currentUser.id).map(f => f.following_id);
@@ -1469,7 +1469,7 @@
                 if (currentTab === 'saved') emptyMsg = currentLang === 'my' ? 'သိမ်းဆည်းထားသော ကားများ မရှိပါ။' : 'No saved cars in your wishlist.';
                 if (currentTab === 'profile') emptyMsg = currentLang === 'my' ? 'သင် တင်ထားသော ကားများ မရှိသေးပါ။' : 'You have not posted any car listings yet.';
                 if (currentTab === 'feed' && feedMode === 'following') emptyMsg = currentLang === 'my' ? 'သင် Follow လုပ်ထားသူများထံမှ ပို့စ်များ မရှိသေးပါ။' : 'No posts from accounts you follow yet. Visit profiles to follow showrooms!';
-                container.innerHTML = `<p class="text-sm text-slate-400 text-center py-8">${emptyMsg}</p>`;
+                container.innerHTML = `<p class="text-sm text-slate-500 text-center py-8">${emptyMsg}</p>`;
                 return;
             }
 
@@ -1484,21 +1484,21 @@
                 let headerBadge = '';
                 if (profileObj && profileObj.name) {
                     let badgeIconHtml = hasVerifiedBadge(item.user_id) ? `
-                        <span class="inline-flex items-center justify-center w-3.5 h-3.5 bg-pink-500 text-white rounded-full text-[8px] shadow-xs">
+                        <span class="inline-flex items-center justify-center w-3.5 h-3.5 bg-slate-700 text-white rounded-full text-[8px] shadow-xs">
                             <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                         </span>
                     ` : '';
 
                     if (profileObj.type === 'account') {
-                        headerBadge = `${currentLang === 'my' ? 'အကောင့်' : 'Account'}: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-cyan-600 underline cursor-pointer hover:text-cyan-700 transition">${profileObj.name}</span> ${badgeIconHtml}`;
+                        headerBadge = `${currentLang === 'my' ? 'အကောင့်' : 'Account'}: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-white underline cursor-pointer hover:text-slate-300 transition">${profileObj.name}</span> ${badgeIconHtml}`;
                     } else {
-                        headerBadge = `Showroom: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-cyan-600 underline cursor-pointer hover:text-cyan-700 transition">${profileObj.name}</span> ${badgeIconHtml}`;
+                        headerBadge = `Showroom: <span onclick="openProfileModal('${item.user_id}')" class="font-semibold text-white underline cursor-pointer hover:text-slate-300 transition">${profileObj.name}</span> ${badgeIconHtml}`;
                     }
                 }
                 
                 let priceBadgeHtml = '';
                 if (item.price_dropped_from) {
-                    priceBadgeHtml = `<span class="bg-sky-50 border border-sky-100 text-sky-600 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
+                    priceBadgeHtml = `<span class="bg-slate-950 border border-slate-800 text-slate-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-2">${currentLang === 'my' ? `📉 ဈေးကျဆင်းသည် (ယခင် ${item.price_dropped_from})` : `📉 Price Drop (was ${item.price_dropped_from})`}</span>`;
                 }
 
                 let displayPhone = item.phone;
@@ -1507,14 +1507,14 @@
 
                 let contactsHtml = '<div class="space-y-2 pt-2">';
                 if (displayPhone) {
-                    contactsHtml += `<a href="tel:${displayPhone}" onclick="triggerHaptic()" class="block w-full bg-cyan-50 border border-cyan-100 text-cyan-700 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-cyan-100 active:scale-[0.99] transition-all shadow-2xs">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${displayPhone}</a>`;
+                    contactsHtml += `<a href="tel:${displayPhone}" onclick="triggerHaptic()" class="block w-full bg-slate-950 border border-slate-800 text-slate-200 text-center text-xs font-bold py-3 rounded-full hover:bg-slate-800 active:scale-[0.99] transition-all shadow-sm">📞 ${currentLang === 'my' ? 'ဖုန်းခေါ်မည်' : 'Call'}: ${displayPhone}</a>`;
                 }
                 if (displayViber) {
-                    contactsHtml += `<a href="viber://chat?number=${displayViber}" onclick="triggerHaptic()" class="block w-full bg-sky-50 border border-sky-100 text-sky-700 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-100 active:scale-[0.99] transition-all shadow-2xs">🟣 Viber: ${displayViber}</a>`;
+                    contactsHtml += `<a href="viber://chat?number=${displayViber}" onclick="triggerHaptic()" class="block w-full bg-slate-950 border border-slate-800 text-slate-200 text-center text-xs font-bold py-3 rounded-full hover:bg-slate-800 active:scale-[0.99] transition-all shadow-sm">🟣 Viber: ${displayViber}</a>`;
                 }
                 if (displayTelegram) {
                     let tgLink = displayTelegram.startsWith('@') ? `https://t.me/${displayTelegram.substring(1)}` : `https://t.me/${displayTelegram}`;
-                    contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-sky-50 border border-sky-100 text-sky-700 text-center text-xs font-bold py-2.5 rounded-xl hover:bg-sky-100 active:scale-[0.99] transition-all shadow-2xs">✈️ Telegram: ${displayTelegram}</a>`;
+                    contactsHtml += `<a href="${tgLink}" target="_blank" onclick="triggerHaptic()" class="block w-full bg-slate-950 border border-slate-800 text-slate-200 text-center text-xs font-bold py-3 rounded-full hover:bg-slate-800 active:scale-[0.99] transition-all shadow-sm">✈️ Telegram: ${displayTelegram}</a>`;
                 }
                 contactsHtml += '</div>';
 
@@ -1528,45 +1528,45 @@
                 let ownerActionsHtml = '';
                 if (isOwner) {
                     ownerActionsHtml = `
-                        <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100">
-                            <button onclick="editListing('${item.id}')" class="bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 text-xs font-bold py-2 rounded-xl transition-all cursor-pointer">✏️ ${currentLang === 'my' ? 'ပြင်ဆင်မည်' : 'Edit'}</button>
-                            <button onclick="deleteListing('${item.id}')" class="bg-sky-50 border border-sky-100 hover:bg-sky-100 active:scale-95 text-sky-700 text-xs font-bold py-2 rounded-xl transition-all cursor-pointer">🗑️ ${currentLang === 'my' ? 'ဖျက်မည်' : 'Delete'}</button>
+                        <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800">
+                            <button onclick="editListing('${item.id}')" class="bg-slate-950 hover:bg-slate-800 active:scale-95 text-slate-200 text-xs font-bold py-2.5 rounded-full transition-all cursor-pointer border border-slate-800">✏️ ${currentLang === 'my' ? 'ပြင်ဆင်မည်' : 'Edit'}</button>
+                            <button onclick="deleteListing('${item.id}')" class="bg-slate-950 hover:bg-slate-800 active:scale-95 text-slate-400 hover:text-red-400 text-xs font-bold py-2.5 rounded-full transition-all cursor-pointer border border-slate-800">🗑️ ${currentLang === 'my' ? 'ဖျက်မည်' : 'Delete'}</button>
                         </div>
                     `;
                 }
 
                 const card = document.createElement('div');
-                card.className = "bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs space-y-3 relative";
+                card.className = "bg-slate-900 border border-slate-800 p-4 rounded-3xl shadow-lg space-y-3 relative";
                 
                 let carouselHtml = `
-                    <div class="relative overflow-hidden rounded-xl bg-slate-100 border border-slate-200/60">
+                    <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800">
                         <img id="img-${item.id}" src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
-                        <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2.5 right-2.5 bg-white/80 backdrop-blur-md border border-slate-200 p-2 rounded-full shadow-md text-base hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer">
+                        <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-2.5 rounded-full shadow-md text-base hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                 `;
 
                 if (images.length > 1) {
                     carouselHtml += `
-                        <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md border border-slate-200 text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer shadow-2xs" onclick="openFbPhotoModal('${item.id}', 0)">
+                        <div class="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 text-slate-200 text-[11px] font-semibold px-3 py-1 rounded-full cursor-pointer shadow-sm" onclick="openFbPhotoModal('${item.id}', 0)">
                             <span id="counter-${item.id}">1</span> / ${images.length}
                         </div>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white active:scale-95 border border-slate-200 text-slate-700 w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-2xs transition-all cursor-pointer">‹</button>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white active:scale-95 border border-slate-200 text-slate-700 w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-2xs transition-all cursor-pointer">›</button>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2.5 top-1/2 -translate-y-1/2 bg-slate-900/80 hover:bg-slate-900 active:scale-95 border border-slate-700 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm transition-all cursor-pointer">‹</button>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2.5 top-1/2 -translate-y-1/2 bg-slate-900/80 hover:bg-slate-900 active:scale-95 border border-slate-700 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm transition-all cursor-pointer">›</button>
                     `;
                 }
                 carouselHtml += `</div>`;
 
                 card.innerHTML = `
                     ${carouselHtml}
-                    ${headerBadge ? `<div class="text-xs pt-1">${headerBadge}</div>` : ''}
-                    <h3 class="text-base font-bold text-slate-900 tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
-                    <p class="text-[11px] text-slate-500">${colorLabel}: <span class="font-semibold text-slate-800">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-800">${item.country || 'Japan'}</span></p>
+                    ${headerBadge ? `<div class="text-xs pt-1 text-slate-400">${headerBadge}</div>` : ''}
+                    <h3 class="text-base font-bold text-white tracking-tight">${item.brand || ''} ${item.title || ''} (${item.year || ''})</h3>
+                    <p class="text-[11px] text-slate-400">${colorLabel}: <span class="font-semibold text-slate-200">${item.color || 'N/A'}</span>${mileageHtml} | ${countryLabel}: <span class="font-semibold text-slate-200">${item.country || 'Japan'}</span></p>
                     <div class="flex items-center flex-wrap gap-y-1">
-                        <p class="text-cyan-600 font-bold text-lg">${priceLabelText} ${item.price}</p>
+                        <p class="text-white font-bold text-lg">${priceLabelText} ${item.price}</p>
                         ${priceBadgeHtml}
                     </div>
-                    <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
                     ${contactsHtml}
                     ${ownerActionsHtml}
                 `;
@@ -1651,7 +1651,7 @@
                 currentModalImages.forEach((src, idx) => {
                     const thumb = document.createElement('img');
                     thumb.src = src;
-                    thumb.className = `w-12 h-12 object-cover rounded-lg cursor-pointer transition-all border ${idx === currentModalIndex ? 'border-cyan-500 scale-105 opacity-100 shadow-md' : 'border-slate-800 opacity-50 hover:opacity-100'}`;
+                    thumb.className = `w-12 h-12 object-cover rounded-xl cursor-pointer transition-all border ${idx === currentModalIndex ? 'border-white scale-105 opacity-100 shadow-md' : 'border-slate-800 opacity-50 hover:opacity-100'}`;
                     thumb.onclick = () => {
                         triggerHaptic();
                         currentModalIndex = idx;
