@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Website Logo / Favicon for Browser Tabs & Google Search -->
-    <link rel="icon" type="image/png" href="wheelmm.PNG">
-    <link rel="apple-touch-icon" href="wheelmm.PNG">
+    <!-- Added explicit standard sizing declarations to guide Googlebot-Image directly -->
+    <link rel="icon" type="image/png" sizes="32x32" href="wheelmm.PNG">
+    <link rel="icon" type="image/png" sizes="48x48" href="wheelmm.PNG">
+    <link rel="icon" type="image/png" sizes="96x96" href="wheelmm.PNG">
+    <link rel="icon" type="image/png" sizes="192x192" href="wheelmm.PNG">
+    <link rel="apple-touch-icon" sizes="180x180" href="wheelmm.PNG">
 
     <!-- Google Search Snippet Fix -->
     <meta name="description" content="wheelmm - မြန်မာနိုင်ငံ၏ ပထမဦးဆုံး ကားအရောင်းအဝယ် စျေးကွက်။ First car marketplace in Myanmar. Buy and sell cars easily.">
@@ -33,7 +37,6 @@
 
     <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white p-4 sticky top-0 z-30 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <!-- Wrapped logo and text together for a clean layout alignment -->
             <div class="flex items-center gap-2.5">
                 <img src="wheelmm.PNG" alt="wheelmm logo" class="site-logo w-7 h-7 object-contain">
                 <div class="flex flex-col">
@@ -42,7 +45,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <!-- Language Switcher Dropdown -->
                 <select id="lang-switcher" onchange="switchLanguage(this.value)" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold px-2.5 py-1.5 rounded-full focus:outline-none focus:border-cyan-500 transition cursor-pointer">
                     <option value="my">မြန်မာ</option>
                     <option value="en">English</option>
@@ -80,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950 border border-slate-800 p-3 rounded-xl">
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-955 border border-slate-800 p-3 rounded-xl">
                 <div>
                     <span id="dashboard-stat-following" class="text-base font-bold text-white">0</span>
                     <p id="txt-stat-following" class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-semibold">Following</p>
@@ -95,7 +97,7 @@
                 </div>
             </div>
 
-            <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-3">
+            <div class="bg-slate-955 border border-slate-800 p-3.5 rounded-xl space-y-3">
                 <div class="flex justify-between items-center">
                     <label id="txt-profile-settings" class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Profile & Display Settings</label>
                     <div class="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800">
@@ -190,8 +192,7 @@
                     <input type="text" id="car-price" placeholder="e.g., $15,000 or 15000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition">
                 </div>
 
-                <!-- Per-Listing Contact Inputs -->
-                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-2.5">
+                <div class="bg-slate-955 border border-slate-800 p-3.5 rounded-xl space-y-2.5">
                     <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">📞 Contact Information For This Post</label>
                     <div class="grid grid-cols-3 gap-2">
                         <div>
@@ -275,7 +276,7 @@
         </section>
     </main>
 
-    <div id="profile-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex flex-col overflow-y-auto">
+    <div id="profile-modal" class="fixed inset-0 bg-slate-955 z-50 hidden flex flex-col overflow-y-auto">
         <div class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-20 px-4 py-3.5 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <button onclick="triggerHaptic(); closeProfileModal()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-200 font-bold transition">←</button>
