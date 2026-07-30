@@ -10,7 +10,7 @@
     <link class="icon" type="image/png" sizes="48x48" href="wheelmmlogo.png">
     <link class="icon" type="image/png" sizes="96x96" href="wheelmmlogo.png">
     <link class="icon" type="image/png" sizes="192x192" href="wheelmmlogo.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="wheelmmlogo.png">
+    <link class="apple-touch-icon" sizes="180x180" href="wheelmmlogo.png">
 
     <!-- Google Search Snippet Fix -->
     <meta name="description" content="wheelmm - မြန်မာနိုင်ငံ၏ ပထမဦးဆုံး ကားအရောင်းအဝယ် စျေးကွက်။ First car marketplace in Myanmar. Buy and sell cars easily.">
@@ -22,9 +22,9 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-955 text-slate-100 font-sans pb-24">
+<body class="bg-slate-950 text-slate-100 font-sans pb-24">
     <!-- Custom Friendly Toast Notification Modal -->
-    <div id="custom-toast" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="custom-toast" class="fixed inset-0 bg-slate-955/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4 text-center transform transition-all scale-95 opacity-0" id="toast-box">
             <div id="toast-icon" class="w-12 h-12 rounded-full bg-cyan-600/20 border border-cyan-500/30 text-cyan-400 flex items-center justify-center text-xl mx-auto">✨</div>
             <div class="space-y-1">
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <select id="lang-switcher" onchange="switchLanguage(this.value)" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold px-2.5 py-1.5 rounded-full focus:outline-none focus:border-cyan-500 transition cursor-pointer">
+                <select id="lang-switcher" onchange="switchLanguage(this.value)" class="bg-slate-955 border border-slate-800 text-slate-200 text-xs font-semibold px-2.5 py-1.5 rounded-full focus:outline-none focus:border-cyan-500 transition cursor-pointer">
                     <option value="my">မြန်မာ</option>
                     <option value="en">English</option>
                 </select>
@@ -98,7 +98,7 @@
                 </div>
             </div>
 
-            <div class="bg-slate-955 border border-slate-800 p-3.5 rounded-xl space-y-3">
+            <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-3">
                 <div class="flex justify-between items-center">
                     <label id="txt-profile-settings" class="block text-xs font-bold text-slate-300 uppercase tracking-wider">🏢 Profile & Display Settings</label>
                     <div class="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800">
@@ -238,19 +238,19 @@
             </div>
 
             <div class="relative">
-                <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+                <input type="text" id="search-car-input" placeholder="🔍 Search Cars (Brand, Model, Year...)" class="w-full bg-slate-955 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
             </div>
             <div class="relative">
-                <input type="text" id="search-showroom-input" placeholder="🏢 Search Accounts & Showrooms..." class="w-full bg-slate-955 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+                <input type="text" id="search-showroom-input" placeholder="🏢 Search Accounts & Showrooms..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
             </div>
             
             <div class="grid grid-cols-2 gap-2 pt-1">
-                <input type="text" id="filter-brand" placeholder="Optional: Brand..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
-                <input type="text" id="filter-color" placeholder="Optional: Color..." class="bg-slate-955 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+                <input type="text" id="filter-brand" placeholder="Optional: Brand..." class="bg-slate-955 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+                <input type="text" id="filter-color" placeholder="Optional: Color..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
             </div>
 
             <div class="grid grid-cols-2 gap-2">
-                <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-955 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 transition">
+                <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 transition">
                     <option value="" id="txt-opt-all-countries">All Countries (Optional)</option>
                     <option value="Japan">Japan</option>
                     <option value="Thailand">Thailand</option>
@@ -260,7 +260,7 @@
                     <option value="South Korea">South Korea</option>
                     <option value="Other">Other</option>
                 </select>
-                <div class="flex items-center gap-1 bg-slate-955 border border-slate-800 rounded-xl px-2 py-1 text-xs">
+                <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1 text-xs">
                     <input type="number" id="filter-year-from" placeholder="From Yr" class="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none text-center">
                     <span class="text-slate-500">-</span>
                     <input type="number" id="filter-year-to" placeholder="To Yr" class="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none text-center">
@@ -328,7 +328,7 @@
         </div>
     </div>
 
-    <div id="fb-photo-modal" class="fixed inset-0 bg-slate-955/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
+    <div id="fb-photo-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
         <div class="flex justify-between items-center p-4 bg-slate-900/60 border-b border-slate-800 text-white z-10">
             <span id="fb-modal-counter" class="text-xs font-semibold text-slate-300 tracking-wider">1 / 1</span>
             <button onclick="triggerHaptic(); closeFbPhotoModal()" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-sm font-bold text-slate-200 transition">✕</button>
@@ -1232,7 +1232,7 @@
 
             activeEditImages.forEach((src, idx) => {
                 const wrapper = document.createElement('div');
-                wrapper.className = "relative bg-slate-950 border border-slate-800 rounded-xl p-1 flex items-center justify-center";
+                wrapper.className = "relative bg-slate-955 border border-slate-800 rounded-xl p-1 flex items-center justify-center";
                 wrapper.innerHTML = `
                     <img src="${src}" class="w-full h-16 object-cover rounded-lg" loading="lazy">
                     <button type="button" onclick="triggerHaptic(); removeActiveImage(${idx})" class="absolute -top-1.5 -right-1.5 bg-sky-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md hover:bg-sky-500 cursor-pointer">✕</button>
@@ -1324,7 +1324,7 @@
             linksContainer.innerHTML = '';
             if (profileObj.facebook_link && profileObj.facebook_link.trim() !== '') {
                 linksContainer.innerHTML += `
-                    <a href="${profileObj.facebook_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-955 border border-slate-800 text-cyan-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
+                    <a href="${profileObj.facebook_link}" target="_blank" onclick="triggerHaptic()" class="inline-flex items-center gap-1.5 bg-slate-950 border border-slate-800 text-cyan-400 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-slate-800 transition">
                         📘 Facebook
                     </a>
                 `;
@@ -1388,7 +1388,7 @@
 
                     if (images.length > 1) {
                         carouselHtml += `
-                            <div class="absolute bottom-2.5 left-2.5 bg-slate-955/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer">
+                            <div class="absolute bottom-2.5 left-2.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer">
                                 1 / ${images.length}
                             </div>
                         `;
@@ -1548,7 +1548,7 @@
 
                 if (images.length > 1) {
                     carouselHtml += `
-                        <div class="absolute bottom-2.5 left-2.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer" onclick="openFbPhotoModal('${item.id}', 0)">
+                        <div class="absolute bottom-2.5 left-2.5 bg-slate-955/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer" onclick="openFbPhotoModal('${item.id}', 0)">
                             <span id="counter-${item.id}">1</span> / ${images.length}
                         </div>
                         <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-900 border border-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition">‹</button>
