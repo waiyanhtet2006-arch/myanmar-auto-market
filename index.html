@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Website Logo / Favicon for Browser Tabs & Google Search -->
+    <link rel="icon" type="image/png" href="wheelmm.PNG">
+    <link rel="apple-touch-icon" href="wheelmm.PNG">
+
     <!-- Google Search Snippet Fix -->
     <meta name="description" content="wheelmm - မြန်မာနိုင်ငံ၏ ပထမဦးဆုံး ကားအရောင်းအဝယ် စျေးကွက်။ First car marketplace in Myanmar. Buy and sell cars easily.">
     <title>wheelmm - ကားအရောင်းအဝယ်</title>
@@ -235,11 +240,11 @@
             
             <div class="grid grid-cols-2 gap-2 pt-1">
                 <input type="text" id="filter-brand" placeholder="Optional: Brand..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
-                <input type="text" id="filter-color" placeholder="Optional: Color..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+                <input type="text" id="filter-color" placeholder="Optional: Color..." class="bg-slate-955 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
             </div>
 
             <div class="grid grid-cols-2 gap-2">
-                <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 transition">
+                <select id="filter-country" onchange="triggerHaptic()" class="bg-slate-955 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 transition">
                     <option value="" id="txt-opt-all-countries">All Countries (Optional)</option>
                     <option value="Japan">Japan</option>
                     <option value="Thailand">Thailand</option>
@@ -249,7 +254,7 @@
                     <option value="South Korea">South Korea</option>
                     <option value="Other">Other</option>
                 </select>
-                <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1 text-xs">
+                <div class="flex items-center gap-1 bg-slate-955 border border-slate-800 rounded-xl px-2 py-1 text-xs">
                     <input type="number" id="filter-year-from" placeholder="From Yr" class="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none text-center">
                     <span class="text-slate-500">-</span>
                     <input type="number" id="filter-year-to" placeholder="To Yr" class="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none text-center">
@@ -317,7 +322,7 @@
         </div>
     </div>
 
-    <div id="fb-photo-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
+    <div id="fb-photo-modal" class="fixed inset-0 bg-slate-955/95 backdrop-blur-xl z-50 hidden flex flex-col justify-between select-none">
         <div class="flex justify-between items-center p-4 bg-slate-900/60 border-b border-slate-800 text-white z-10">
             <span id="fb-modal-counter" class="text-xs font-semibold text-slate-300 tracking-wider">1 / 1</span>
             <button onclick="triggerHaptic(); closeFbPhotoModal()" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-sm font-bold text-slate-200 transition">✕</button>
@@ -1368,7 +1373,7 @@
                     card.className = "bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3 relative";
                     
                     let carouselHtml = `
-                        <div class="relative overflow-hidden rounded-xl bg-slate-950 border border-slate-800">
+                        <div class="relative overflow-hidden rounded-xl bg-slate-955 border border-slate-800">
                             <img src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
                             <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md border border-slate-700 p-2 rounded-full shadow-lg text-base hover:scale-110 transition z-10">
                                 ${isFav ? '❤️' : '🤍'}
@@ -1377,7 +1382,7 @@
 
                     if (images.length > 1) {
                         carouselHtml += `
-                            <div class="absolute bottom-2.5 left-2.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer">
+                            <div class="absolute bottom-2.5 left-2.5 bg-slate-955/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer">
                                 1 / ${images.length}
                             </div>
                         `;
@@ -1528,7 +1533,7 @@
                 card.className = "bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3 relative";
                 
                 let carouselHtml = `
-                    <div class="relative overflow-hidden rounded-xl bg-slate-950 border border-slate-800">
+                    <div class="relative overflow-hidden rounded-xl bg-slate-955 border border-slate-800">
                         <img id="img-${item.id}" src="${images[0]}" onclick="triggerHaptic(); openFbPhotoModal('${item.id}', 0)" class="w-full h-52 object-cover cursor-pointer hover:scale-[1.02] transition duration-300" loading="lazy">
                         <button onclick="triggerHaptic(); toggleFavorite('${item.id}')" class="absolute top-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md border border-slate-700 p-2 rounded-full shadow-lg text-base hover:scale-110 transition z-10">
                             ${isFav ? '❤️' : '🤍'}
@@ -1537,11 +1542,11 @@
 
                 if (images.length > 1) {
                     carouselHtml += `
-                        <div class="absolute bottom-2.5 left-2.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer" onclick="openFbPhotoModal('${item.id}', 0)">
+                        <div class="absolute bottom-2.5 left-2.5 bg-slate-955/80 backdrop-blur-md border border-slate-800 text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer" onclick="openFbPhotoModal('${item.id}', 0)">
                             <span id="counter-${item.id}">1</span> / ${images.length}
                         </div>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-900 border border-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition">‹</button>
-                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-900 border border-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition">›</button>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-955/70 hover:bg-slate-900 border border-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition">‹</button>
+                        <button onclick="triggerHaptic(); changeSlide('${item.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-955/70 hover:bg-slate-900 border border-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition">›</button>
                     `;
                 }
                 carouselHtml += `</div>`;
